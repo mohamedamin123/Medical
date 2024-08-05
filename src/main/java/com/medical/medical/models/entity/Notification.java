@@ -7,8 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @AllArgsConstructor
@@ -23,11 +27,24 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_notification")
     private int idNotification;
-
+    @NotBlank
     private String message;
+    @NotBlank
     private Utilisateurs destinataire;
     private LocalDate jour;
     private LocalTime heure;
+
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
 //------------------------------------------------------------------------------------------------------------foreignKey
     @Column(name = "secretaire_id")

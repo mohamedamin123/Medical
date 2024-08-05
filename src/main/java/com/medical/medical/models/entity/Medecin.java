@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @NoArgsConstructor
@@ -20,6 +21,7 @@ public class Medecin extends User{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_medecin")
     private int idMedecin;
+    @NotBlank
     private String specialite;
 
 //--------------------------------------------------------------------------------------------------------------Relation

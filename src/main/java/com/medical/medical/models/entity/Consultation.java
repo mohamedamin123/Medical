@@ -6,7 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -21,12 +26,23 @@ public class Consultation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_consultation")
     private int idConsultation;
-
+    @NotBlank
     private String note;
 
     @Column(name = "date_de_consultation")
     @Temporal(TemporalType.DATE)
-    private Date dateDeConsultation;
+    private LocalDate dateDeConsultation;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
 //------------------------------------------------------------------------------------------------------------foreignKey
     @Column(name = "medecin_id")
