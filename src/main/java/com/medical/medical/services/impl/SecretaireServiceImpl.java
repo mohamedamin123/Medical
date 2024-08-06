@@ -160,6 +160,7 @@ public class SecretaireServiceImpl implements SecretaireService {
     public void deleteSecretaire(SecretaireReqDTO req) {
         Secretaire emp=this.repository.findById(req.getIdSecretaire()).get();
         emp.setDeletedAt(LocalDateTime.now());
+        emp.setStatut(false);
         repository.save(emp);
     }
 
@@ -167,6 +168,7 @@ public class SecretaireServiceImpl implements SecretaireService {
     public void deleteSecretaireById(int id) {
         Secretaire emp=this.repository.findById(id).get();
         emp.setDeletedAt(LocalDateTime.now());
+        emp.setStatut(false);
         repository.save(emp);
     }
 }

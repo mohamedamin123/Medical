@@ -161,6 +161,7 @@ public class PatientServiceImpl implements PatientService {
     public void deletePatient(PatientReqDTO req) {
         Patient emp=this.repository.findById(req.getIdPatient()).get();
         emp.setDeletedAt(LocalDateTime.now());
+        emp.setStatut(false);
         repository.save(emp);
     }
 
@@ -168,6 +169,7 @@ public class PatientServiceImpl implements PatientService {
     public void deletePatientById(int id) {
         Patient emp=this.repository.findById(id).get();
         emp.setDeletedAt(LocalDateTime.now());
+        emp.setStatut(false);
         repository.save(emp);
     }
 }

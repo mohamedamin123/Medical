@@ -160,6 +160,7 @@ public class MedecinServiceImpl implements MedecinService {
     public void deleteMedecin(MedecinReqDTO req) {
         Medecin emp=this.repository.findById(req.getIdMedecin()).get();
         emp.setDeletedAt(LocalDateTime.now());
+        emp.setStatut(false);
         repository.save(emp);
     }
 
@@ -167,6 +168,7 @@ public class MedecinServiceImpl implements MedecinService {
     public void deleteMedecinById(int id) {
         Medecin emp=this.repository.findById(id).get();
         emp.setDeletedAt(LocalDateTime.now());
+        emp.setStatut(false);
         repository.save(emp);
     }
 

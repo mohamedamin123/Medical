@@ -47,6 +47,8 @@ public abstract class User {
     @Column(name = "date_de_naissance")
     private LocalDate dateDeNaissance;
 
+    private Boolean statut;
+
 
     @NotBlank
     @Enumerated(EnumType.STRING)
