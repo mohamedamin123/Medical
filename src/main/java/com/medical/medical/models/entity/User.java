@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ public abstract class User {
     private String prenom;
 
     @NotBlank
+    @Size(min = 8, max = 8)
     @Column(name = "telephone", nullable = false)
     private String tel;
 
@@ -45,9 +47,7 @@ public abstract class User {
     @Column(name = "date_de_naissance")
     private LocalDate dateDeNaissance;
 
-    @NotBlank
-    @Column(name = "password", nullable = false)
-    private String password;
+
     @NotBlank
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)

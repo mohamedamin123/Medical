@@ -12,12 +12,16 @@ import java.util.Optional;
 public interface ConsultationService {
     ConsultationResDTO saveConsultation(ConsultationReqDTO req);
 
-    ConsultationResDTO updateEmployees(ConsultationReqDTO req);
+    ConsultationResDTO updateConsultation(ConsultationReqDTO req);
 
     List<ConsultationResDTO> findAllConsultation();
 
 
      Optional<ConsultationResDTO> findConsultationById(int id) ;
+
+     List<ConsultationResDTO> findAllConsultationAfterDelete();
+
+     Optional<ConsultationResDTO> findConsultationByIdAfterDelete(int id);
 
     void deleteConsultation(ConsultationReqDTO req);
 

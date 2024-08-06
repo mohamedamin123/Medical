@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
 @AllArgsConstructor
@@ -21,6 +22,10 @@ public class Secretaire extends User  {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_secretaire")
     private int idSecretaire;
+
+    @NotBlank
+    @Column(name = "password", nullable = false)
+    private String password;
 
 //-------------------------------------------------------------------------------------------------------------relations
 

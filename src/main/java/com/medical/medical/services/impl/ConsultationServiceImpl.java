@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Primary
@@ -23,6 +24,7 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     private final ConsultationRepo repository;
 
+//------------------------------------------------------------------------------------------------------------------save
 
     @Override
     public ConsultationResDTO saveConsultation(ConsultationReqDTO req) {
@@ -32,12 +34,14 @@ public class ConsultationServiceImpl implements ConsultationService {
     }
 
     @Override
-    public ConsultationResDTO updateEmployees(ConsultationReqDTO req) {
+    public ConsultationResDTO updateConsultation(ConsultationReqDTO req) {
         Consultation emp=mapper.toEntity(req);
         emp.setCreatedAt(this.repository.findById(req.getIdConsultation()).get().getCreatedAt());
         Consultation saved= repository.save(emp);
+        saved.setDeletedAt(null);
         return mapper.toRespDTO(saved);
     }
+//------------------------------------------------------------------------------------------------------------------find
 
     @Override
     public List<ConsultationResDTO> findAllConsultation() {
@@ -57,6 +61,37 @@ public class ConsultationServiceImpl implements ConsultationService {
             return Optional.empty();
         }
     }
+
+
+    @Override
+    public List<ConsultationResDTO> findAllConsultationAfterDelete() {
+        List<Consultation> consultations = this.repository.findAll();
+        List<Consultation> filteredConsultations = consultations.stream()
+                .filter(consultation -> consultation.getDeletedAt() == null)
+                .collect(Collectors.toList());
+        return mapper.toAllRespDTO(filteredConsultations);
+    }
+
+    @Override
+    public Optional<ConsultationResDTO> findConsultationByIdAfterDelete(int id) {
+        Optional<Consultation> optionalConsultation = this.repository.findById(id);
+        if (optionalConsultation.isPresent() && optionalConsultation.get().getDeletedAt() == null) {
+            ConsultationResDTO consultationResDTO = mapper.toRespDTO(optionalConsultation.get());
+            return Optional.of(consultationResDTO);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+
+
+
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------------------delete
 
 
     @Override
