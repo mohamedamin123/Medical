@@ -1,10 +1,11 @@
 package com.medical.medical.models.dto.res;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
-public class PatientResDTO {
+@SuperBuilder
+public class PatientResDTO extends UserResDTO{
     private String note;
 
 }

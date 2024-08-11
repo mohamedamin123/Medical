@@ -1,4 +1,4 @@
-package com.medical.medical.controller;
+package com.medical.medical.controller.API;
 
 import com.medical.medical.models.dto.req.SecretaireReqDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
@@ -27,7 +27,7 @@ public class SecretaireController {
         return this.service.findAllSecretaire();
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/find-by-id/{id}")
     public Optional<SecretaireResDTO> findSecretaireById(@PathVariable(name = "id")  Integer id)
     {
         log.info("id de Secretaire est : {}", id);
@@ -35,7 +35,7 @@ public class SecretaireController {
         return this.service.findSecretaireById(id);
     }
 
-    @GetMapping(path = "/{email}")
+    @GetMapping(path = "/find-by-email/{email}")
     public Optional<SecretaireResDTO> findSecretaireByEmail(@PathVariable(name = "email")  String email)
     {
         log.info("email de Secretaire est : {}", email);
@@ -43,7 +43,7 @@ public class SecretaireController {
         return this.service.findSecretaireByEmail(email);
     }
 
-    @GetMapping(path = "/{tel}")
+    @GetMapping(path = "/find-by-tel/{tel}")
     public Optional<SecretaireResDTO> findSecretaireByTel(@PathVariable(name = "tel")  String tel)
     {
         log.info("id de Secretaire est : {}", tel);
@@ -70,7 +70,7 @@ public class SecretaireController {
         return this.service.findAllSecretaireAfterDelete();
     }
 
-    @GetMapping(path = "/after-delete/{id}")
+    @GetMapping(path = "/after-delete/find-by-id/{id}")
     public Optional<SecretaireResDTO> findSecretaireByIdAfterDelete(@PathVariable(name = "id")  Integer id)
     {
         log.info("id de Secretaire est : {}", id);
@@ -78,7 +78,7 @@ public class SecretaireController {
         return this.service.findSecretaireByIdAfterDelete(id);
     }
 
-    @GetMapping(path = "/after-delete/{email}")
+    @GetMapping(path = "/after-delete/find-by-email/{email}")
     public Optional<SecretaireResDTO> findSecretaireByEmailAfterDelete(@PathVariable(name = "email")  String email)
     {
         log.info("email de Secretaire est : {}", email);
@@ -86,7 +86,7 @@ public class SecretaireController {
         return this.service.findSecretaireByEmailAfterDelete(email);
     }
 
-    @GetMapping(path = "/after-delete/{tel}")
+    @GetMapping(path = "/after-delete/find-by-tel/{tel}")
     public Optional<SecretaireResDTO> findSecretaireByTelAfterDelete(@PathVariable(name = "tel")  String tel)
     {
         log.info("id de Secretaire est : {}", tel);
@@ -106,6 +106,11 @@ public class SecretaireController {
     {
         return this.service.findSecretairesByPrenomOrNomAfterDelete(prenom, nom);
     }
+
+    @GetMapping(path = "/find-password-by-email")
+    public String findPasswordByEmail(@RequestParam String email) {
+        return this.service.findPasswordByEmail(email);
+    }
 //------------------------------------------------------------------------------------------------------------------save
 
     @PostMapping(path = "/save")
@@ -122,7 +127,7 @@ public class SecretaireController {
 
 //----------------------------------------------------------------------------------------------------------------delete
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/delete-by-id/{id}")
     public void deleteSecretaireById(@PathVariable(name = "id")  Integer id)
     {
         this.service.deleteSecretaireById(id);

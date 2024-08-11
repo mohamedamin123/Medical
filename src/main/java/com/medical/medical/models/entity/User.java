@@ -17,6 +17,8 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -67,6 +69,16 @@ public abstract class User {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+//---------------------------------------------------------------------------------------------------------Constructeurs
+
+
+    public User(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.tel = tel;
+        this.email = email;
+        this.dateDeNaissance = dateDeNaissance;
+    }
 
     public String getFullName() throws UserException {
         if (this.nom == null) {
@@ -82,4 +94,6 @@ public abstract class User {
         }
         return String.valueOf(Period.between(this.dateDeNaissance, LocalDate.now()).getYears());
     }
+
+
 }

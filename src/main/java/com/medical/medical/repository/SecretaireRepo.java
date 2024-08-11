@@ -3,6 +3,7 @@ package com.medical.medical.repository;
 import com.medical.medical.models.entity.Patient;
 import com.medical.medical.models.entity.Secretaire;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -17,5 +18,6 @@ public interface SecretaireRepo extends JpaRepository<Secretaire,Integer> {
     List<Secretaire> findSecretairesByDateDeNaissance(LocalDate dateDeNaissance);
 
     List<Secretaire> findSecretairesByPrenomOrNom(String prenom,String nom);
-
+    @Query(value = "select e.password  from Medecin e ")
+    String findPasswordByEmail(String email);
 }

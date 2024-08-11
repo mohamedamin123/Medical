@@ -3,13 +3,20 @@ package com.medical.medical.services.impl;
 import com.medical.medical.models.dto.req.SecretaireReqDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
+import com.medical.medical.models.entity.Medecin;
 import com.medical.medical.models.entity.Secretaire;
 import com.medical.medical.models.entity.Secretaire;
 import com.medical.medical.models.mapper.SecretaireMapper;
 import com.medical.medical.repository.SecretaireRepo;
+import com.medical.medical.security.UtulisateurDetail;
 import com.medical.medical.services.interf.SecretaireService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,17 +28,22 @@ import java.util.stream.Collectors;
 @Service
 @Primary
 @RequiredArgsConstructor
-public class SecretaireServiceImpl implements SecretaireService {
+public class SecretaireServiceImpl implements SecretaireService
+        , UserDetailsService
+{
 
     private final SecretaireMapper mapper;
 
     private final SecretaireRepo repository;
+    private PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 
 //------------------------------------------------------------------------------------------------------------------save
 
     @Override
     public SecretaireResDTO saveSecretaire(SecretaireReqDTO req) {
         Secretaire emp=mapper.toEntity(req);
+        emp.setPassword(this.passwordEncoder.encode(emp.getPassword()));
+
         repository.save(emp);
         return mapper.toRespDTO(emp);
     }
@@ -40,6 +52,7 @@ public class SecretaireServiceImpl implements SecretaireService {
     public SecretaireResDTO updateSecretaire(SecretaireReqDTO req) {
         Secretaire emp=mapper.toEntity(req);
         emp.setCreatedAt(this.repository.findById(req.getIdSecretaire()).get().getCreatedAt());
+        emp.setPassword(this.passwordEncoder.encode(emp.getPassword()));
         Secretaire saved= repository.save(emp);
         return mapper.toRespDTO(saved);
     }
@@ -170,5 +183,20 @@ public class SecretaireServiceImpl implements SecretaireService {
         emp.setDeletedAt(LocalDateTime.now());
         emp.setStatut(false);
         repository.save(emp);
+    }
+
+
+
+//-----------------------------------------------------------------------------------------------------------------login
+
+    @Override
+    public String findPasswordByEmail(String email) {
+        return this.repository.findPasswordByEmail(email);
+    }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Secretaire user = this.repository.findSecretaireByEmail(username).get();
+        UtulisateurDetail detail = new UtulisateurDetail(user);
+        return detail;
     }
 }

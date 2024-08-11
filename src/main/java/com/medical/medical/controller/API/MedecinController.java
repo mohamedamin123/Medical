@@ -1,7 +1,8 @@
-package com.medical.medical.controller;
+package com.medical.medical.controller.API;
 
 import com.medical.medical.models.dto.req.MedecinReqDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
+import com.medical.medical.security.LoginViewModel;
 import com.medical.medical.services.interf.MedecinService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/Medecins/Medecin")
+@RequestMapping("/medecins/medecin")
 @RequiredArgsConstructor
 @Slf4j
 public class MedecinController {
@@ -26,27 +27,23 @@ public class MedecinController {
         return this.service.findAllMedecin();
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "find-by-id/{id}")
     public Optional<MedecinResDTO> findMedecinById(@PathVariable(name = "id")  Integer id)
     {
-        log.info("id de Medecin est : {}", id);
 
         return this.service.findMedecinById(id);
     }
 
-    @GetMapping(path = "/{email}")
+    @GetMapping(path = "/find-by-email/{email}")
     public Optional<MedecinResDTO> findMedecinByEmail(@PathVariable(name = "email")  String email)
     {
-        log.info("email de Medecin est : {}", email);
 
         return this.service.findMedecinByEmail(email);
     }
 
-    @GetMapping(path = "/{tel}")
+    @GetMapping(path = "/find-by-tel/{tel}")
     public Optional<MedecinResDTO> findMedecinByTel(@PathVariable(name = "tel")  String tel)
     {
-        log.info("id de Medecin est : {}", tel);
-        log.info("tel de Medecin est : {}", tel);
 
         return this.service.findMedecinByTel(tel);
     }
@@ -71,7 +68,7 @@ public class MedecinController {
         return this.service.findAllMedecinAfterDelete();
     }
 
-    @GetMapping(path = "/after-delete/{id}")
+    @GetMapping(path = "/after-delete/find-by-id/{id}")
     public Optional<MedecinResDTO> findMedecinByIdAfterDelete(@PathVariable(name = "id")  Integer id)
     {
         log.info("id de Medecin est : {}", id);
@@ -79,7 +76,7 @@ public class MedecinController {
         return this.service.findMedecinByIdAfterDelete(id);
     }
 
-    @GetMapping(path = "/after-delete/{email}")
+    @GetMapping(path = "/after-delete/find-by-email/{email}")
     public Optional<MedecinResDTO> findMedecinByEmailAfterDelete(@PathVariable(name = "email")  String email)
     {
         log.info("email de Medecin est : {}", email);
@@ -87,7 +84,7 @@ public class MedecinController {
         return this.service.findMedecinByEmailAfterDelete(email);
     }
 
-    @GetMapping(path = "/after-delete/{tel}")
+    @GetMapping(path = "/after-delete/find-by-tel/{tel}")
     public Optional<MedecinResDTO> findMedecinByTelAfterDelete(@PathVariable(name = "tel")  String tel)
     {
         log.info("id de Medecin est : {}", tel);
@@ -107,6 +104,11 @@ public class MedecinController {
     {
         return this.service.findMedecinsByPrenomOrNomAfterDelete(prenom, nom);
     }
+
+    @GetMapping(path = "/find-password-by-email")
+    public String findPasswordByEmail(@RequestParam String email) {
+        return this.service.findPasswordByEmail(email);
+    }
 //------------------------------------------------------------------------------------------------------------------save
 
     @PostMapping(path = "/save")
@@ -123,7 +125,7 @@ public class MedecinController {
 
 //----------------------------------------------------------------------------------------------------------------delete
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/delete-by-id/{id}")
     public void deleteMedecinById(@PathVariable(name = "id")  Integer id)
     {
         this.service.deleteMedecinById(id);

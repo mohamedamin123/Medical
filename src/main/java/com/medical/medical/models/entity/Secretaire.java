@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import jakarta.validation.constraints.NotBlank;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -32,4 +34,13 @@ public class Secretaire extends User  {
     @JsonManagedReference("notification_secretaire")
     @OneToMany(mappedBy = "secretaire", cascade = CascadeType.ALL)
     private List<Notification> notifications;
+
+
+//---------------------------------------------------------------------------------------------------------Constructeurs
+
+
+    public Secretaire(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String password) {
+        super(nom, prenom, tel, email, dateDeNaissance);
+        this.password = password;
+    }
 }

@@ -1,4 +1,4 @@
-package com.medical.medical.controller;
+package com.medical.medical.controller.API;
 
 import com.medical.medical.models.dto.req.NotificationReqDTO;
 import com.medical.medical.models.dto.res.DossierMedicalResDTO;
@@ -26,7 +26,7 @@ public class NotificationController {
         return this.service.findAllNotification();
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/find-by-id/{id}")
     public Optional<NotificationResDTO> findNotificationById(@PathVariable(name = "id")  Integer id)
     {
         log.info("id de Notification est : {}", id);
@@ -40,7 +40,7 @@ public class NotificationController {
         return this.service.findAllNotificationAfterDelete();
     }
 
-    @GetMapping(path = "/after-delete/{id}")
+    @GetMapping(path = "/after-delete/find-by-id/{id}")
     public Optional<NotificationResDTO> findNotificationByIdAfterDelete(@PathVariable(name = "id")  Integer id)
     {
         log.info("id de NotificationResDTO est : {}", id);
@@ -64,7 +64,7 @@ public class NotificationController {
 
 //----------------------------------------------------------------------------------------------------------------delete
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/delete-by-id/{id}")
     public void deleteNotificationById(@PathVariable(name = "id")  Integer id)
     {
         this.service.deleteNotificationById(id);

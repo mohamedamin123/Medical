@@ -1,11 +1,7 @@
 package com.medical.medical;
 
-import com.medical.medical.controller.ConsultationController;
-import com.medical.medical.exceptions.UserException;
+import com.medical.medical.controller.API.ConsultationController;
 import com.medical.medical.models.dto.req.ConsultationReqDTO;
-import com.medical.medical.models.entity.Consultation;
-import com.medical.medical.models.entity.Patient;
-import com.medical.medical.services.impl.ConsultationServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

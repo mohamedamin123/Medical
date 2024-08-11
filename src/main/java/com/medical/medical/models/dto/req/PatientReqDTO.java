@@ -2,10 +2,11 @@ package com.medical.medical.models.dto.req;
 import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
-public class PatientReqDTO {
+@SuperBuilder
+public class PatientReqDTO extends UserReqDTO {
     private int idPatient;
     private String note;
 }

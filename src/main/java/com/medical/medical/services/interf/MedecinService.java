@@ -5,6 +5,7 @@ import com.medical.medical.models.dto.req.MedecinReqDTO;
 import com.medical.medical.models.dto.res.ConsultationResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.entity.Medecin;
+import com.medical.medical.security.LoginViewModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -44,6 +45,9 @@ public interface MedecinService {
     List<MedecinResDTO> findMedecinsByPrenomOrNomAfterDelete(String prenom,String nom);
 
     void deleteMedecin(MedecinReqDTO req);
+
+    String findPasswordByEmail(String email);
+
 
     void deleteMedecinById(int id);
 

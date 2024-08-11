@@ -1,4 +1,4 @@
-package com.medical.medical.controller;
+package com.medical.medical.controller.API;
 
 import com.medical.medical.models.dto.req.RendezVousReqDTO;
 import com.medical.medical.models.dto.res.NotificationResDTO;
@@ -26,7 +26,7 @@ public class RendezVousController {
         return this.service.findAllRendezVous();
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/find-by-id/{id}")
     public Optional<RendezVousResDTO> findRendezVousById(@PathVariable(name = "id")  Integer id)
     {
         log.info("id de RendezVous est : {}", id);
@@ -41,7 +41,7 @@ public class RendezVousController {
         return this.service.findAllRendezVousAfterDelete();
     }
 
-    @GetMapping(path = "/after-delete/{id}")
+    @GetMapping(path = "/after-delete/find-by-id/{id}")
     public Optional<RendezVousResDTO> findRendezVousByIdAfterDelete(@PathVariable(name = "id")  Integer id)
     {
         log.info("id de findAllRendezVousAfterDelete est : {}", id);
@@ -65,7 +65,7 @@ public class RendezVousController {
 
 //----------------------------------------------------------------------------------------------------------------delete
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/delete-by-id/{id}")
     public void deleteRendezVousById(@PathVariable(name = "id")  Integer id)
     {
         this.service.deleteRendezVousById(id);

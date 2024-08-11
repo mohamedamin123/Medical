@@ -5,9 +5,16 @@ import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.entity.Medecin;
 import com.medical.medical.models.mapper.MedecinMapper;
 import com.medical.medical.repository.MedecinRepo;
+import com.medical.medical.security.LoginViewModel;
+import com.medical.medical.security.UtulisateurDetail;
 import com.medical.medical.services.interf.MedecinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,26 +26,30 @@ import java.util.stream.Collectors;
 @Service
 @Primary
 @RequiredArgsConstructor
-public class MedecinServiceImpl implements MedecinService {
+public class MedecinServiceImpl implements MedecinService , UserDetailsService {
 
     private final MedecinMapper mapper;
 
     private final MedecinRepo repository;
 
+    private PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+
 //------------------------------------------------------------------------------------------------------------------save
 
     @Override
     public MedecinResDTO saveMedecin(MedecinReqDTO req) {
-        Medecin emp=mapper.toEntity(req);
+        Medecin emp = mapper.toEntity(req);
+        emp.setPassword(this.passwordEncoder.encode(emp.getPassword()));
         repository.save(emp);
         return mapper.toRespDTO(emp);
     }
 
     @Override
     public MedecinResDTO updateMedecin(MedecinReqDTO req) {
-        Medecin emp=mapper.toEntity(req);
+        Medecin emp = mapper.toEntity(req);
         emp.setCreatedAt(this.repository.findById(req.getIdMedecin()).get().getCreatedAt());
-        Medecin saved= repository.save(emp);
+        emp.setPassword(this.passwordEncoder.encode(emp.getPassword()));
+        Medecin saved = repository.save(emp);
         saved.setDeletedAt(null);
         return mapper.toRespDTO(saved);
     }
@@ -71,7 +82,8 @@ public class MedecinServiceImpl implements MedecinService {
             return Optional.of(MedecinResDTO);
         } else {
             return Optional.empty();
-        }    }
+        }
+    }
 
     @Override
     public Optional<MedecinResDTO> findMedecinByTel(String tel) {
@@ -81,12 +93,14 @@ public class MedecinServiceImpl implements MedecinService {
             return Optional.of(MedecinResDTO);
         } else {
             return Optional.empty();
-        }    }
+        }
+    }
 
     @Override
     public List<MedecinResDTO> findMedecinsByDateDeNaissance(LocalDate dateDeNaissance) {
         List<Medecin> users = this.repository.findMedecinsByDateDeNaissance(dateDeNaissance);
-        return mapper.toAllRespDTO(users);    }
+        return mapper.toAllRespDTO(users);
+    }
 
     @Override
     public List<MedecinResDTO> findMedecinsByPrenomOrNom(String prenom, String nom) {
@@ -158,18 +172,34 @@ public class MedecinServiceImpl implements MedecinService {
 
     @Override
     public void deleteMedecin(MedecinReqDTO req) {
-        Medecin emp=this.repository.findById(req.getIdMedecin()).get();
+        Medecin emp = this.repository.findById(req.getIdMedecin()).get();
         emp.setDeletedAt(LocalDateTime.now());
         emp.setStatut(false);
         repository.save(emp);
     }
 
+
     @Override
     public void deleteMedecinById(int id) {
-        Medecin emp=this.repository.findById(id).get();
+        Medecin emp = this.repository.findById(id).get();
         emp.setDeletedAt(LocalDateTime.now());
         emp.setStatut(false);
         repository.save(emp);
+    }
+
+//-----------------------------------------------------------------------------------------------------------------login
+
+    @Override
+    public String findPasswordByEmail(String email) {
+        return this.repository.findPasswordByEmail(email);
+    }
+//-----------------------------------------------------------------------------------------------------------implements
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Medecin user = this.repository.findMedecinByEmail(username).get();
+        UtulisateurDetail detail = new UtulisateurDetail(user);
+        return detail;
     }
 
 

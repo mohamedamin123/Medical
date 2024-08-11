@@ -47,4 +47,9 @@ public class Patient extends User {
     @JsonManagedReference("notification_patient")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     private List<Notification> notifications;
+//---------------------------------------------------------------------------------------------------------Constructeurs
+
+
+
+
 }

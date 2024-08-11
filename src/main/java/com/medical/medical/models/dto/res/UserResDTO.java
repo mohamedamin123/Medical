@@ -1,7 +1,12 @@
 package com.medical.medical.models.dto.res;
 
-import java.time.LocalDate;
+import lombok.Builder;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+@Data
+@SuperBuilder
 public class UserResDTO {
     private String nom;
 

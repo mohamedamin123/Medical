@@ -1,4 +1,4 @@
-package com.medical.medical.controller;
+package com.medical.medical.controller.API;
 
 import com.medical.medical.models.dto.req.PatientReqDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
@@ -27,7 +27,7 @@ public class PatientController {
         return this.service.findAllPatient();
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/find-by-id/{id}")
     public Optional<PatientResDTO> findPatientById(@PathVariable(name = "id")  Integer id)
     {
         log.info("id de Patient est : {}", id);
@@ -35,7 +35,7 @@ public class PatientController {
         return this.service.findPatientById(id);
     }
 
-    @GetMapping(path = "/{email}")
+    @GetMapping(path = "/find-by-email/{email}")
     public Optional<PatientResDTO> findPatientByEmail(@PathVariable(name = "email")  String email)
     {
         log.info("email de Patient est : {}", email);
@@ -43,7 +43,7 @@ public class PatientController {
         return this.service.findPatientByEmail(email);
     }
 
-    @GetMapping(path = "/{tel}")
+    @GetMapping(path = "/find-by-tel/{tel}")
     public Optional<PatientResDTO> findPatientByTel(@PathVariable(name = "tel")  String tel)
     {
         log.info("id de Patient est : {}", tel);
@@ -71,7 +71,7 @@ public class PatientController {
         return this.service.findAllPatientAfterDelete();
     }
 
-    @GetMapping(path = "/after-delete/{id}")
+    @GetMapping(path = "/after-delete/find-by-id/{id}")
     public Optional<PatientResDTO> findPatientByIdAfterDelete(@PathVariable(name = "id")  Integer id)
     {
         log.info("id de Patient est : {}", id);
@@ -79,7 +79,7 @@ public class PatientController {
         return this.service.findPatientByIdAfterDelete(id);
     }
 
-    @GetMapping(path = "/after-delete/{email}")
+    @GetMapping(path = "/after-delete/find-by-email/{email}")
     public Optional<PatientResDTO> findPatientByEmailAfterDelete(@PathVariable(name = "email")  String email)
     {
         log.info("email de Patient est : {}", email);
@@ -87,7 +87,7 @@ public class PatientController {
         return this.service.findPatientByEmailAfterDelete(email);
     }
 
-    @GetMapping(path = "/after-delete/{tel}")
+    @GetMapping(path = "/after-deletefind-by-tel//{tel}")
     public Optional<PatientResDTO> findPatientByTelAfterDelete(@PathVariable(name = "tel")  String tel)
     {
         log.info("id de Patient est : {}", tel);
@@ -123,7 +123,7 @@ public class PatientController {
 
 //----------------------------------------------------------------------------------------------------------------delete
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/delete-by-id/{id}")
     public void deletePatientById(@PathVariable(name = "id")  Integer id)
     {
         this.service.deletePatientById(id);

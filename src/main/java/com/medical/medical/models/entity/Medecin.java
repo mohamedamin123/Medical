@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @NoArgsConstructor
@@ -35,4 +36,9 @@ public class Medecin extends User{
     @JsonManagedReference("consultation_medecin")
     @OneToMany(mappedBy = "medecin", cascade = CascadeType.ALL)
     private List<Consultation> consultations;
+
+    public Medecin(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String password) {
+        super(nom, prenom, tel, email, dateDeNaissance);
+        this.password = password;
+    }
 }

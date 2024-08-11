@@ -1,4 +1,4 @@
-package com.medical.medical.controller;
+package com.medical.medical.controller.API;
 
 import com.medical.medical.models.dto.req.DossierMedicalReqDTO;
 import com.medical.medical.models.dto.res.ConsultationResDTO;
@@ -26,7 +26,7 @@ public class DossierMedicalController {
         return this.service.findAllDossierMedical();
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/find-by-id/{id}")
     public Optional<DossierMedicalResDTO> findDossierMedicalById(@PathVariable(name = "id")  Integer id)
     {
         log.info("id de DossierMedical est : {}", id);
@@ -40,7 +40,7 @@ public class DossierMedicalController {
         return this.service.findAllDossierMedicalAfterDelete();
     }
 
-    @GetMapping(path = "/after-delete/{id}")
+    @GetMapping(path = "/after-delete/find-by-id/{id}")
     public Optional<DossierMedicalResDTO> findDossierMedicalByIdAfterDelete(@PathVariable(name = "id")  Integer id)
     {
         log.info("id de DossierMedicalResDTO est : {}", id);
@@ -64,7 +64,7 @@ public class DossierMedicalController {
 
 //----------------------------------------------------------------------------------------------------------------delete
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/delete-by-id/{id}")
     public void deleteDossierMedicalById(@PathVariable(name = "id")  Integer id)
     {
         this.service.deleteDossierMedicalById(id);

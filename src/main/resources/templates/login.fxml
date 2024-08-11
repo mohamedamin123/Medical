@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:controller="com.medical.medical.controller.UIController.LoginController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="422.0" prefWidth="586.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button fx:id="myButton" layoutX="202.0" layoutY="279.0" mnemonicParsing="false" prefHeight="15.0" prefWidth="183.0" text="Connceter" />
+      <PasswordField fx:id="passwordConnecter" layoutX="182.0" layoutY="220.0" prefHeight="24.0" prefWidth="222.0" />
+      <TextField fx:id="emailConnecter" layoutX="182.0" layoutY="158.0" prefHeight="24.0" prefWidth="222.0" />
+      <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="214.0" layoutY="81.0" prefHeight="30.0" prefWidth="158.0" text="Connecter" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+         <textFill>
+            <LinearGradient endX="1.0" endY="1.0">
+               <stops>
+                  <Stop>
+                     <color>
+                        <Color />
+                     </color>
+                  </Stop>
+                  <Stop offset="1.0">
+                     <color>
+                        <Color />
+                     </color>
+                  </Stop>
+               </stops>
+            </LinearGradient>
+         </textFill>
+      </Label>
+      <Label layoutX="47.0" layoutY="162.0" text="Email : ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="47.0" layoutY="224.0" text="Password : ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>
