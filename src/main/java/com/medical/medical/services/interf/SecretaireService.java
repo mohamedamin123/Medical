@@ -43,7 +43,7 @@ public interface SecretaireService {
 
     List<SecretaireResDTO> findSecretairesByPrenomOrNomAfterDelete(String prenom,String nom);
 
-    String findPasswordByEmail(String email);
+    Optional<String> findPasswordByEmail(String email);
 
 
 

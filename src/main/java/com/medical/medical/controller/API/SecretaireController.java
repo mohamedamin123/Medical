@@ -108,7 +108,7 @@ public class SecretaireController {
     }
 
     @GetMapping(path = "/find-password-by-email")
-    public String findPasswordByEmail(@RequestParam String email) {
+    public Optional<String> findPasswordByEmail(@RequestParam String email) {
         return this.service.findPasswordByEmail(email);
     }
 //------------------------------------------------------------------------------------------------------------------save

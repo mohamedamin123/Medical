@@ -46,7 +46,7 @@ public interface MedecinService {
 
     void deleteMedecin(MedecinReqDTO req);
 
-    String findPasswordByEmail(String email);
+    Optional<String> findPasswordByEmail(String email);
 
 
     void deleteMedecinById(int id);

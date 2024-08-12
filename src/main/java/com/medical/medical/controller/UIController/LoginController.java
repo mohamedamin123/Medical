@@ -2,9 +2,6 @@ package com.medical.medical.controller.UIController;
 
 import com.medical.medical.controller.API.MedecinController;
 import com.medical.medical.controller.API.SecretaireController;
-import com.medical.medical.ennum.Utilisateurs;
-import com.medical.medical.models.dto.res.MedecinResDTO;
-import com.medical.medical.services.impl.MedecinServiceImpl;
 import com.medical.medical.utils.javaFxAPI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,11 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Base64;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -47,26 +40,37 @@ public class LoginController {
             String email = emailConnecter.getText().trim();
             String password = passwordConnecter.getText().trim();
 
-            try {
-                // Appel au service pour obtenir le mot de passe encodé
-                String passwordM = medecinController.findPasswordByEmail(email);
-                String passwordS = secretaireController.findPasswordByEmail(email);
+            if (email.isEmpty() || password.isEmpty()) {
+                log.info("Email or password is empty");
+            } else {
+                try {
+                    Optional<String> passwordM = medecinController.findPasswordByEmail(email);
+                    Optional<String> passwordS = secretaireController.findPasswordByEmail(email);
 
+                    if (passwordM.isPresent()) {
+                        if (passwordEncoder.matches(password, passwordM.get())) {
+                            String response = javaFxAPI.login(email, password, "medecin");
+                            log.info(response);
+                            log.info("medecin");
+                        } else {
+                            log.info("Invalid password for Medecin");
+                        }
+                    }
+                    else if (passwordS.isPresent()) {
+                        if (passwordEncoder.matches(password, passwordS.get())) {
+                            String response = javaFxAPI.login(email, password, "secretaire");
+                            log.info(response);
+                            log.info("secretaire");
 
-                // Comparer le mot de passe fourni avec le mot de passe encodé stocké
-                if (passwordEncoder.matches(password, passwordM)) {
-                    // Appeler le point de terminaison sécurisé avec HTTP Basic Authentication
-                    String response = javaFxAPI.login(email, password,"medecin");
-                    log.info(response);
-                } else  if(passwordEncoder.matches(password, passwordS)){
-                    String response = javaFxAPI.login(email, password, "secretaire");
-                    log.info(response);
-                } else {
-                    log.info("non");
-
+                        } else {
+                            log.info("Invalid password for Secretaire");
+                        }
+                    } else {
+                        log.info("Invalid password ");
+                    }
+                } catch (Exception e) {
+                    log.error("An error occurred: ", e);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         });
     }

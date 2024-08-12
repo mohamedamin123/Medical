@@ -37,7 +37,6 @@ public class MedecinController {
     @GetMapping(path = "/find-by-email/{email}")
     public Optional<MedecinResDTO> findMedecinByEmail(@PathVariable(name = "email")  String email)
     {
-
         return this.service.findMedecinByEmail(email);
     }
 
@@ -106,7 +105,7 @@ public class MedecinController {
     }
 
     @GetMapping(path = "/find-password-by-email")
-    public String findPasswordByEmail(@RequestParam String email) {
+    public Optional<String> findPasswordByEmail(@RequestParam String email) {
         return this.service.findPasswordByEmail(email);
     }
 //------------------------------------------------------------------------------------------------------------------save

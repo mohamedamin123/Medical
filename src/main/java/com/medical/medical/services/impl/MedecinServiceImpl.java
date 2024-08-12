@@ -1,5 +1,6 @@
 package com.medical.medical.services.impl;
 
+import com.medical.medical.exceptions.UserException;
 import com.medical.medical.models.dto.req.MedecinReqDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.entity.Medecin;
@@ -190,17 +191,19 @@ public class MedecinServiceImpl implements MedecinService , UserDetailsService {
 //-----------------------------------------------------------------------------------------------------------------login
 
     @Override
-    public String findPasswordByEmail(String email) {
+    public Optional<String> findPasswordByEmail(String email) {
         return this.repository.findPasswordByEmail(email);
     }
 //-----------------------------------------------------------------------------------------------------------implements
-
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Medecin user = this.repository.findMedecinByEmail(username).get();
-        UtulisateurDetail detail = new UtulisateurDetail(user);
-        return detail;
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
+        // Use Optional's orElseThrow to handle the case where no value is present
+        Medecin user = this.repository.findMedecinByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé avec l'email: " + username));
+
+        return new UtulisateurDetail(user);
     }
+
 
 
 }

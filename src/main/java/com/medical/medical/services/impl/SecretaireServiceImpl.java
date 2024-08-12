@@ -190,13 +190,14 @@ public class SecretaireServiceImpl implements SecretaireService
 //-----------------------------------------------------------------------------------------------------------------login
 
     @Override
-    public String findPasswordByEmail(String email) {
+    public Optional<String> findPasswordByEmail(String email) {
         return this.repository.findPasswordByEmail(email);
     }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Secretaire user = this.repository.findSecretaireByEmail(username).get();
-        UtulisateurDetail detail = new UtulisateurDetail(user);
-        return detail;
+        Secretaire user = this.repository.findSecretaireByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé avec l'email: " + username));
+
+        return new UtulisateurDetail(user);
     }
 }

@@ -9,6 +9,10 @@ public class UserException extends Exception {
         super(getErrorMessage(numero));
     }
 
+    public UserException(String message) {
+        super(message);
+    }
+
     private static String getErrorMessage(int numero) {
         switch (numero) {
             case DATE_DE_NAISSANCE_INVALIDE:
@@ -21,4 +25,6 @@ public class UserException extends Exception {
                 return "Erreur inconnue";
         }
     }
+
+
 }
