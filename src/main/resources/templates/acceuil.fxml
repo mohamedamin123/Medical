@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Box?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="733.0" prefWidth="769.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fx:id="profile"  fitHeight="150.0" fitWidth="200.0" layoutX="474.0" layoutY="245.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../static/images/Utilisateur.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="patient"  fitHeight="150.0" fitWidth="200.0" layoutX="119.0" layoutY="228.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../static/images/patient.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="rendez_vous"  fitHeight="150.0" fitWidth="200.0" layoutX="119.0" layoutY="469.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../static/images/Rendez_vous.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="secretaires"  fitHeight="150.0" fitWidth="200.0" layoutX="488.0" layoutY="457.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../static/images/Secretaire.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="54.0" layoutY="181.0" prefHeight="40.0" prefWidth="625.0" text="Bienvenue sur ganaMedical, vueillez choisir une action dans le menu" textAlignment="CENTER">
+         <font>
+            <Font name="Abyssinica SIL" size="19.0" />
+         </font>
+      </Label>
+      <Label layoutX="153.0" layoutY="409.0" text="Patient">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="119.0" layoutY="646.0" text="Rendez vous">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="516.0" layoutY="409.0" text="Profile">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="505.0" layoutY="646.0" prefHeight="21.0" prefWidth="116.0" text="Secretaires">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Box depth="100" height="100" layoutX="385.0" layoutY="50.0" width="770.0" />
+      <ImageView fitHeight="83.0" fitWidth="100.0" layoutX="54.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <Image url="@../static/images/Logo.png" />
+      </ImageView>
+      <ImageView fitHeight="54.0" fitWidth="58.0" layoutX="643.0" layoutY="14.0" pickOnBounds="true"
+                 preserveRatio="true">
+         <Image url="@../static/images/profil.png"/>
+      </ImageView>
+      <Label layoutX="633.0" layoutY="74.0" text="Nom+prenom" />
+   </children>
+</Pane>
