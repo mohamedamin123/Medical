@@ -1,6 +1,11 @@
 package com.medical.medical.utils;
 
+import com.medical.medical.controller.UIController.AccueilController;
 import com.medical.medical.ennum.Utilisateurs;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -36,4 +41,6 @@ public class javaFxAPI {
             return "Failed : HTTP error code : " + responseCode;
         }
     }
+
+
 }

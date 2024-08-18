@@ -24,7 +24,7 @@ public class JavaFXApp extends Application {
         loader.setControllerFactory(springContext::getBean);
         Parent root = loader.load();
 
-        primaryStage.setTitle("JavaFX and Spring Boot");
+        primaryStage.setTitle("Login");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();

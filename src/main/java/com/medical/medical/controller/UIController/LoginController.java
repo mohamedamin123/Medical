@@ -2,21 +2,27 @@ package com.medical.medical.controller.UIController;
 
 import com.medical.medical.controller.API.MedecinController;
 import com.medical.medical.controller.API.SecretaireController;
+import com.medical.medical.ennum.Utilisateurs;
+import com.medical.medical.models.dto.res.MedecinResDTO;
+import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.javaFxAPI;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Component
@@ -29,7 +35,9 @@ public class LoginController {
     @Autowired
     private SecretaireController secretaireController;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @FXML
     private Button myButton;
@@ -37,6 +45,8 @@ public class LoginController {
     private TextField emailConnecter;
     @FXML
     private PasswordField passwordConnecter;
+    @FXML
+    private Label loginErreur;
 
     @FXML
     public void initialize() {
@@ -44,9 +54,23 @@ public class LoginController {
             String email = emailConnecter.getText().trim();
             String password = passwordConnecter.getText().trim();
 
-            if (email.isEmpty() || password.isEmpty()) {
+            if (email.isEmpty() && password.isEmpty()) {
                 log.info("Email or password is empty");
+                loginErreur.setText("L'email et le mot de passe sont vide");
+                loginErreur.setVisible(true);
+
+            } else if (email.isEmpty()) {
+                log.info("Email is empty");
+                loginErreur.setText("L'email est vide");
+                loginErreur.setVisible(true);
+            } else if (password.isEmpty()) {
+                log.info("Password is empty");
+                loginErreur.setText("Mot de passe est vide");
+                loginErreur.setVisible(true);
             } else {
+                Optional<MedecinResDTO> medecinResDTO = medecinController.findMedecinByEmail(email);
+                Optional<SecretaireResDTO> secretaireResDTO = secretaireController.findSecretaireByEmail(email);
+
                 try {
                     Optional<String> passwordM = medecinController.findPasswordByEmail(email);
                     Optional<String> passwordS = secretaireController.findPasswordByEmail(email);
@@ -56,32 +80,29 @@ public class LoginController {
                             String response = javaFxAPI.login(email, password, "medecin");
                             log.info(response);
                             log.info("medecin");
-                            // Close the current window
-                            Stage stage = (Stage) myButton.getScene().getWindow();
-                            stage.close();
+                            changeFenetre(email, "medecin", medecinResDTO.orElse(null), null);
 
-                            // Load the Accueil window
-                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/templates/acceuil.fxml"));
-                            Parent root = fxmlLoader.load();
-                            Stage newStage = new Stage();
-                            newStage.setTitle("Accueil");
-                            newStage.setScene(new Scene(root));
-                            newStage.show();
                         } else {
                             log.info("Invalid password for Medecin");
+                            loginErreur.setText("Mot de passe invalide pour Médecin");
+                            loginErreur.setVisible(true);
                         }
-                    }
-                    else if (passwordS.isPresent()) {
+                    } else if (passwordS.isPresent()) {
                         if (passwordEncoder.matches(password, passwordS.get())) {
                             String response = javaFxAPI.login(email, password, "secretaire");
                             log.info(response);
                             log.info("secretaire");
+                            changeFenetre(email, "secretaire", null, secretaireResDTO.orElse(null));
 
                         } else {
                             log.info("Invalid password for Secretaire");
+                            loginErreur.setText("Mot de passe invalide pour Secretaire");
+                            loginErreur.setVisible(true);
                         }
                     } else {
-                        log.info("Invalid password ");
+                        log.info("Invalid email or password");
+                        loginErreur.setText("L'email et le mot de passe sont incorrects");
+                        loginErreur.setVisible(true);
                     }
                 } catch (Exception e) {
                     log.error("An error occurred: ", e);
@@ -90,4 +111,22 @@ public class LoginController {
         });
     }
 
+    private void changeFenetre(String email, String role, MedecinResDTO medecin, SecretaireResDTO secretaire) throws IOException {
+        // Close the current window
+        Stage stage = (Stage) myButton.getScene().getWindow();
+        stage.close();
+
+        // Load the new scene
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/templates/acceuil.fxml"));
+        Parent root = fxmlLoader.load();
+        Stage newStage = new Stage();
+        newStage.setTitle("Accueil");
+        newStage.setScene(new Scene(root));
+
+        // Set the user data
+        newStage.setUserData(new Object[]{email, role, medecin, secretaire});
+
+        // Show the new stage
+        newStage.show();
+    }
 }

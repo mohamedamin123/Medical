@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" prefHeight="624.0" prefWidth="713.0" spacing="20" styleClass="container" stylesheets="@../static/style/profile.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.profileController">
+
+    <!-- Profile Image at the Top -->
+    <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+        <Image url="@../static/images/profil.png" />
+        <VBox.margin>
+            <Insets right="50.0" />
+        </VBox.margin>
+    </ImageView>
+
+    <!-- Fields for Profile Information with Labels -->
+    <VBox alignment="CENTER" spacing="10">
+
+        <!-- Nom Field -->
+        <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="500">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label styleClass="label" text="Nom : " />
+                <TextField fx:id="nom" promptText="Nom" styleClass="text-field"/>
+            </HBox>
+            <Label styleClass="erreur" fx:id="nomError" text="nom incorrect : " />
+        </VBox>
+
+        <!-- Prenom Field -->
+        <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="500">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label styleClass="label" text="Prenom : " />
+                <TextField fx:id="prenom" promptText="Prenom" styleClass="text-field"/>
+            </HBox>
+            <Label styleClass="erreur" fx:id="prenomError" text="prenom incorrect : " />
+        </VBox>
+
+        <!-- Email Field -->
+        <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="500">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label styleClass="label" text="Email : " />
+                <TextField fx:id="email" promptText="Email" styleClass="text-field"/>
+            </HBox>
+            <Label styleClass="erreur" fx:id="emailError" text="email incorrect : " />
+        </VBox>
+
+        <!-- Tel Field -->
+        <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="500">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label styleClass="label" text="Tel : " />
+                <TextField fx:id="tel" promptText="Tel" styleClass="text-field"/>
+            </HBox>
+            <Label styleClass="erreur" fx:id="telError" text="tel incorrect : " />
+        </VBox>
+
+        <!-- Date de Naissance Field -->
+        <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="500">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label styleClass="label" text="Date de Naissance : " />
+                <DatePicker fx:id="dateDeNaissance" promptText="Date de naissance" styleClass="date-picker" />
+            </HBox>
+            <Label styleClass="erreur" fx:id="dateDeNaissanceError" text="date incorrecte : " />
+        </VBox>
+
+    </VBox>
+
+    <!-- Button for Enregistrer -->
+    <Button prefWidth="150.0" styleClass="button" text="Enregistrer">
+        <VBox.margin>
+            <Insets right="50.0" top="20.0" />
+        </VBox.margin>
+    </Button>
+</VBox>

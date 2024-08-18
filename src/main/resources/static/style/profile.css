@@ -1,0 +1,46 @@
+/* Style for the VBox container */
+.container {
+    -fx-padding: 20px;
+    -fx-spacing: 20px;
+    -fx-alignment: center;
+}
+
+/* General Root Style */
+.root {
+    -fx-padding: 20;
+    -fx-alignment: center;
+    -fx-background-image: url("../images/back.png");
+    -fx-background-size: cover; /* L'image couvre toute la zone */
+    -fx-background-repeat: no-repeat; /* L'image ne se répète pas */
+    -fx-background-position: center center; /* Centre l'image */
+}
+
+/* Style for Input Fields */
+.text-field, .date-picker {
+    -fx-pref-width: 400px; /* Ensure all input fields have the same width */
+    -fx-font-size: 15px;
+    -fx-pref-height: 30px;
+}
+
+/* Style for the Button */
+.button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-pref-width: 200px;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+}
+
+/* Style for Labels */
+.label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold; /* Makes the text bold */
+}
+
+/* Style for Error Messages */
+.erreur {
+    -fx-text-fill: red; /* Text color */
+    -fx-font-weight: bold; /* Makes the text bold */
+    -fx-font-size: 16px; /* Sets the font size */
+    visibility: hidden; /* Hide error messages by default */
+}
