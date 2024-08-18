@@ -9,4 +9,16 @@ import lombok.experimental.SuperBuilder;
 public class MedecinResDTO extends UserResDTO{
 
     private String specialite;
+
+    @Override
+    public String toString() {
+        return "MedecinResDTO{" +
+                "nom='" + getNom() + '\'' +
+                ", prenom='" + getPrenom()+ '\'' +
+                ", tel='" + getTel() + '\'' +
+                ", email='" + getEmail() + '\'' +
+                ", dateDeNaissance=" + getDateDeNaissance() +
+                "specialite='" + specialite + '\'' +
+                '}';
+    }
 }

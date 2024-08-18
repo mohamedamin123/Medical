@@ -57,7 +57,7 @@ public class ConsultationController {
     @PutMapping(path = "/update")
     public void updateConsultation(@RequestBody ConsultationReqDTO user)
     {
-        this.service.saveConsultation(user);
+        this.service.updateConsultation(user);
     }
 
 //----------------------------------------------------------------------------------------------------------------delete

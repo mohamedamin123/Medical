@@ -4,6 +4,7 @@ import com.medical.medical.models.dto.req.SecretaireReqDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.models.entity.Medecin;
+import com.medical.medical.models.entity.Patient;
 import com.medical.medical.models.entity.Secretaire;
 import com.medical.medical.models.entity.Secretaire;
 import com.medical.medical.models.mapper.SecretaireMapper;
@@ -50,11 +51,34 @@ public class SecretaireServiceImpl implements SecretaireService
 
     @Override
     public SecretaireResDTO updateSecretaire(SecretaireReqDTO req) {
-        Secretaire emp=mapper.toEntity(req);
-        emp.setCreatedAt(this.repository.findById(req.getIdSecretaire()).get().getCreatedAt());
-        emp.setPassword(this.passwordEncoder.encode(emp.getPassword()));
-        Secretaire saved= repository.save(emp);
-        return mapper.toRespDTO(saved);
+        // Convertir DTO en entité pour obtenir les nouvelles données
+        Secretaire updatedMedecin = mapper.toEntity(req);
+
+        // Trouver le médecin existant par son email
+        Optional<Secretaire> existingMedecinOptional = this.repository.findSecretaireByEmail(updatedMedecin.getEmail());
+
+        if (existingMedecinOptional.isPresent()) {
+            // Obtenir le médecin existant
+            Secretaire existingMedecin = existingMedecinOptional.get();
+
+            // Mettre à jour les champs pertinents avec les nouvelles valeurs
+            existingMedecin.setNom(updatedMedecin.getNom());
+            existingMedecin.setPrenom(updatedMedecin.getPrenom());
+            existingMedecin.setTel(updatedMedecin.getTel());
+            existingMedecin.setEmail(updatedMedecin.getEmail());
+            existingMedecin.setDateDeNaissance(updatedMedecin.getDateDeNaissance());
+
+
+            existingMedecin.setUpdatedAt(LocalDateTime.now()); // Assurez-vous que vous avez un champ 'updatedAt' dans votre entité
+
+            existingMedecin.setDeletedAt(null);
+
+            Secretaire savedMedecin = repository.save(existingMedecin);
+
+            return mapper.toRespDTO(savedMedecin);
+        }
+
+        return null;
     }
 //------------------------------------------------------------------------------------------------------------------find
 

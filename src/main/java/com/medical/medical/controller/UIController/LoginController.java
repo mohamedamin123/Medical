@@ -51,6 +51,8 @@ public class LoginController {
     @FXML
     public void initialize() {
         myButton.setOnAction(event -> {
+            loginErreur.setVisible(false);
+
             String email = emailConnecter.getText().trim();
             String password = passwordConnecter.getText().trim();
 

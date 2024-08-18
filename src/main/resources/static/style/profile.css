@@ -42,5 +42,17 @@
     -fx-text-fill: red; /* Text color */
     -fx-font-weight: bold; /* Makes the text bold */
     -fx-font-size: 16px; /* Sets the font size */
-    visibility: hidden; /* Hide error messages by default */
+}
+.text-field[editable=false] {
+    -fx-background-color: #f0f0f0; /* Light gray background for read-only fields */
+    -fx-text-fill: #333; /* Dark text color for readability */
+}
+
+.buttonAnnuler {
+
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-pref-width: 200px;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
 }

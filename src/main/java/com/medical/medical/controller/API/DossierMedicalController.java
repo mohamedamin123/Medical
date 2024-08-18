@@ -59,7 +59,7 @@ public class DossierMedicalController {
     @PutMapping(path = "/update")
     public void updateDossierMedical(@RequestBody DossierMedicalReqDTO user)
     {
-        this.service.saveDossierMedical(user);
+        this.service.updateDossierMedical(user);
     }
 
 //----------------------------------------------------------------------------------------------------------------delete

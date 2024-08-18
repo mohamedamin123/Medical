@@ -96,7 +96,7 @@
          </VBox>
 
          <VBox alignment="CENTER" spacing="10">
-            <ImageView fx:id="secretaire" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="secretaireI" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../static/images/Secretaire.png" />
                <VBox.margin>
                   <Insets left="100.0" />

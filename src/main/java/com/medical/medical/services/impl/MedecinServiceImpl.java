@@ -47,13 +47,43 @@ public class MedecinServiceImpl implements MedecinService , UserDetailsService {
 
     @Override
     public MedecinResDTO updateMedecin(MedecinReqDTO req) {
-        Medecin emp = mapper.toEntity(req);
-        emp.setCreatedAt(this.repository.findById(req.getIdMedecin()).get().getCreatedAt());
-        emp.setPassword(this.passwordEncoder.encode(emp.getPassword()));
-        Medecin saved = repository.save(emp);
-        saved.setDeletedAt(null);
-        return mapper.toRespDTO(saved);
+        // Convertir DTO en entité pour obtenir les nouvelles données
+        Medecin updatedMedecin = mapper.toEntity(req);
+
+        // Trouver le médecin existant par son email
+        Optional<Medecin> existingMedecinOptional = this.repository.findMedecinByEmail(updatedMedecin.getEmail());
+
+        if (existingMedecinOptional.isPresent()) {
+            // Obtenir le médecin existant
+            Medecin existingMedecin = existingMedecinOptional.get();
+            System.out.println(existingMedecin);
+
+            // Mettre à jour les champs pertinents avec les nouvelles valeurs
+            existingMedecin.setNom(updatedMedecin.getNom());
+            existingMedecin.setPrenom(updatedMedecin.getPrenom());
+            existingMedecin.setTel(updatedMedecin.getTel());
+            existingMedecin.setEmail(updatedMedecin.getEmail());
+            existingMedecin.setDateDeNaissance(updatedMedecin.getDateDeNaissance());
+            existingMedecin.setSpecialite(updatedMedecin.getSpecialite());
+
+            // Mettre à jour la date de modification si nécessaire
+            existingMedecin.setUpdatedAt(LocalDateTime.now()); // Assurez-vous que vous avez un champ 'updatedAt' dans votre entité
+
+            // Réinitialiser 'deletedAt' si nécessaire
+            existingMedecin.setDeletedAt(null);
+
+            // Enregistrer les modifications dans la base de données
+            Medecin savedMedecin = repository.save(existingMedecin);
+            System.out.println(savedMedecin);
+
+            // Convertir l'entité mise à jour en DTO de réponse
+            return mapper.toRespDTO(savedMedecin);
+        }
+
+        // Retourner null si le médecin n'a pas été trouvé
+        return null;
     }
+
 //------------------------------------------------------------------------------------------------------------------find
 
     @Override

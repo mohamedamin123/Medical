@@ -6,6 +6,7 @@ import com.medical.medical.security.LoginViewModel;
 import com.medical.medical.services.interf.MedecinService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -119,7 +120,7 @@ public class MedecinController {
     @PutMapping(path = "/update")
     public void updateMedecin(@RequestBody MedecinReqDTO user)
     {
-        this.service.saveMedecin(user);
+        this.service.updateMedecin(user);
     }
 
 //----------------------------------------------------------------------------------------------------------------delete

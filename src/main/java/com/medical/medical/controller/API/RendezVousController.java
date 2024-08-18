@@ -60,7 +60,7 @@ public class RendezVousController {
     @PutMapping(path = "/update")
     public void updateRendezVous(@RequestBody RendezVousReqDTO user)
     {
-        this.service.saveRendezVous(user);
+        this.service.updateRendezVous(user);
     }
 
 //----------------------------------------------------------------------------------------------------------------delete

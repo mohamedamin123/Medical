@@ -41,4 +41,20 @@ public class Medecin extends User{
         super(nom, prenom, tel, email, dateDeNaissance);
         this.password = password;
     }
+
+    @Override
+    public String toString() {
+        return "Medecin{" +
+                "nom='" + getNom() + '\'' +
+                ", prenom='" + getPrenom() + '\'' +
+                ", tel='" + getTel() + '\'' +
+                ", email='" + getEmail() + '\'' +
+                ", dateDeNaissance=" + getDateDeNaissance() +
+                ", statut=" + getStatut() +
+                ", role=" + getRole() +
+                "idMedecin=" + idMedecin +
+                ", specialite='" + specialite + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

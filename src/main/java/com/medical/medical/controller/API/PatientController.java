@@ -118,7 +118,7 @@ public class PatientController {
     @PutMapping(path = "/update")
     public void updatePatient(@RequestBody PatientReqDTO user)
     {
-        this.service.savePatient(user);
+        this.service.updatePatient(user);
     }
 
 //----------------------------------------------------------------------------------------------------------------delete

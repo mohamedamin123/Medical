@@ -3,6 +3,7 @@ package com.medical.medical.services.impl;
 import com.medical.medical.models.dto.req.PatientReqDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
+import com.medical.medical.models.entity.Medecin;
 import com.medical.medical.models.entity.Patient;
 import com.medical.medical.models.entity.Patient;
 import com.medical.medical.models.mapper.PatientMapper;
@@ -38,10 +39,35 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientResDTO updatePatient(PatientReqDTO req) {
-        Patient emp=mapper.toEntity(req);
-        emp.setCreatedAt(this.repository.findById(req.getIdPatient()).get().getCreatedAt());
-        Patient saved= repository.save(emp);
-        return mapper.toRespDTO(saved);
+        // Convertir DTO en entité pour obtenir les nouvelles données
+        Patient updatedMedecin = mapper.toEntity(req);
+
+        // Trouver le médecin existant par son email
+        Optional<Patient> existingMedecinOptional = this.repository.findPatientByEmail(updatedMedecin.getEmail());
+
+        if (existingMedecinOptional.isPresent()) {
+            // Obtenir le médecin existant
+            Patient existingMedecin = existingMedecinOptional.get();
+
+            // Mettre à jour les champs pertinents avec les nouvelles valeurs
+            existingMedecin.setNom(updatedMedecin.getNom());
+            existingMedecin.setPrenom(updatedMedecin.getPrenom());
+            existingMedecin.setTel(updatedMedecin.getTel());
+            existingMedecin.setEmail(updatedMedecin.getEmail());
+            existingMedecin.setDateDeNaissance(updatedMedecin.getDateDeNaissance());
+            existingMedecin.setCIN(updatedMedecin.getCIN());
+            existingMedecin.setIdUnique(updatedMedecin.getIdUnique());
+
+            existingMedecin.setUpdatedAt(LocalDateTime.now()); // Assurez-vous que vous avez un champ 'updatedAt' dans votre entité
+
+            existingMedecin.setDeletedAt(null);
+
+            Patient savedMedecin = repository.save(existingMedecin);
+
+            return mapper.toRespDTO(savedMedecin);
+        }
+
+        return null;
     }
 //------------------------------------------------------------------------------------------------------------------find
 

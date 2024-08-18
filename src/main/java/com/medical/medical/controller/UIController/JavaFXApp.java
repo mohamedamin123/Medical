@@ -11,7 +11,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 public class JavaFXApp extends Application {
 
-    private ConfigurableApplicationContext springContext;
+    private static ConfigurableApplicationContext springContext; // Make it static
 
     @Override
     public void init() {
@@ -33,6 +33,10 @@ public class JavaFXApp extends Application {
     @Override
     public void stop() {
         springContext.close();
+    }
+
+    public static ConfigurableApplicationContext getSpringContext() {
+        return springContext; // Ensure this method is static and returns the context
     }
 
     public static void main(String[] args) {

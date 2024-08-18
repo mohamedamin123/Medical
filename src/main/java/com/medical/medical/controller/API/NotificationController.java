@@ -59,7 +59,7 @@ public class NotificationController {
     @PutMapping(path = "/update")
     public void updateNotification(@RequestBody NotificationReqDTO user)
     {
-        this.service.saveNotification(user);
+        this.service.updateNotification(user);
     }
 
 //----------------------------------------------------------------------------------------------------------------delete

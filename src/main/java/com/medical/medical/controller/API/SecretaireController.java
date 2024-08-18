@@ -122,7 +122,7 @@ public class SecretaireController {
     @PutMapping(path = "/update")
     public void updateSecretaire(@RequestBody SecretaireReqDTO user)
     {
-        this.service.saveSecretaire(user);
+        this.service.updateSecretaire(user);
     }
 
 //----------------------------------------------------------------------------------------------------------------delete
