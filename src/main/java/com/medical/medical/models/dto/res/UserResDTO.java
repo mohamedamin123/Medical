@@ -36,6 +36,15 @@ public class UserResDTO {
         return String.valueOf(Period.between(this.dateDeNaissance, LocalDate.now()).getYears());
     }
 
+
+    public UserResDTO(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.tel = tel;
+        this.email = email;
+        this.dateDeNaissance = dateDeNaissance;
+    }
+
     @Override
     public String toString() {
         return "UserResDTO{" +

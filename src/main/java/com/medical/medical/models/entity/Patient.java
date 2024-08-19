@@ -24,6 +24,7 @@ public class Patient extends User {
     @Column(name = "id_patient")
     private int idPatient;
 
+
     @Column(name = "CIN", nullable = true)
     @Size(min = 8, max = 8)
     private String CIN;

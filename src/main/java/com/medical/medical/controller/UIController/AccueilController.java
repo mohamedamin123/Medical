@@ -59,10 +59,12 @@ public class AccueilController {
     private MedecinResDTO medecin;
     private SecretaireResDTO secretaire;
 
+    private Stage stage;
+
     @FXML
     public void initialize() {
         Platform.runLater(() -> {
-            Stage stage = (Stage) name.getScene().getWindow();
+             stage = (Stage) name.getScene().getWindow();
             if (stage != null) {
                 Object userData = stage.getUserData();
                 if (userData instanceof Object[] data) {
@@ -169,8 +171,12 @@ public class AccueilController {
     }
 
     private void setPatient() {
-        log.info("patient");
-
+        try {
+            changeFenetre("patient", email, role, medecin, secretaire);
+            stage.close();
+        } catch (IOException e) {
+            log.error("Error changing window", e);
+        }
     }
 
 }

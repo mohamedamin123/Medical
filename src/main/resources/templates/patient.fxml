@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.TextField?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="800.0"
+            fx:controller="com.medical.medical.controller.UIController.PatientController">
+    <!-- Titre pour le tableau de bord Admin -->
+    <Label text="Liste de Patients" style="-fx-font-size: 24px;"
+           AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0"/>
+
+    <!-- Bouton pour ajouter un patient -->
+    <HBox spacing="10" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="60.0">
+        <Button text="Ajouter Patient" fx:id="addPatientButton" />
+    </HBox>
+
+    <!-- Barre de recherche au-dessus du TableView -->
+    <TextField promptText="Rechercher..." fx:id="searchField"
+               AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0"
+               AnchorPane.topAnchor="100.0"/>
+
+    <!-- TableView pour les patients -->
+    <TableView fx:id="patientTable"
+               AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0"
+               AnchorPane.topAnchor="140.0" AnchorPane.bottomAnchor="80.0">
+        <columns>
+            <TableColumn text="Id" fx:id="idColumn" />
+            <TableColumn text="CIN" fx:id="cinColumn" />
+            <TableColumn text="Nom" fx:id="nomColumn" />
+            <TableColumn text="Date de Naissance" fx:id="dobColumn" />
+            <TableColumn text="Phone" fx:id="phoneColumn" />
+            <!-- <TableColumn text="Actions" fx:id="actionsColumn" /> -->
+        </columns>
+    </TableView>
+
+    <!-- Contrôle de pagination -->
+    <Pagination fx:id="pagination"
+                AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0"
+                AnchorPane.bottomAnchor="20.0"/>
+</AnchorPane>
