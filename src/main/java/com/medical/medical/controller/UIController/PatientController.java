@@ -74,7 +74,6 @@ public class PatientController {
 
         // Configure the Actions column (you can add buttons or other elements here if needed)
 
-        //---------actionsColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper("Actions")); // Placeholder for actions
 
         // Sample data
         patients = FXCollections.observableArrayList(
@@ -185,5 +184,6 @@ public class PatientController {
 
     private void showPatientDetails(PatientResDTO patient) {
         // Logic to open a new interface showing the details of the selected patient
+        System.out.println("hh");
     }
 }
