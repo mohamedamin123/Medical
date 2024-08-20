@@ -3,10 +3,11 @@ package com.medical.medical.utils;
 import com.medical.medical.models.dto.res.PatientResDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TableView;
+import lombok.Getter;
 
 public class PagedDataSource {
     private final ObservableList<PatientResDTO> allData;
+    @Getter
     private final int pageSize;
 
     public PagedDataSource(ObservableList<PatientResDTO> data, int pageSize) {
@@ -21,6 +22,7 @@ public class PagedDataSource {
     }
 
     public int getPageCount() {
-        return (int) Math.ceil((double) allData.size() / pageSize);
+        int size = allData.size();
+        return (size + pageSize - 1) / pageSize; // This ensures correct page count
     }
 }
