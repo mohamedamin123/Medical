@@ -3,6 +3,7 @@ package com.medical.medical.controller.UIController;
 import com.medical.medical.exceptions.UserException;
 import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.utils.PagedDataSource;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -14,11 +15,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.medical.medical.utils.javaFxAPI.changeFenetre;
@@ -50,13 +54,23 @@ public class PatientController {
     private PagedDataSource pagedDataSource;
     
     private final int PAGE_SIZE=12;
+    private Stage stage;
 
+    @Autowired
+    private com.medical.medical.controller.API.PatientController patientController;
 
 
 
     @FXML
     public void initialize() {
-        // Initialiser les colonnes
+
+        Platform.runLater(() -> {
+            stage = (Stage) pagination.getScene().getWindow();
+
+        });
+
+
+            // Initialiser les colonnes
         idColumn.setCellFactory(column -> new TableCell<PatientResDTO, Number>() {
             @Override
             protected void updateItem(Number item, boolean empty) {
@@ -83,21 +97,7 @@ public class PatientController {
 
         // Données d'exemple
         patients = FXCollections.observableArrayList(
-                new PatientResDTO("Dupont", "Jean", "1234567890", "jean.dupont@example.com", LocalDate.of(1980, 1, 15), "Note 1", "ID001", "CIN001"),
-                new PatientResDTO("Curie", "Marie", "0987654321", "marie.curie@example.com", LocalDate.of(1990, 5, 25), "Note 2", "ID002", "CIN002"),
-                new PatientResDTO("Martin", "Paul", "1122334455", "paul.martin@example.com", LocalDate.of(1985, 8, 30), "Note 3", "ID003", "CIN003"),
-                new PatientResDTO("Leblanc", "Lucie", "5566778899", "lucie.leblanc@example.com", LocalDate.of(1992, 12, 5), "Note 4", "ID004", "CIN004"),
-                new PatientResDTO("Dubois", "Pierre", "6677889900", "pierre.dubois@example.com", LocalDate.of(1983, 11, 20), "Note 5", "ID005", "CIN005"),
-                new PatientResDTO("Laurent", "Sophie", "7788990011", "sophie.laurent@example.com", LocalDate.of(1995, 7, 10), "Note 6", "ID006", "CIN006"),
-                new PatientResDTO("Dupuis", "François", "8899001122", "francois.dupuis@example.com", LocalDate.of(1988, 6, 18), "Note 7", "ID007", "CIN007"),
-                new PatientResDTO("Robert", "Claire", "9900112233", "claire.robert@example.com", LocalDate.of(1993, 2, 14), "Note 8", "ID008", "CIN008"),
-                new PatientResDTO("Lefèvre", "Michel", "0011223344", "michel.lefevre@example.com", LocalDate.of(1981, 9, 22), "Note 9", "ID009", "CIN009"),
-                new PatientResDTO("Garcia", "Nathalie", "1122334455", "nathalie.garcia@example.com", LocalDate.of(1987, 3, 9), "Note PAGE_SIZE", "ID0PAGE_SIZE", "CIN0PAGE_SIZE"),
-                new PatientResDTO("Dubois", "Marc", "2233445566", "marc.dubois@example.com", LocalDate.of(1990, 10, 30), "Note 11", "ID011", "CIN011"),
-                new PatientResDTO("Petit", "Julie", "3344556677", "julie.petit@example.com", LocalDate.of(1996, 4, 11), "Note 12", "ID012", "CIN012"),
-                new PatientResDTO("Martin", "David", "4455667788", "david.martin@example.com", LocalDate.of(1984, 12, 15), "Note 13", "ID013", "CIN013"),
-                new PatientResDTO("Lefebvre", "Alice", "5566778899", "alice.lefebvre@example.com", LocalDate.of(1991, 8, 25), "Note 14", "ID014", "CIN014"),
-                new PatientResDTO("Moreau", "Robert", "6677889900", "robert.moreau@example.com", LocalDate.of(1986, 5, 5), "Note 15", "ID015", "CIN015")
+                getDate()
         );
 
         // Initialiser PagedDataSource
@@ -134,6 +134,7 @@ public class PatientController {
 
     private void ajouterPatient() {
         try {
+            stage.close();
             changeFenetre("addPatient");
         } catch (IOException e) {
             log.error("Error changing window", e);
@@ -202,7 +203,28 @@ public class PatientController {
 
     private List<PatientResDTO> getDate() {
 
-        return null;
+        List<PatientResDTO> patientResDTOS=new ArrayList<>();
+
+        patientResDTOS=patientController.findAllPatient();
+
+//
+//
+//        patientResDTOS.add(new PatientResDTO("Dupont", "Jean", "1234567890", "jean.dupont@example.com", LocalDate.of(1980, 1, 15), "Note 1", "ID001", "CIN001","me"));
+//        patientResDTOS.add(new PatientResDTO("Curie", "Marie", "0987654321", "marie.curie@example.com", LocalDate.of(1990, 5, 25), "Note 2", "ID002", "CIN002","me"));
+//        patientResDTOS.add(new PatientResDTO("Martin", "Paul", "1122334455", "paul.martin@example.com", LocalDate.of(1985, 8, 30), "Note 3", "ID003", "CIN003","me"));
+//        patientResDTOS.add(new PatientResDTO("Leblanc", "Lucie", "5566778899", "lucie.leblanc@example.com", LocalDate.of(1992, 12, 5), "Note 4", "ID004", "CIN004","me"));
+//        patientResDTOS.add(new PatientResDTO("Dubois", "Pierre", "6677889900", "pierre.dubois@example.com", LocalDate.of(1983, 11, 20), "Note 5", "ID005", "CIN005","me"));
+//        patientResDTOS.add( new PatientResDTO("Laurent", "Sophie", "7788990011", "sophie.laurent@example.com", LocalDate.of(1995, 7, 10), "Note 6", "ID006", "CIN006","me"));
+//        patientResDTOS.add(new PatientResDTO("Dupuis", "François", "8899001122", "francois.dupuis@example.com", LocalDate.of(1988, 6, 18), "Note 7", "ID007", "CIN007","me"));
+//        patientResDTOS.add(new PatientResDTO("Robert", "Claire", "9900112233", "claire.robert@example.com", LocalDate.of(1993, 2, 14), "Note 8", "ID008", "CIN008","me"));
+//        patientResDTOS.add(new PatientResDTO("Lefèvre", "Michel", "0011223344", "michel.lefevre@example.com", LocalDate.of(1981, 9, 22), "Note 9", "ID009", "CIN009","me"));
+//        patientResDTOS.add(new PatientResDTO("Garcia", "Nathalie", "1122334455", "nathalie.garcia@example.com", LocalDate.of(1987, 3, 9), "Note PAGE_SIZE", "ID0PAGE_SIZE", "CIN5421","me"));
+//        patientResDTOS.add(new PatientResDTO("Dubois", "Marc", "2233445566", "marc.dubois@example.com", LocalDate.of(1990, 10, 30), "Note 11", "ID011", "CIN011","me"));
+//        patientResDTOS.add(new PatientResDTO("Petit", "Julie", "3344556677", "julie.petit@example.com", LocalDate.of(1996, 4, 11), "Note 12", "ID012", "CIN012","me"));
+//        patientResDTOS.add(new PatientResDTO("Martin", "David", "4455667788", "david.martin@example.com", LocalDate.of(1984, 12, 15), "Note 13", "ID013", "CIN013","me"));
+//        patientResDTOS.add(new PatientResDTO("Lefebvre", "Alice", "5566778899", "alice.lefebvre@example.com", LocalDate.of(1991, 8, 25), "Note 14", "ID014", "CIN014","me"));
+//        patientResDTOS.add( new PatientResDTO("Moreau", "Robert", "6677889900", "robert.moreau@example.com", LocalDate.of(1986, 5, 5), "Note 15", "ID015", "CIN015","me"));
+        return patientResDTOS;
     }
 
 }

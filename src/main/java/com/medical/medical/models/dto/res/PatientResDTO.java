@@ -16,17 +16,19 @@ public class PatientResDTO extends UserResDTO{
     private String batiment;
     private Integer medecinId;
     private Sexe sexe;
+    private String ville;
 
 
 
-    public PatientResDTO(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String note, String idUnique, String CIN) {
+    public PatientResDTO(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String note, String idUnique, String CIN,String ville) {
         super(nom, prenom, tel, email, dateDeNaissance);
         this.note = note;
         this.idUnique = idUnique;
         this.CIN = CIN;
+        this.ville=ville;
     }
-    public PatientResDTO(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String note, String idUnique, String CIN,Sexe sexe,Integer medecinId) {
-        this(nom, prenom, tel, email, dateDeNaissance,note,idUnique,CIN);
+    public PatientResDTO(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String note, String idUnique, String CIN,Sexe sexe,Integer medecinId,String ville) {
+        this(nom, prenom, tel, email, dateDeNaissance,note,idUnique,CIN,ville);
         this.medecinId=medecinId;
         this.sexe=sexe;
     }

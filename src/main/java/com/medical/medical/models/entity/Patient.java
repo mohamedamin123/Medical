@@ -44,6 +44,9 @@ public class Patient extends User {
     @Column(name = "sexe", nullable = false)
     private Sexe sexe;
 
+    @Column(name = "ville", nullable = false)
+    private String ville;
+
 //----------------------------------------------------------------------------------------------------------------------
     @Column(name = "medecin_id")
     private Integer medecinId;
