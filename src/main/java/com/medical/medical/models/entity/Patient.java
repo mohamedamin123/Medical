@@ -1,6 +1,8 @@
 package com.medical.medical.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.medical.medical.ennum.Sexe;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -32,10 +34,19 @@ public class Patient extends User {
     @Column(name = "id_unique", nullable = true)
     private String idUnique;
 
+    @Column(name = "batiment", nullable = true)
+    private String batiment;
+
 
     @Column(name = "note", nullable = true)
     private String note;
 
+    @Column(name = "sexe", nullable = false)
+    private Sexe sexe;
+
+//----------------------------------------------------------------------------------------------------------------------
+    @Column(name = "medecin_id")
+    private Integer medecinId;
 //--------------------------------------------------------------------------------------------------------------Relation
     @JsonManagedReference("rendez_vous_patient")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
@@ -48,6 +59,12 @@ public class Patient extends User {
     @JsonManagedReference("notification_patient")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     private List<Notification> notifications;
+
+    @JsonBackReference("patient_medecin")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "medecin_id", insertable = false, updatable = false)
+    private Medecin medecin;
+
 //---------------------------------------------------------------------------------------------------------Constructeurs
 
 

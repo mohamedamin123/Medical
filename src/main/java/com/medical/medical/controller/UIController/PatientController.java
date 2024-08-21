@@ -6,6 +6,7 @@ import com.medical.medical.utils.PagedDataSource;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
@@ -15,7 +16,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
+
+import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 
 @Component("uiPatientController")
 @Slf4j
@@ -44,6 +50,9 @@ public class PatientController {
     private PagedDataSource pagedDataSource;
     
     private final int PAGE_SIZE=12;
+
+
+
 
     @FXML
     public void initialize() {
@@ -114,6 +123,21 @@ public class PatientController {
                 showPatientDetails(patientTable.getSelectionModel().getSelectedItem());
             }
         });
+
+        addPatientButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                ajouterPatient();
+            }
+        });
+    }
+
+    private void ajouterPatient() {
+        try {
+            changeFenetre("addPatient");
+        } catch (IOException e) {
+            log.error("Error changing window", e);
+        }
     }
 
     private void filterTable(String query) throws UserException {
@@ -131,7 +155,7 @@ public class PatientController {
             String dobString = dob.toString(); // Format: YYYY-MM-DD
             String year = dobString.substring(0, 4);
             String month = dobString.substring(5, 7);
-            String day = dobString.substring(8, PAGE_SIZE);
+            String day = dobString.substring(8, 10);
 
             boolean dateMatches = false;
             if (queryParts.length == 1) {
@@ -166,6 +190,7 @@ public class PatientController {
 
     private void showPatientDetails(PatientResDTO patient) {
         // Logique pour afficher les détails du patient
+        log.info(patient.toString());
     }
 
     private VBox createPage(int pageIndex) {
@@ -174,4 +199,10 @@ public class PatientController {
         patientTable.setItems(pagedDataSource.getPage(pageIndex));
         return box;
     }
+
+    private List<PatientResDTO> getDate() {
+
+        return null;
+    }
+
 }

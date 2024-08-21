@@ -78,6 +78,12 @@ public class PatientServiceImpl implements PatientService {
         return mapper.toAllRespDTO(users);
     }
 
+    @Override
+    public List<PatientResDTO> findPatientsByMedecinId(Integer id) {
+        List<Patient> users = this.repository.findPatientsByMedecinId(id);
+        return mapper.toAllRespDTO(users);
+    }
+
 
     @Override
     public Optional<PatientResDTO> findPatientById(int id) {

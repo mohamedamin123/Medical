@@ -19,9 +19,8 @@ public interface PatientService {
     PatientResDTO updatePatient(PatientReqDTO req);
 
     List<PatientResDTO> findAllPatient();
-
-
-     Optional<PatientResDTO> findPatientById(int id) ;
+    List<PatientResDTO> findPatientsByMedecinId(Integer id);
+    Optional<PatientResDTO> findPatientById(int id) ;
 
     List<PatientResDTO> findPatientsByDateDeNaissance(LocalDate dateDeNaissance);
 

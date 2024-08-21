@@ -43,6 +43,12 @@ public class PatientController {
         return this.service.findPatientByEmail(email);
     }
 
+    @GetMapping(path = "/find-by-medecin/{id}")
+    public List<PatientResDTO> findPatientsByMedecinId(@PathVariable(name = "id")  Integer id)
+    {
+        return this.service.findPatientsByMedecinId(id);
+    }
+
     @GetMapping(path = "/find-by-tel/{tel}")
     public Optional<PatientResDTO> findPatientByTel(@PathVariable(name = "tel")  String tel)
     {
