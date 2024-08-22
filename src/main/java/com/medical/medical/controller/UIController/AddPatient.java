@@ -1,27 +1,48 @@
 package com.medical.medical.controller.UIController;
 
+import com.medical.medical.controller.API.DossierMedicalController;
 import com.medical.medical.controller.API.PatientController;
 import com.medical.medical.controller.API.SecretaireController;
 import com.medical.medical.ennum.Sexe;
+import com.medical.medical.models.dto.req.DossierMedicalReqDTO;
 import com.medical.medical.models.dto.req.PatientReqDTO;
+import com.medical.medical.models.dto.res.PatientResDTO;
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
+import java.util.Objects;
 
 import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 
 @Component
 @Slf4j
 public class AddPatient {
+
+
+
+
+    @FXML
+    private VBox fileListContainer;
 
     @FXML
     private TextField villeField;
@@ -56,6 +77,9 @@ public class AddPatient {
 
     @Autowired
     private PatientController patientController;
+
+    @Autowired
+    private DossierMedicalController dossierMedicalController;
 
 
     @FXML
@@ -104,26 +128,63 @@ public class AddPatient {
 
     }
 
+
+
     @FXML
     private void handleChargerFichier() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Charger un fichier");
 
-        // Set file type filters
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Documents", "*.pdf", "*.docx", "*.doc"),
                 new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.gif"),
                 new FileChooser.ExtensionFilter("All Files", "*.*")
         );
 
-        // Show open file dialog
-        File selectedFile = fileChooser.showOpenDialog(new Stage());
+        File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (selectedFile != null) {
-            // Handle the file (e.g., display the file name, process the file, etc.)
-            System.out.println("Fichier sélectionné: " + selectedFile.getAbsolutePath());
+            HBox fileHBox = new HBox(10);
+            fileHBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+            Label fileNameLabel = new Label(selectedFile.getAbsolutePath()); // Store full path
+            fileHBox.getChildren().add(fileNameLabel);
+
+            Button deleteButton = new Button();
+            ImageView deleteIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/static/icons/supprimer.png")).toExternalForm()));
+            deleteIcon.setFitWidth(16);
+            deleteIcon.setFitHeight(16);
+            deleteButton.setGraphic(deleteIcon);
+            deleteButton.setOnAction(event -> fileListContainer.getChildren().remove(fileHBox));
+            fileHBox.getChildren().add(deleteButton);
+
+            Button openButton = new Button("Ouvrir");
+            openButton.setOnAction(event -> {
+                Platform.runLater(() -> {
+                    try {
+                        if (Desktop.isDesktopSupported()) {
+                            Desktop desktop = Desktop.getDesktop();
+                            if (desktop.isSupported(Desktop.Action.OPEN)) {
+                                desktop.open(selectedFile);
+                            } else {
+                                showAlert(Alert.AlertType.ERROR, "Erreur", "L'ouverture du fichier n'est pas supportée sur ce système.");
+                            }
+                        } else {
+                            showAlert(Alert.AlertType.ERROR, "Erreur", "Le support Desktop n'est pas disponible.");
+                        }
+                    } catch (IOException e) {
+                        showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture du fichier: " + e.getMessage());
+                    }
+                });
+            });
+            fileHBox.getChildren().add(openButton);
+
+            fileListContainer.getChildren().add(fileHBox);
         }
     }
+
+
+
 
     private void handleSave() {
         String nom = nomField.getText().trim().trim();
@@ -143,57 +204,85 @@ public class AddPatient {
         LocalDate dateNaissance = dobField.getValue(); // Keep as LocalDate
         String email = emailField.getText().trim();
         String telephone = TelField.getText().trim();
-        String batiment = batimentComboBox.getValue().trim();
-        if(batiment.isEmpty()){
-            batiment="aucun";
-        }
+        String batiment = (batimentComboBox.getValue() != null) ? batimentComboBox.getValue().trim() : "aucun"; // Avoid NullPointerException
         String code = codeField.getText().trim();
         String notes = notesField.getText().trim();
-        String viles = villeField.getText().trim();
+        String ville = villeField.getText().trim();
 
         String sexeValue = ((RadioButton) sexe.getSelectedToggle()).getText();
-        Sexe sexee;
-        if(sexeValue.equals("Homme"))
-            sexee= Sexe.HOMME;
-        else
-            sexee=Sexe.FEMME;
+        Sexe sexee = sexeValue.equals("Homme") ? Sexe.HOMME : Sexe.FEMME;
 
 
 
         // Validation
-        if (nom.isEmpty() || prenom.isEmpty() || cin.isEmpty() || dateNaissance==null || telephone.isEmpty()) {
-            System.out.println("Veuillez remplir tous les champs obligatoires.");
+        if (nom.isEmpty() || prenom.isEmpty()  || dateNaissance == null || telephone.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Erreur de Validation", "Veuillez remplir tous les champs obligatoires.");
             return;
         }
 
-        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-            System.out.println("L'adresse email est invalide.");
-            return;
+        // Validation des autres champs (email, CIN, téléphone, etc.)
+        if(!cin.isEmpty()) {
+            if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                showAlert(Alert.AlertType.ERROR, "Erreur de Validation", "L'adresse email est invalide.");
+                return;
+            }
         }
-
-        if (cin.length() != 8 || !cin.matches("\\d+")) {
-            System.out.println("Le CIN doit comporter exactement 8 chiffres.");
-            return;
+        if(!cin.isEmpty()) {
+            if (cin.length() != 8 || !cin.matches("\\d+")) {
+                showAlert(Alert.AlertType.ERROR, "Erreur de Validation", "Le CIN doit comporter exactement 8 chiffres.");
+                return;
+            }
         }
 
         if (telephone.length() != 8 || !telephone.matches("\\d+")) {
-            System.out.println("Le numéro de téléphone doit comporter exactement 8 chiffres.");
+            showAlert(Alert.AlertType.ERROR, "Erreur de Validation", "Le numéro de téléphone doit comporter exactement 8 chiffres.");
             return;
         }
 
-        // Display the information in the console
-        log.info("Nom: " + nom);
-        log.info("Prénom: " + prenom);
-        log.info("CIN: " + cin);
-        log.info("Date de Naissance: " + dateNaissance);
-        log.info("Email: " + email);
-        log.info("Téléphone: " + telephone);
-        log.info("Bâtiment: " + batiment);
-        log.info("Code Unique: " + code);
-        log.info("Notes: " + notes);
-        log.info("villle"+viles);
-        PatientReqDTO patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email,dateNaissance,notes,batiment,code,cin,viles,sexee);
-        patientController.savePatient(patientReqDTO);
+        PatientReqDTO patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email,dateNaissance,notes,batiment,code,cin,ville,sexee);
+        PatientResDTO patientResDTO=patientController.savePatient(patientReqDTO);
+
+        for (var node : fileListContainer.getChildren()) {
+            if (node instanceof HBox) {
+                HBox fileHBox = (HBox) node;
+                Label fileNameLabel = (Label) fileHBox.getChildren().get(0);
+                String filePath = fileNameLabel.getText(); // Use the full path
+
+                File file = new File(filePath);
+                byte[] fileContent = new byte[0];
+                try {
+                    fileContent = Files.readAllBytes(file.toPath());
+                } catch (IOException e) {
+                    showAlert(Alert.AlertType.ERROR, "Erreur de Lecture de Fichier", "Erreur lors de la lecture du fichier: " + e.getMessage());
+                    continue;
+                }
+
+                System.out.println("id : "+patientResDTO.getIdPatient());
+                String fileExtension = getFileExtension(file.getName());
+                DossierMedicalReqDTO dossierMedicalReqDTO = new DossierMedicalReqDTO(fileExtension,fileNameLabel.getText(), fileContent, /* patient ID if needed */ patientResDTO.getIdPatient());
+
+                // Call dossierMedicalController to save the file
+                dossierMedicalController.saveDossierMedical(dossierMedicalReqDTO);
+                stage.close();
+                try {
+                    changeFenetre("patient");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
 
     }
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    private String getFileExtension(String fileName) {
+        int index = fileName.lastIndexOf('.');
+        return (index > 0) ? fileName.substring(index + 1).toLowerCase() : "";
+    }
+
 }

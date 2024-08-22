@@ -2,7 +2,6 @@ package com.medical.medical.controller.API;
 
 import com.medical.medical.models.dto.req.PatientReqDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
-import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.services.interf.PatientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -116,15 +115,15 @@ public class PatientController {
 //------------------------------------------------------------------------------------------------------------------save
 
     @PostMapping(path = "/save")
-    public void savePatient(@RequestBody PatientReqDTO user)
+    public PatientResDTO savePatient(@RequestBody PatientReqDTO user)
     {
-        this.service.savePatient(user);
+       return this.service.savePatient(user);
     }
 
     @PutMapping(path = "/update")
-    public void updatePatient(@RequestBody PatientReqDTO user)
+    public PatientResDTO updatePatient(@RequestBody PatientReqDTO user)
     {
-        this.service.updatePatient(user);
+        return this.service.updatePatient(user);
     }
 
 //----------------------------------------------------------------------------------------------------------------delete

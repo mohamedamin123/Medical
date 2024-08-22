@@ -53,6 +53,8 @@ public class DossierMedicalController {
     @PostMapping(path = "/save")
     public void saveDossierMedical(@RequestBody DossierMedicalReqDTO user)
     {
+        System.out.println("id con "+user.getIdPatient());
+
         this.service.saveDossierMedical(user);
     }
 

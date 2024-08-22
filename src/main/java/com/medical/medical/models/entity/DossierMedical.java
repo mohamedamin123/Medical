@@ -32,6 +32,10 @@ public class DossierMedical {
 
     @Column(name = "contenu_document", columnDefinition = "TEXT", nullable = true)
     private String fichier;
+
+    @Column(name = "fichier", columnDefinition = "LONGBLOB", nullable = true)
+    private byte[] contenue;
+
     private LocalDate jour;
     private LocalTime heure;
 
@@ -49,12 +53,14 @@ public class DossierMedical {
 
 //------------------------------------------------------------------------------------------------------------ForeignKey
     @Column(name = "patient_id")
-    private Integer IDpatient;
+    private Integer idPatient;
 //--------------------------------------------------------------------------------------------------------------Relation
 
     @JsonBackReference("dossier_patient")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", insertable = false, updatable = false)
     private Patient patient;
+
+
 
 }

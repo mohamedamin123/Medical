@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Data
 @SuperBuilder
 public class PatientResDTO extends UserResDTO{
+    private int idPatient;
     private String note;
     private String idUnique;
     private String CIN;

@@ -1,0 +1,9 @@
+/* styles.css */
+
+/* Style for Labels */
+.label-bold {
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 0 0 0 10px;
+}
+

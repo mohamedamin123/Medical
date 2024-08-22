@@ -14,4 +14,6 @@ public class DossierMedicalResDTO {
     private String fichier;
     private LocalDate jour;
     private LocalTime heure;
+    private Integer idPatient;
+
 }
