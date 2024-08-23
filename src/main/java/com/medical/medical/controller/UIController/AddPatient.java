@@ -6,7 +6,10 @@ import com.medical.medical.controller.API.SecretaireController;
 import com.medical.medical.ennum.Sexe;
 import com.medical.medical.models.dto.req.DossierMedicalReqDTO;
 import com.medical.medical.models.dto.req.PatientReqDTO;
+import com.medical.medical.models.dto.res.DossierMedicalResDTO;
+import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
+import com.medical.medical.models.dto.res.SecretaireResDTO;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -21,6 +24,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +33,10 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 import static com.medical.medical.utils.javaFxAPI.changeFenetre;
@@ -81,11 +88,96 @@ public class AddPatient {
     @Autowired
     private DossierMedicalController dossierMedicalController;
 
+    private Integer idM;
+
+    @Setter
+    @Getter
+    private String email;
+
+    @Setter
+    @Getter
+    private String role;
+
+    private MedecinResDTO medecin;
+    private SecretaireResDTO secretaire;
+
+    private PatientResDTO patientResDTO;
+    @Setter
+    private HostServices hostServices;
 
     @FXML
     public void initialize() {
         Platform.runLater(() -> {
             stage = (Stage) CINField.getScene().getWindow();
+
+            Object userData = stage.getUserData();
+            if (userData instanceof Object[] data) {
+                email = (String) data[0];
+                role = (String) data[1];
+                medecin = (data[2] instanceof MedecinResDTO) ? (MedecinResDTO) data[2] : null;
+                secretaire = (data[3] instanceof SecretaireResDTO) ? (SecretaireResDTO) data[3] : null;
+                idM = (Integer) data[4];
+                if (data.length > 5 && data[5] instanceof PatientResDTO) {
+                    patientResDTO = (PatientResDTO) data[5];
+                } else {
+                    patientResDTO = null; // or handle the case when data[5] does not exist or is not of type PatientResDTO
+                }
+            }
+
+            if (patientResDTO != null) {
+                nomField.setText(patientResDTO.getNom());
+                prenomField.setText(patientResDTO.getPrenom());
+                CINField.setText(patientResDTO.getCIN());
+                dobField.setValue(patientResDTO.getDateDeNaissance());
+                emailField.setText(patientResDTO.getEmail());
+                TelField.setText(patientResDTO.getTel());
+                villeField.setText(patientResDTO.getAdresse());
+                batimentComboBox.setValue(patientResDTO.getRemboursement());
+                codeField.setText(patientResDTO.getIdUnique());
+                notesField.setText(patientResDTO.getNote());
+                Sexe sexeEnum = patientResDTO.getSexe();
+                if (sexeEnum != null) {
+                    RadioButton selectedSexeButton = (sexeEnum == Sexe.HOMME) ? (RadioButton) sexe.getToggles().get(0) : (RadioButton) sexe.getToggles().get(1);
+                    selectedSexeButton.setSelected(true);
+                }
+                List<DossierMedicalResDTO> dossierMedicalResDTOS= dossierMedicalController.findDossierMedicalByIdPatientAfterDelete(patientResDTO.getIdPatient());
+                if (dossierMedicalResDTOS != null) {
+                    for (DossierMedicalResDTO dossier : dossierMedicalResDTOS) {
+                        HBox fileHBox = new HBox(10);
+                        fileHBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+                        Label fileNameLabel = new Label(dossier.getFichier()); // Display file name
+                        fileHBox.getChildren().add(fileNameLabel);
+
+                        Button deleteButton = new Button();
+                        ImageView deleteIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/static/icons/supprimer.png")).toExternalForm()));
+                        deleteIcon.setFitWidth(16);
+                        deleteIcon.setFitHeight(16);
+                        deleteButton.setGraphic(deleteIcon);
+                        deleteButton.setOnAction(event -> {
+                            fileListContainer.getChildren().remove(fileHBox);
+                            System.out.println("dossier id :"+dossier.getIdDossierMedical());
+                            dossierMedicalController.findDossierMedicalByIdAfterDelete(dossier.getIdDossierMedical()); // Add deletion logic here
+                        });
+                        fileHBox.getChildren().add(deleteButton);
+
+                        Button openButton = new Button("Ouvrir");
+                        openButton.setOnAction(event -> {
+                            Path path = Paths.get(System.getProperty("java.io.tmpdir"), dossier.getFichier());
+
+                            try {
+                                Files.write(path, dossier.getContenue());
+                                Desktop.getDesktop().open(path.toFile());
+                            } catch (IOException e) {
+                                showAlert(Alert.AlertType.ERROR, "Erreur de Lecture de Fichier", "Erreur lors de la lecture du fichier: " + e.getMessage());
+                            }
+                        });
+                        fileHBox.getChildren().add(openButton);
+
+                        fileListContainer.getChildren().add(fileHBox);
+                    }
+                }
+            }
 
             // Restrict CINField to 8 digits only
             CINField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -116,7 +208,8 @@ public class AddPatient {
             annulerButton.setOnAction(event -> {
                 try {
                     stage.close();
-                    changeFenetre("patient");
+                    changeFenetre("patient",email,role,medecin,secretaire,idM);
+                    System.out.println("bn "+idM);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -202,7 +295,7 @@ public class AddPatient {
 
         String cin = CINField.getText().trim();
         LocalDate dateNaissance = dobField.getValue(); // Keep as LocalDate
-        String email = emailField.getText().trim();
+        String email2 = emailField.getText().trim();
         String telephone = TelField.getText().trim();
         String batiment = (batimentComboBox.getValue() != null) ? batimentComboBox.getValue().trim() : "aucun"; // Avoid NullPointerException
         String code = codeField.getText().trim();
@@ -221,8 +314,8 @@ public class AddPatient {
         }
 
         // Validation des autres champs (email, CIN, téléphone, etc.)
-        if(!cin.isEmpty()) {
-            if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+        if(!email2.isEmpty()) {
+            if (!email2.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
                 showAlert(Alert.AlertType.ERROR, "Erreur de Validation", "L'adresse email est invalide.");
                 return;
             }
@@ -238,15 +331,29 @@ public class AddPatient {
             showAlert(Alert.AlertType.ERROR, "Erreur de Validation", "Le numéro de téléphone doit comporter exactement 8 chiffres.");
             return;
         }
+        PatientReqDTO patientReqDTO;
+        if(patientResDTO!=null) {
+            System.out.println("iddd : "+patientResDTO.getIdPatient());
+             patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email2,dateNaissance,notes,batiment,code,cin,ville,sexee,idM,patientResDTO.getIdPatient());
 
-        PatientReqDTO patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email,dateNaissance,notes,batiment,code,cin,ville,sexee);
-        PatientResDTO patientResDTO=patientController.savePatient(patientReqDTO);
+
+
+
+            patientResDTO=patientController.updatePatient(patientReqDTO);
+
+        }else {
+            patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email2,dateNaissance,notes,batiment,code,cin,ville,sexee,idM);
+             patientResDTO=patientController.savePatient(patientReqDTO);
+
+        }
 
         for (var node : fileListContainer.getChildren()) {
             if (node instanceof HBox) {
                 HBox fileHBox = (HBox) node;
                 Label fileNameLabel = (Label) fileHBox.getChildren().get(0);
                 String filePath = fileNameLabel.getText(); // Use the full path
+                Path path = Paths.get(filePath);
+                String fileName = path.getFileName().toString();
 
                 File file = new File(filePath);
                 byte[] fileContent = new byte[0];
@@ -259,17 +366,19 @@ public class AddPatient {
 
                 System.out.println("id : "+patientResDTO.getIdPatient());
                 String fileExtension = getFileExtension(file.getName());
-                DossierMedicalReqDTO dossierMedicalReqDTO = new DossierMedicalReqDTO(fileExtension,fileNameLabel.getText(), fileContent, /* patient ID if needed */ patientResDTO.getIdPatient());
+
+                DossierMedicalReqDTO dossierMedicalReqDTO = new DossierMedicalReqDTO(fileExtension,fileName, fileContent, /* patient ID if needed */ patientResDTO.getIdPatient());
 
                 // Call dossierMedicalController to save the file
                 dossierMedicalController.saveDossierMedical(dossierMedicalReqDTO);
-                stage.close();
-                try {
-                    changeFenetre("patient");
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+
             }
+        }
+        stage.close();
+        try {
+            changeFenetre("patient",email,role,medecin,secretaire,idM);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
     }
@@ -284,5 +393,12 @@ public class AddPatient {
         int index = fileName.lastIndexOf('.');
         return (index > 0) ? fileName.substring(index + 1).toLowerCase() : "";
     }
-
+    public void openFile(String path) {
+        try {
+            // Utilisez HostServices pour ouvrir un fichier ou une URL
+            hostServices.showDocument(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

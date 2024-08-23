@@ -34,8 +34,8 @@ public class Patient extends User {
     @Column(name = "id_unique", nullable = true)
     private String idUnique;
 
-    @Column(name = "batiment", nullable = true)
-    private String batiment;
+    @Column(name = "remboursement", nullable = true)
+    private String remboursement;
 
 
     @Column(name = "note", nullable = true)
@@ -44,12 +44,12 @@ public class Patient extends User {
     @Column(name = "sexe", nullable = false)
     private Sexe sexe;
 
-    @Column(name = "ville", nullable = false)
-    private String ville;
+    @Column(name = "adresse", nullable = false)
+    private String adresse;
 
 //----------------------------------------------------------------------------------------------------------------------
     @Column(name = "medecin_id")
-    private Integer medecinId;
+    private Integer idMedecin;
 //--------------------------------------------------------------------------------------------------------------Relation
     @JsonManagedReference("rendez_vous_patient")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
@@ -71,6 +71,17 @@ public class Patient extends User {
 //---------------------------------------------------------------------------------------------------------Constructeurs
 
 
-
-
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "idPatient=" + idPatient +
+                ", CIN='" + CIN + '\'' +
+                ", idUnique='" + idUnique + '\'' +
+                ", remboursement='" + remboursement + '\'' +
+                ", note='" + note + '\'' +
+                ", sexe=" + sexe +
+                ", adresse='" + adresse + '\'' +
+                ", idMedecin=" + idMedecin +
+                '}';
+    }
 }

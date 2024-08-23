@@ -6,11 +6,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import lombok.Getter;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 public class JavaFXApp extends Application {
 
+    // Ensure this method is static and returns the context
+    @Getter
     private static ConfigurableApplicationContext springContext; // Make it static
 
     @Override
@@ -33,10 +36,6 @@ public class JavaFXApp extends Application {
     @Override
     public void stop() {
         springContext.close();
-    }
-
-    public static ConfigurableApplicationContext getSpringContext() {
-        return springContext; // Ensure this method is static and returns the context
     }
 
     public static void main(String[] args) {

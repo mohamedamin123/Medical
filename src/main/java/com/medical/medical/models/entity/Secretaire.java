@@ -1,5 +1,6 @@
 package com.medical.medical.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,11 +30,20 @@ public class Secretaire extends User  {
     @Column(name = "password", nullable = false)
     private String password;
 
+//----------------------------------------------------------------------------------------------------------------------
+    @Column(name = "medecin_id")
+    private Integer idMedecin;
+
 //-------------------------------------------------------------------------------------------------------------relations
 
     @JsonManagedReference("notification_secretaire")
     @OneToMany(mappedBy = "secretaire", cascade = CascadeType.ALL)
     private List<Notification> notifications;
+
+    @JsonBackReference("secretaire_medecin")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "medecin_id", insertable = false, updatable = false)
+    private Medecin medecin;
 
 
 //---------------------------------------------------------------------------------------------------------Constructeurs

@@ -12,10 +12,13 @@
 <!-- Titre pour le tableau de bord Admin -->
 <Label style="-fx-font-size: 24px;" text="Liste de Patients" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" />
 
-<!-- Bouton pour ajouter un patient -->
-<HBox spacing="10" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="60.0">
-    <Button fx:id="addPatientButton" text="Ajouter Patient" />
-</HBox>
+    <!-- Boutons pour "Annuler" et "Ajouter Patient" -->
+    <HBox spacing="575.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="60.0">
+        <!-- Bouton Annuler -->
+        <Button fx:id="cancelButton" text="Annuler" />
+        <!-- Bouton Ajouter Patient -->
+        <Button fx:id="addPatientButton" text="Ajouter Patient" />
+    </HBox>
 
 <!-- Conteneur VBox pour organiser les éléments verticalement -->
 <VBox spacing="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="100.0" AnchorPane.bottomAnchor="60.0">

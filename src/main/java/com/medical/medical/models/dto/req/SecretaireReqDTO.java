@@ -7,6 +7,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class SecretaireReqDTO extends UserReqDTO{
     private int idSecretaire;
+    private Integer idMedecin;
+
     private String password;
 
 }

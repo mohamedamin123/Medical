@@ -1,7 +1,9 @@
 package com.medical.medical.controller.UIController;
 
 import com.medical.medical.exceptions.UserException;
+import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
+import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.PagedDataSource;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
@@ -16,6 +18,8 @@ import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +34,8 @@ import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 @Component("uiPatientController")
 @Slf4j
 public class PatientController {
-
+    @FXML
+    private Button cancelButton;
     @FXML
     private TableColumn<PatientResDTO, Number> idColumn;
     @FXML
@@ -55,6 +60,19 @@ public class PatientController {
     
     private final int PAGE_SIZE=12;
     private Stage stage;
+    private Integer idM;
+
+
+    @Setter
+    @Getter
+    private String email;
+
+    @Setter
+    @Getter
+    private String role;
+
+    private MedecinResDTO medecin;
+    private SecretaireResDTO secretaire;
 
     @Autowired
     private com.medical.medical.controller.API.PatientController patientController;
@@ -66,76 +84,109 @@ public class PatientController {
 
         Platform.runLater(() -> {
             stage = (Stage) pagination.getScene().getWindow();
+            Object userData = stage.getUserData();
+            if (userData instanceof Object[] data) {
+                email = (String) data[0];
+                role = (String) data[1];
+                medecin = (data[2] instanceof MedecinResDTO) ? (MedecinResDTO) data[2] : null;
+                secretaire = (data[3] instanceof SecretaireResDTO) ? (SecretaireResDTO) data[3] : null;
+                idM = (Integer) data[4];
 
-        });
+                // Initialiser les colonnes
+                idColumn.setCellFactory(column -> new TableCell<PatientResDTO, Number>() {
+                    @Override
+                    protected void updateItem(Number item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setText(null);
+                        } else {
+                            setText(String.valueOf(getIndex() + 1 + (pagination.getCurrentPageIndex() * PAGE_SIZE)));
+                        }
+                    }
+                });
 
+                // Configurer les colonnes
+                cinColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCIN()));
+                nomColumn.setCellValueFactory(cellData -> {
+                    try {
+                        return new ReadOnlyStringWrapper(cellData.getValue().getFullName());
+                    } catch (UserException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                dobColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDateDeNaissance()));
+                phoneColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTel()));
 
-            // Initialiser les colonnes
-        idColumn.setCellFactory(column -> new TableCell<PatientResDTO, Number>() {
-            @Override
-            protected void updateItem(Number item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(String.valueOf(getIndex() + 1 + (pagination.getCurrentPageIndex() * PAGE_SIZE)));
-                }
+                // Données d'exemple
+                patients = FXCollections.observableArrayList(
+                        getDate()
+                );
+
+                // Initialiser PagedDataSource
+                pagedDataSource = new PagedDataSource(patients, PAGE_SIZE);
+
+                // Configurer la pagination
+                pagination.setPageCount(pagedDataSource.getPageCount());
+                pagination.setCurrentPageIndex(0);
+                pagination.setPageFactory(this::createPage);
+
+                // Filtrage de recherche
+                searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                    try {
+                        filterTable(newValue);
+                    } catch (UserException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                // Gestion du clic sur les lignes
+                patientTable.setOnMouseClicked((MouseEvent event) -> {
+                    if (event.getClickCount() == 2) {
+                        showPatientDetails(patientTable.getSelectionModel().getSelectedItem());
+                    }
+                });
+
+                addPatientButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        ajouterPatient();
+                    }
+                });
+
+                cancelButton.setOnAction(actionEvent -> annuler());
             }
+
         });
 
-        // Configurer les colonnes
-        cinColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCIN()));
-        nomColumn.setCellValueFactory(cellData -> {
+
+    }
+
+    private void annuler() {
+        Stage stage = (Stage) cancelButton.getScene().getWindow();
+        stage.close();
+        if(medecin.getNom().isEmpty())
+        {
+
             try {
-                return new ReadOnlyStringWrapper(cellData.getValue().getFullName());
-            } catch (UserException e) {
+                changeFenetre("acceuil",secretaire.getEmail(),"secretaire",medecin,secretaire,idM);
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        });
-        dobColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDateDeNaissance()));
-        phoneColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTel()));
+        }
 
-        // Données d'exemple
-        patients = FXCollections.observableArrayList(
-                getDate()
-        );
-
-        // Initialiser PagedDataSource
-        pagedDataSource = new PagedDataSource(patients, PAGE_SIZE);
-
-        // Configurer la pagination
-        pagination.setPageCount(pagedDataSource.getPageCount());
-        pagination.setCurrentPageIndex(0);
-        pagination.setPageFactory(this::createPage);
-
-        // Filtrage de recherche
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+        else {
             try {
-                filterTable(newValue);
-            } catch (UserException e) {
+                changeFenetre("acceuil",medecin.getEmail(),"medecin",medecin,secretaire,idM);
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        });
-
-        // Gestion du clic sur les lignes
-        patientTable.setOnMouseClicked((MouseEvent event) -> {
-            if (event.getClickCount() == 2) {
-                showPatientDetails(patientTable.getSelectionModel().getSelectedItem());
-            }
-        });
-
-        addPatientButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                ajouterPatient();
-            }
-        });
+        }
     }
 
     private void ajouterPatient() {
         try {
             stage.close();
-            changeFenetre("addPatient");
+            changeFenetre("addPatient",email,role,medecin,secretaire,idM);
         } catch (IOException e) {
             log.error("Error changing window", e);
         }
@@ -191,7 +242,12 @@ public class PatientController {
 
     private void showPatientDetails(PatientResDTO patient) {
         // Logique pour afficher les détails du patient
-        log.info(patient.toString());
+        try {
+            stage.close();
+            changeFenetre("addPatient",email,role,medecin,secretaire,idM,patient);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private VBox createPage(int pageIndex) {
@@ -204,7 +260,7 @@ public class PatientController {
     private List<PatientResDTO> getDate() {
 
         List<PatientResDTO> patientResDTOS;
-        patientResDTOS=patientController.findAllPatient();
+        patientResDTOS=patientController.findPatientsByMedecinId(idM);
          return patientResDTOS;
     }
 

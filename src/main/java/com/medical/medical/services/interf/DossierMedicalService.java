@@ -5,6 +5,7 @@ import com.medical.medical.models.dto.req.NotificationReqDTO;
 import com.medical.medical.models.dto.res.ConsultationResDTO;
 import com.medical.medical.models.dto.res.DossierMedicalResDTO;
 import com.medical.medical.models.dto.res.NotificationResDTO;
+import com.medical.medical.models.entity.DossierMedical;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,14 @@ public interface DossierMedicalService {
     List<DossierMedicalResDTO> findAllDossierMedical();
 
 
-     Optional<DossierMedicalResDTO> findDossierMedicalById(int id) ;
+
+
+     List<DossierMedicalResDTO> findDossierMedicalByIdPatient(Integer id);
+
+    List<DossierMedicalResDTO> findDossierMedicalByIdPatientAfterDelete(Integer id);
+
+
+    Optional<DossierMedicalResDTO> findDossierMedicalById(int id) ;
 
     List<DossierMedicalResDTO> findAllDossierMedicalAfterDelete();
 

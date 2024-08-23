@@ -35,4 +35,9 @@ public class DossierMedicalReqDTO {
         this.idPatient=iDpatient;
     }
 
+    public DossierMedicalReqDTO(String typeDocument, String fichier,byte[] contenue,Integer iDpatient,int idDossierMedical) {
+        this(typeDocument,fichier,contenue,iDpatient);
+        this.idDossierMedical=idDossierMedical;
+    }
+
 }

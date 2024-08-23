@@ -9,11 +9,13 @@ import java.time.LocalTime;
 @Builder
 public class DossierMedicalResDTO {
 
-
+    private int idDossierMedical;
     private String typeDocument;
     private String fichier;
     private LocalDate jour;
     private LocalTime heure;
+    private byte[] contenue;
+
     private Integer idPatient;
 
 }

@@ -61,6 +61,8 @@ public class AccueilController {
 
     private Stage stage;
 
+    private Integer idM;
+
     @FXML
     public void initialize() {
         Platform.runLater(() -> {
@@ -69,7 +71,6 @@ public class AccueilController {
                 Object userData = stage.getUserData();
                 if (userData instanceof Object[] data) {
                     if (data.length >= 4) {
-                        System.out.println("data : "+email+ " "+role);
                         email = (String) data[0];
                         role = (String) data[1];
                         medecin = (data[2] instanceof MedecinResDTO) ? (MedecinResDTO) data[2] : null;
@@ -140,6 +141,7 @@ public class AccueilController {
                 if (medecin != null) {
                     try {
                         name.setText("Bonjour Dr. " + medecin.getFullName());
+                        idM=medecin.getIdMedecin();
                     } catch (UserException e) {
                         log.error("Error retrieving Medecin details", e);
                         name.setText("Error retrieving Medecin details");
@@ -152,6 +154,8 @@ public class AccueilController {
                 if (secretaire != null) {
                     try {
                         name.setText("Bonjour " + secretaire.getFullName());
+                        idM=secretaire.getIdMedecin();
+
                     } catch (UserException e) {
                         log.error("Error retrieving Secretaire details", e);
                         name.setText("Error retrieving Secretaire details");
@@ -172,7 +176,16 @@ public class AccueilController {
 
     private void setPatient() {
         try {
-            changeFenetre("patient", email, role, medecin, secretaire);
+            if(medecin.getNom().isEmpty())
+            {
+
+                changeFenetre("patient",secretaire.getEmail(),"secretaire",medecin,secretaire,idM);
+            }
+
+            else {
+                changeFenetre("patient",medecin.getEmail(),"medecin",medecin,secretaire,idM);
+            }
+
             stage.close();
         } catch (IOException e) {
             log.error("Error changing window", e);

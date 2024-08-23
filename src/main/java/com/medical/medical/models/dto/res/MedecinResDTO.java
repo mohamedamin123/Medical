@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class MedecinResDTO extends UserResDTO{
 
+    private int idMedecin;
     private String specialite;
 
     @Override

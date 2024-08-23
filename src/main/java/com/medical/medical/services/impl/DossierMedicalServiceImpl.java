@@ -4,8 +4,6 @@ import com.medical.medical.models.dto.req.DossierMedicalReqDTO;
 import com.medical.medical.models.dto.res.DossierMedicalResDTO;
 import com.medical.medical.models.entity.DossierMedical;
 import com.medical.medical.models.mapper.DossierMedicalMapper;
-import com.medical.medical.models.mapper.DossierMedicalMapper;
-import com.medical.medical.repository.DossierMedicalRepo;
 import com.medical.medical.repository.DossierMedicalRepo;
 import com.medical.medical.services.interf.DossierMedicalService;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +48,28 @@ public class DossierMedicalServiceImpl implements DossierMedicalService {
 
         List<DossierMedical> users = this.repository.findAll();
         return mapper.toAllRespDTO(users);
+    }
+
+
+    @Override
+    public List<DossierMedicalResDTO> findDossierMedicalByIdPatient(Integer id) {
+
+        List<DossierMedical> users = this.repository.findDossierMedicalByIdPatient(id);
+        return mapper.toAllRespDTO(users);
+    }
+
+    @Override
+    public List<DossierMedicalResDTO> findDossierMedicalByIdPatientAfterDelete(Integer id) {
+        // Récupérer la liste des dossiers médicaux pour le patient spécifié
+        List<DossierMedical> dossiersMedicals = this.repository.findDossierMedicalByIdPatient(id);
+
+        // Filtrer les dossiers médicaux pour exclure ceux qui ont été supprimés (deletedAt != null)
+        List<DossierMedical> filteredDossiersMedicals = dossiersMedicals.stream()
+                .filter(dossierMedical -> dossierMedical.getDeletedAt() == null)
+                .collect(Collectors.toList());
+
+        // Convertir la liste filtrée en une liste de DTOs de réponse
+        return mapper.toAllRespDTO(filteredDossiersMedicals);
     }
 
 

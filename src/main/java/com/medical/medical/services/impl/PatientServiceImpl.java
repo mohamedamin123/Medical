@@ -39,13 +39,16 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientResDTO updatePatient(PatientReqDTO req) {
+        System.out.println("cc "+req.getIdPatient());
         // Convertir DTO en entité pour obtenir les nouvelles données
         Patient updatedMedecin = mapper.toEntity(req);
+        System.out.println(updatedMedecin);
 
         // Trouver le médecin existant par son email
-        Optional<Patient> existingMedecinOptional = this.repository.findPatientByEmail(updatedMedecin.getEmail());
+        Optional<Patient> existingMedecinOptional = this.repository.findPatientByIdPatient(req.getIdPatient());
 
         if (existingMedecinOptional.isPresent()) {
+
             // Obtenir le médecin existant
             Patient existingMedecin = existingMedecinOptional.get();
 
@@ -57,6 +60,10 @@ public class PatientServiceImpl implements PatientService {
             existingMedecin.setDateDeNaissance(updatedMedecin.getDateDeNaissance());
             existingMedecin.setCIN(updatedMedecin.getCIN());
             existingMedecin.setIdUnique(updatedMedecin.getIdUnique());
+            existingMedecin.setAdresse(updatedMedecin.getAdresse());
+            existingMedecin.setRemboursement(updatedMedecin.getRemboursement());
+            existingMedecin.setNote(updatedMedecin.getNote());
+            existingMedecin.setSexe(updatedMedecin.getSexe());
 
             existingMedecin.setUpdatedAt(LocalDateTime.now()); // Assurez-vous que vous avez un champ 'updatedAt' dans votre entité
 
@@ -78,11 +85,11 @@ public class PatientServiceImpl implements PatientService {
         return mapper.toAllRespDTO(users);
     }
 
+
     @Override
-    public List<PatientResDTO> findPatientsByMedecinId(Integer id) {
-        List<Patient> users = this.repository.findPatientsByMedecinId(id);
-        return mapper.toAllRespDTO(users);
-    }
+    public List<PatientResDTO> findPatientsByIdMedecin(Integer id) {
+        List<Patient> users = this.repository.findPatientsByIdMedecin(id);
+        return mapper.toAllRespDTO(users);    }
 
 
     @Override

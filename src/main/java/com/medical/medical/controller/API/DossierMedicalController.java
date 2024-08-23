@@ -34,6 +34,21 @@ public class DossierMedicalController {
         return this.service.findDossierMedicalById(id);
     }
 
+    @GetMapping(path = "/find-by-id-pation/{id}")
+    public List<DossierMedicalResDTO> findDossierMedicalByIdPatient(@PathVariable(name = "id")  Integer id)
+    {
+        log.info("id de DossierMedical est : {}", id);
+
+        return this.service.findDossierMedicalByIdPatient(id);
+    }
+    @GetMapping(path = "/find-by-id-pation-after-delete/{id}")
+    public List<DossierMedicalResDTO> findDossierMedicalByIdPatientAfterDelete(@PathVariable(name = "id")  Integer id)
+    {
+        log.info("id de DossierMedical est : {}", id);
+
+        return this.service.findDossierMedicalByIdPatientAfterDelete(id);
+    }
+
     @GetMapping(path = "/find-all-after-delete")
     public List<DossierMedicalResDTO> findAllDossierMedicalAfterDelete()
     {

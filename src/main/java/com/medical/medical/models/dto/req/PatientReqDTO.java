@@ -4,6 +4,7 @@ import com.medical.medical.ennum.Utilisateurs;
 import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.management.relation.Role;
@@ -11,33 +12,35 @@ import java.time.LocalDate;
 
 @Data
 @SuperBuilder
+@NoArgsConstructor
 public class PatientReqDTO extends UserReqDTO {
     private int idPatient;
     private String note;
-    private String batiment;
+    private String remboursement;
     private String idUnique;
     private String CIN;
-    private Integer medecinId;
+    private Integer idMedecin;
     private Sexe sexe;
-    private String ville;
+    private String adresse;
+
 
     public PatientReqDTO(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String note, String batiment, String idUnique, String CIN,String ville) {
         super(nom, prenom, tel, email, dateDeNaissance);
         this.note = note;
-        this.batiment = batiment;
+        this.remboursement = batiment;
         this.idUnique = idUnique;
         this.CIN = CIN;
-        this.ville=ville;
+        this.adresse=ville;
         this.setRole(Utilisateurs.PATIENT);
     }
     public PatientReqDTO(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String note, String batiment, String idUnique, String CIN,String ville,Integer medecinId) {
         super(nom, prenom, tel, email, dateDeNaissance);
         this.note = note;
-        this.batiment = batiment;
+        this.remboursement = batiment;
         this.idUnique = idUnique;
         this.CIN = CIN;
-        this.medecinId=medecinId;
-        this.ville=ville;
+        this.idMedecin=medecinId;
+        this.adresse=ville;
         this.setRole(Utilisateurs.PATIENT);
 
     }
@@ -50,4 +53,14 @@ public class PatientReqDTO extends UserReqDTO {
         this(nom, prenom, tel, email, dateDeNaissance,note,batiment,idUnique,CIN,ville,medecinId);
         this.sexe=sexe;
     }
+    public PatientReqDTO(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String note, String batiment, String idUnique, String CIN,String ville,Sexe sexe,Integer idM) {
+        this(nom, prenom, tel, email, dateDeNaissance,note,batiment,idUnique,CIN,ville,sexe);
+        this.idMedecin=idM;
+    }
+
+    public PatientReqDTO(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String note, String batiment, String idUnique, String CIN,String ville,Sexe sexe,Integer idM,int idP) {
+        this(nom, prenom, tel, email, dateDeNaissance,note,batiment,idUnique,CIN,ville,sexe,idM);
+        this.idPatient=idP;
+    }
+
 }

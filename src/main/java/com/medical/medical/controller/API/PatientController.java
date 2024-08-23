@@ -45,7 +45,7 @@ public class PatientController {
     @GetMapping(path = "/find-by-medecin/{id}")
     public List<PatientResDTO> findPatientsByMedecinId(@PathVariable(name = "id")  Integer id)
     {
-        return this.service.findPatientsByMedecinId(id);
+        return this.service.findPatientsByIdMedecin(id);
     }
 
     @GetMapping(path = "/find-by-tel/{tel}")
