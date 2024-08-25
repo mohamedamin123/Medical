@@ -163,18 +163,29 @@ public class AddPatient {
 
                         Button openButton = new Button("Ouvrir");
                         openButton.setOnAction(event -> {
+                            // Chemin pour stocker temporairement le fichier
                             Path path = Paths.get(System.getProperty("java.io.tmpdir"), dossier.getFichier());
 
                             try {
-                                Files.write(path, dossier.getContenue());
-                                Desktop.getDesktop().open(path.toFile());
+                                // Récupère le contenu du fichier (LONG BLOB) depuis la base de données
+                                byte[] fileContent = dossier.getContenue();
+
+                                // Écrit le contenu du fichier dans un fichier temporaire
+                                Files.write(path, fileContent);
+                                //Desktop.getDesktop().open(path.toFile());
                             } catch (IOException e) {
+                                // Affiche une alerte en cas d'erreur
                                 showAlert(Alert.AlertType.ERROR, "Erreur de Lecture de Fichier", "Erreur lors de la lecture du fichier: " + e.getMessage());
                             }
                         });
+
+// Ajoute le bouton "Ouvrir" au conteneur HBox
                         fileHBox.getChildren().add(openButton);
 
+// Ajoute le conteneur HBox (contenant le bouton) à la liste des fichiers
                         fileListContainer.getChildren().add(fileHBox);
+
+
                     }
                 }
             }
@@ -347,33 +358,34 @@ public class AddPatient {
 
         }
 
-        for (var node : fileListContainer.getChildren()) {
-            if (node instanceof HBox) {
-                HBox fileHBox = (HBox) node;
-                Label fileNameLabel = (Label) fileHBox.getChildren().get(0);
-                String filePath = fileNameLabel.getText(); // Use the full path
-                Path path = Paths.get(filePath);
-                String fileName = path.getFileName().toString();
+        if(fileListContainer!=null) {
+            for (var node : fileListContainer.getChildren()) {
+                if (node instanceof HBox fileHBox) {
+                    Label fileNameLabel = (Label) fileHBox.getChildren().get(0);
+                    String filePath = fileNameLabel.getText(); // Use the full path
+                    Path path = Paths.get(filePath);
+                    String fileName = path.getFileName().toString();
 
-                File file = new File(filePath);
-                byte[] fileContent = new byte[0];
-                try {
-                    fileContent = Files.readAllBytes(file.toPath());
-                } catch (IOException e) {
-                    showAlert(Alert.AlertType.ERROR, "Erreur de Lecture de Fichier", "Erreur lors de la lecture du fichier: " + e.getMessage());
-                    continue;
+                    File file = new File(filePath);
+                    byte[] fileContent = new byte[0];
+                    try {
+                        fileContent = Files.readAllBytes(file.toPath());
+                    } catch (IOException e) {
+                        showAlert(Alert.AlertType.ERROR, "Erreur de Lecture de Fichier", "Erreur lors de la lecture du fichier: " + e.getMessage());
+                        continue;
+                    }
+
+                    String fileExtension = getFileExtension(file.getName());
+
+                    DossierMedicalReqDTO dossierMedicalReqDTO = new DossierMedicalReqDTO(fileExtension,fileName, fileContent, /* patient ID if needed */ patientResDTO.getIdPatient());
+
+                    // Call dossierMedicalController to save the file
+                    dossierMedicalController.saveDossierMedical(dossierMedicalReqDTO);
+
                 }
-
-                System.out.println("id : "+patientResDTO.getIdPatient());
-                String fileExtension = getFileExtension(file.getName());
-
-                DossierMedicalReqDTO dossierMedicalReqDTO = new DossierMedicalReqDTO(fileExtension,fileName, fileContent, /* patient ID if needed */ patientResDTO.getIdPatient());
-
-                // Call dossierMedicalController to save the file
-                dossierMedicalController.saveDossierMedical(dossierMedicalReqDTO);
-
             }
         }
+
         stage.close();
         try {
             changeFenetre("patient",email,role,medecin,secretaire,idM);

@@ -18,4 +18,10 @@ public class RendezVousReqDTO {
 
     private LocalTime heure;
 
+    private String motif;
+
+    private Integer idMedecin;
+
+    private Integer idPatient;
+
 }

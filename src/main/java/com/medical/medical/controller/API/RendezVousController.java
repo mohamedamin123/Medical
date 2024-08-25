@@ -34,6 +34,18 @@ public class RendezVousController {
         return this.service.findRendezVousById(id);
     }
 
+    @GetMapping(path = "/find-by-id-medecin/{id}")
+    public List<RendezVousResDTO> findRendezVousByIdMedecin(@PathVariable(name = "id")  Integer id)
+    {
+        return this.service.findRendezVousByIdMedecin(id);
+    }
+
+    @GetMapping(path = "/find-by-id-patient/{id}")
+    public List<RendezVousResDTO> findRendezVousByIdPatient(@PathVariable(name = "id")  Integer id)
+    {
+        return this.service.findRendezVousByIdPatient(id);
+    }
+
 
     @GetMapping(path = "/find-all-after-delete")
     public List<RendezVousResDTO> findAllRendezVousAfterDelete()

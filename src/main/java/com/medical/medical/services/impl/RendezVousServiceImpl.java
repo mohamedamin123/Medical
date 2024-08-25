@@ -81,6 +81,24 @@ public class RendezVousServiceImpl implements RendezVousService {
         }
     }
 
+    @Override
+    public List<RendezVousResDTO> findRendezVousByIdMedecin(Integer id) {
+        List<RendezVous> rendezVousList = this.repository.findRendezVousByIdMedecin(id);
+        List<RendezVous> filteredRendezVousList = rendezVousList.stream()
+                .filter(rendezVous -> rendezVous.getDeletedAt() == null)
+                .collect(Collectors.toList());
+        return mapper.toAllRespDTO(filteredRendezVousList);
+    }
+
+    @Override
+    public List<RendezVousResDTO> findRendezVousByIdPatient(Integer idP) {
+        List<RendezVous> rendezVousList = this.repository.findRendezVousByIdPatient(idP);
+        List<RendezVous> filteredRendezVousList = rendezVousList.stream()
+                .filter(rendezVous -> rendezVous.getDeletedAt() == null)
+                .collect(Collectors.toList());
+        return mapper.toAllRespDTO(filteredRendezVousList);
+    }
+
 
 //----------------------------------------------------------------------------------------------------------------delete
 

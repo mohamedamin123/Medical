@@ -124,8 +124,21 @@ public class AccueilController {
     }
 
     private void setRendezVous() {
-        log.info("rendez");
-    }
+        try {
+            if(medecin.getNom().isEmpty())
+            {
+
+                changeFenetre("rendez_vous",secretaire.getEmail(),"secretaire",medecin,secretaire,idM);
+            }
+
+            else {
+                changeFenetre("rendez_vous",medecin.getEmail(),"medecin",medecin,secretaire,idM);
+            }
+
+            stage.close();
+        } catch (IOException e) {
+            log.error("Error changing window", e);
+        }    }
 
     private void setSecretaire() {
         log.info("secretaire");

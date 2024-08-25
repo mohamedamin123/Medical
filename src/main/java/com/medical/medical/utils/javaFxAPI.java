@@ -4,8 +4,10 @@ import com.medical.medical.controller.UIController.AccueilController;
 import com.medical.medical.controller.UIController.JavaFXApp;
 import com.medical.medical.controller.UIController.ProfileController;
 import com.medical.medical.ennum.Utilisateurs;
+import com.medical.medical.models.dto.req.RendezVousReqDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
+import com.medical.medical.models.dto.res.RendezVousResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -118,6 +120,41 @@ public class javaFxAPI {
     }
 
 
+    public static void changeFenetre(String destination, String email, String role, MedecinResDTO medecin, SecretaireResDTO secretaire, Integer id, RendezVousReqDTO newRendezVous) throws IOException {
+        ConfigurableApplicationContext springContext = JavaFXApp.getSpringContext();
+        if (springContext == null) {
+            log.error("Spring context is not initialized");
+            throw new IllegalStateException("Spring context is not initialized");
+        }
+
+        FXMLLoader fxmlLoader = new FXMLLoader(javaFxAPI.class.getResource("/templates/" + destination + ".fxml"));
+        fxmlLoader.setControllerFactory(springContext::getBean);
+
+        Parent root;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            log.error("Error loading FXML file for " + destination, e);
+            throw e;
+        }
+
+        Object controller = fxmlLoader.getController();
+        if (controller == null) {
+            log.error("Controller is null");
+            throw new IllegalStateException("Controller is not instantiated");
+        }
+
+        Stage newStage = new Stage();
+        newStage.setTitle(destination);
+        newStage.setScene(new Scene(root));
+
+        // Pass user data to the new stage
+        newStage.setUserData(new Object[]{email, role, medecin, secretaire,id,newRendezVous});
+
+        newStage.show();
+    }
+
+
 
     public static void changeFenetre(String destination, String email, String role, MedecinResDTO medecin, SecretaireResDTO secretaire) throws IOException {
         ConfigurableApplicationContext springContext = JavaFXApp.getSpringContext();
@@ -189,6 +226,42 @@ public class javaFxAPI {
         // Pass user data to the new stage
         newStage.setUserData(new Object[]{email, role, medecin, secretaire,id,patientResDTO});
 
+
+        newStage.show();
+    }
+
+
+
+    public static void changeFenetre(String destination, String email, String role, MedecinResDTO medecin, SecretaireResDTO secretaire, Integer id, RendezVousResDTO newRendezVous) throws IOException {
+        ConfigurableApplicationContext springContext = JavaFXApp.getSpringContext();
+        if (springContext == null) {
+            log.error("Spring context is not initialized");
+            throw new IllegalStateException("Spring context is not initialized");
+        }
+
+        FXMLLoader fxmlLoader = new FXMLLoader(javaFxAPI.class.getResource("/templates/" + destination + ".fxml"));
+        fxmlLoader.setControllerFactory(springContext::getBean);
+
+        Parent root;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            log.error("Error loading FXML file for " + destination, e);
+            throw e;
+        }
+
+        Object controller = fxmlLoader.getController();
+        if (controller == null) {
+            log.error("Controller is null");
+            throw new IllegalStateException("Controller is not instantiated");
+        }
+
+        Stage newStage = new Stage();
+        newStage.setTitle(destination);
+        newStage.setScene(new Scene(root));
+
+        // Pass user data to the new stage
+        newStage.setUserData(new Object[]{email, role, medecin, secretaire,id,newRendezVous});
 
         newStage.show();
     }

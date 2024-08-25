@@ -5,6 +5,7 @@ import com.medical.medical.models.dto.req.RendezVousReqDTO;
 import com.medical.medical.models.dto.res.ConsultationResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.models.dto.res.RendezVousResDTO;
+import com.medical.medical.models.entity.RendezVous;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,11 @@ public interface RendezVousService {
     List<RendezVousResDTO> findAllRendezVousAfterDelete();
 
     Optional<RendezVousResDTO> findRendezVousByIdAfterDelete(int id);
+
+
+    List<RendezVousResDTO> findRendezVousByIdMedecin(Integer id);
+
+    List<RendezVousResDTO> findRendezVousByIdPatient(Integer idP);
 
     void deleteRendezVous(RendezVousReqDTO req);
 

@@ -33,6 +33,9 @@ public class RendezVous {
     @Temporal(TemporalType.TIME)
     private LocalTime heure;
 
+    @Column()
+    private String motif;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -47,10 +50,10 @@ public class RendezVous {
 
 //------------------------------------------------------------------------------------------------------------foreignKey
     @Column(name = "medecin_id")
-    private Integer medecinId;
+    private Integer idMedecin;
 
     @Column(name = "patient_id")
-    private Integer patientId;
+    private Integer idPatient;
 //-------------------------------------------------------------------------------------------------------------relations
 
     @JsonBackReference("rendez_vous_medecin")
