@@ -2,7 +2,7 @@
 .root {
     -fx-padding: 20;
     -fx-alignment: center;
-    -fx-background-image: url("../images/back.png");
+    /*-fx-background-image: url("../images/back.png");*/
     -fx-background-size: cover; /* L'image couvre toute la zone */
     -fx-background-repeat: no-repeat; /* L'image ne se répète pas */
     -fx-background-position: center center; /* Centre l'image */

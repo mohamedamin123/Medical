@@ -1,66 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<VBox alignment="CENTER" spacing="20" styleClass="container" stylesheets="@../static/style/profile.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.ProfileController">
+<GridPane alignment="CENTER" hgap="15" prefHeight="614.0" prefWidth="651.0" styleClass="container" stylesheets="@../static/style/profile.css" vgap="15" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.ProfileController">
 
-    <!-- Profile Image at the Top -->
-    <ImageView fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true" VBox.vgrow="NEVER">
+    <!-- Profile Image -->
+    <ImageView fitHeight="130" fitWidth="130" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="0">
         <Image url="@../static/images/profil.png" />
-        <VBox.margin>
-            <Insets top="10.0" />
-        </VBox.margin>
     </ImageView>
 
-    <!-- Fields for Profile Information with Labels -->
-    <VBox alignment="CENTER" spacing="20" VBox.vgrow="ALWAYS">
-        <!-- Nom Field -->
-        <HBox alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
-            <Label styleClass="label" text="Nom : " />
-            <TextField fx:id="nom" promptText="Nom" styleClass="text-field" HBox.hgrow="ALWAYS" />
-        </HBox>
-        <Label fx:id="nomError" styleClass="erreur" />
+    <!-- Nom Field -->
+    <Label text="Nom :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+    <TextField fx:id="nom" promptText="Nom" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <Label fx:id="nomError" styleClass="erreur" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-        <!-- Prenom Field -->
-        <HBox alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
-            <Label styleClass="label" text="Prenom : " />
-            <TextField fx:id="prenom" promptText="Prenom" styleClass="text-field" HBox.hgrow="ALWAYS" />
-        </HBox>
-        <Label fx:id="prenomError" styleClass="erreur" />
+    <!-- Prenom Field -->
+    <Label text="Prenom :" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+    <TextField fx:id="prenom" promptText="Prenom" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+    <Label fx:id="prenomError" styleClass="erreur" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-        <!-- Email Field -->
-        <HBox alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
-            <Label styleClass="label" text="Email : " />
-            <TextField fx:id="email" editable="false" promptText="Email" styleClass="text-field" HBox.hgrow="ALWAYS" />
-        </HBox>
-        <Label fx:id="emailError" styleClass="erreur" />
+    <!-- Email Field -->
+    <Label text="Email :" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+    <TextField fx:id="email" editable="false" promptText="Email" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+    <Label fx:id="emailError" styleClass="erreur" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 
-        <!-- Tel Field -->
-        <HBox alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
-            <Label styleClass="label" text="Telephone : " />
-            <TextField fx:id="tel" promptText="Tel" styleClass="text-field" HBox.hgrow="ALWAYS" />
-        </HBox>
-        <Label fx:id="telError" styleClass="erreur" />
+    <!-- Tel Field -->
+    <Label text="Telephone :" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+    <TextField fx:id="tel" promptText="Tel" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+    <Label fx:id="telError" styleClass="erreur" GridPane.columnIndex="1" GridPane.rowIndex="8" />
 
-        <!-- Date de Naissance Field -->
-        <HBox alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS" >
-            <Label styleClass="label" text="Date de Naissance : " />
-            <DatePicker fx:id="dateDeNaissance" promptText="Date de naissance" styleClass="date-picker" HBox.hgrow="ALWAYS" />
-        </HBox>
-        <Label fx:id="dateDeNaissanceError" styleClass="erreur" />
-    </VBox>
+    <!-- Date de Naissance Field -->
+    <Label text="Date de Naissance :" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+    <DatePicker fx:id="dateDeNaissance" promptText="Date de naissance" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+    <Label fx:id="dateDeNaissanceError" styleClass="erreur" GridPane.columnIndex="1" GridPane.rowIndex="10" />
 
-    <!-- Button for Enregistrer -->
-    <HBox alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
-        <Button fx:id="annuler" styleClass="buttonAnnuler" text="Annuler" HBox.hgrow="ALWAYS" />
-        <Button fx:id="enregistrer" styleClass="button" text="Enregistrer" HBox.hgrow="ALWAYS" />
+    <!-- Buttons for Actions -->
+    <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="11">
+        <Button fx:id="annuler" styleClass="buttonAnnuler" text="Annuler" />
+        <Button fx:id="enregistrer" styleClass="button" text="Enregistrer" />
     </HBox>
-</VBox>
+   <columnConstraints>
+      <ColumnConstraints />
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+   </rowConstraints>
+
+</GridPane>

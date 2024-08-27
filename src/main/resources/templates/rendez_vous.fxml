@@ -10,7 +10,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="534.0" prefWidth="722.0" spacing="10" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.RendezVousController">
+<VBox prefHeight="534.0" prefWidth="722.0"
+      style='-fx-background-image: url("../static/images/back.png");' spacing="10" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.RendezVousController">
     <!-- Title -->
     <Label style="-fx-font-size: 24px; -fx-text-fill: #2c3e50;" text="Calendrier des Rendez-vous">
         <font>

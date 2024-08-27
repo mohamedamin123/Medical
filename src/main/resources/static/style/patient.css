@@ -1,0 +1,25 @@
+.connect-button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-cursor: cursor;
+    -fx-text-alignment: center;
+    margin :15px;
+}
+
+.anuler-button {
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 40px;
+    -fx-cursor: cursor;
+    -fx-text-alignment: center;
+    margin :15px;
+}
+
+.titre {
+    -fx-text-alignment: center;
+}
