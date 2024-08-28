@@ -5,17 +5,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lombok.Getter;
 
-public class PagedDataSource {
-    private final ObservableList<PatientResDTO> allData;
+public class PagedDataSource<T> {
+    private final ObservableList<T> allData;
     @Getter
     private final int pageSize;
 
-    public PagedDataSource(ObservableList<PatientResDTO> data, int pageSize) {
-        this.allData = data;
+    public PagedDataSource(ObservableList<T> data, int pageSize) {
+        this.allData = FXCollections.observableArrayList(data);
         this.pageSize = pageSize;
     }
 
-    public ObservableList<PatientResDTO> getPage(int pageIndex) {
+    public ObservableList<T> getPage(int pageIndex) {
         int start = pageIndex * pageSize;
         int end = Math.min(start + pageSize, allData.size());
         return FXCollections.observableArrayList(allData.subList(start, end));

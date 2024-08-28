@@ -218,7 +218,7 @@ public class RendezVousController {
 
     public void retour(ActionEvent actionEvent) {
         stageR.close();
-        if(medecin.getNom().isEmpty())
+        if(medecin==null)
         {
 
             try {

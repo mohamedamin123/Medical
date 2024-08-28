@@ -189,10 +189,11 @@ public class AddRendezVousController {
         }
 
 
+
         stage.close();
         stageR.close();
         try {
-            if(medecin.getNom().isEmpty())
+            if(medecin==null)
             {
 
                 changeFenetre("rendez_vous",secretaire.getEmail(),"secretaire",medecin,secretaire,idM);

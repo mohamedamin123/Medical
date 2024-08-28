@@ -3,9 +3,7 @@ package com.medical.medical.services.impl;
 import com.medical.medical.models.dto.req.SecretaireReqDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
-import com.medical.medical.models.entity.Medecin;
-import com.medical.medical.models.entity.Patient;
-import com.medical.medical.models.entity.Secretaire;
+import com.medical.medical.models.entity.*;
 import com.medical.medical.models.entity.Secretaire;
 import com.medical.medical.models.mapper.SecretaireMapper;
 import com.medical.medical.repository.SecretaireRepo;
@@ -44,7 +42,6 @@ public class SecretaireServiceImpl implements SecretaireService
     public SecretaireResDTO saveSecretaire(SecretaireReqDTO req) {
         Secretaire emp=mapper.toEntity(req);
         emp.setPassword(this.passwordEncoder.encode(emp.getPassword()));
-
         repository.save(emp);
         return mapper.toRespDTO(emp);
     }
@@ -88,6 +85,8 @@ public class SecretaireServiceImpl implements SecretaireService
         List<Secretaire> users = this.repository.findAll();
         return mapper.toAllRespDTO(users);
     }
+
+
 
 
     @Override
@@ -160,6 +159,15 @@ public class SecretaireServiceImpl implements SecretaireService
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public List<SecretaireResDTO> findSecretairesByIdMedecin(Integer id) {
+        List<Secretaire> users = this.repository.findSecretairesByIdMedecin(id);
+        List<Secretaire> filteredRendezVousList = users.stream()
+                .filter(rendezVous -> rendezVous.getDeletedAt() == null)
+                .collect(Collectors.toList());
+        return mapper.toAllRespDTO(filteredRendezVousList);
     }
 
     @Override

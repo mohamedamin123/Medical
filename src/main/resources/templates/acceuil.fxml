@@ -33,7 +33,7 @@
                <ImageView fitWidth="58.0" preserveRatio="true">
                   <Image url="@../static/images/profil.png" />
                </ImageView>
-               <Label fx:id="name" style="-fx-font-size: 16;" text="Nom+prenom" alignment="CENTER">
+               <Label fx:id="name" alignment="CENTER" style="-fx-font-size: 16;" text="Nom+prenom">
                   <VBox.margin>
                      <Insets top="10.0" />
                   </VBox.margin>
@@ -57,12 +57,28 @@
             <ImageView fx:id="patient" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                <Image url="@../static/images/patient.png" />
                <VBox.margin>
-                  <Insets right="100.0" />
+                  <Insets right="70.0" />
                </VBox.margin>
             </ImageView>
             <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Patient" VBox.vgrow="ALWAYS">
                <VBox.margin>
-                  <Insets right="100.0" />
+                  <Insets right="70.0" />
+               </VBox.margin></Label>
+         </VBox>
+
+         <VBox alignment="CENTER" spacing="10">
+            <ImageView fx:id="attente" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+               <Image url="@../static/images/attente.png" />
+               <VBox.margin>
+                  <Insets left="70.0" right="70.0" />
+               </VBox.margin>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </ImageView>
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Salle d'attente" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets left="70.0" right="70.0" />
                </VBox.margin></Label>
          </VBox>
 
@@ -70,7 +86,7 @@
             <ImageView fx:id="profile" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                <Image url="@../static/images/Utilisateur.png" />
                <VBox.margin>
-                  <Insets left="100.0" />
+                  <Insets left="70.0" />
                </VBox.margin>
                <viewport>
                   <Rectangle2D height="150.0" />
@@ -78,7 +94,7 @@
             </ImageView>
             <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Profile" VBox.vgrow="ALWAYS">
                <VBox.margin>
-                  <Insets left="100.0" />
+                  <Insets left="70.0" />
                </VBox.margin></Label>
          </VBox>
       </HBox>
@@ -88,7 +104,7 @@
             <ImageView fx:id="rendezVous" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                <Image url="@../static/images/Rendez_vous.png" />
                <VBox.margin>
-                  <Insets right="100.0" />
+                  <Insets right="70.0" />
                </VBox.margin>
                <cursor>
                   <Cursor fx:constant="DEFAULT" />
@@ -96,7 +112,7 @@
             </ImageView>
             <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Rendez-vous" VBox.vgrow="ALWAYS">
                <VBox.margin>
-                  <Insets right="100.0" />
+                  <Insets right="70.0" />
                </VBox.margin></Label>
          </VBox>
 
@@ -104,14 +120,28 @@
             <ImageView fx:id="secretaireI" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                <Image url="@../static/images/Secretaire.png" />
                <VBox.margin>
-                  <Insets left="100.0" />
+                  <Insets left="70.0" right="70.0" />
                </VBox.margin>
             </ImageView>
             <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Secrétaires" VBox.vgrow="ALWAYS">
                <VBox.margin>
-                  <Insets left="100.0" />
+                  <Insets left="70.0" right="70.0" />
+               </VBox.margin></Label>
+         </VBox>
+
+         <VBox alignment="CENTER" spacing="10">
+            <ImageView fx:id="deconnecter" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+               <Image url="@../static/images/deconnerter.png" />
+               <VBox.margin>
+                  <Insets left="70.0" />
+               </VBox.margin>
+            </ImageView>
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Deconnerter" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets left="70.0" />
                </VBox.margin></Label>
          </VBox>
       </HBox>
-   </VBox>
+
+</VBox>
 </AnchorPane>

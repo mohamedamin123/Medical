@@ -3,6 +3,7 @@ package com.medical.medical.controller.API;
 import com.medical.medical.models.dto.req.SecretaireReqDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
+import com.medical.medical.models.entity.Secretaire;
 import com.medical.medical.services.interf.SecretaireService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,11 @@ public class SecretaireController {
         return this.service.findSecretairesByDateDeNaissance(date);
     }
 
+    @GetMapping(path = "/find-all-by-id-medecin")
+    public List<SecretaireResDTO> findSecretairesByIdMedecin(@RequestParam  Integer id) {
+        return this.service.findSecretairesByIdMedecin(id);
+
+    }
     @GetMapping(path = "/find-all-by-prenom-or-nom")
     public List<SecretaireResDTO> findSecretairesByPrenomOrNom(@RequestParam String prenom,@RequestParam String nom)
     {

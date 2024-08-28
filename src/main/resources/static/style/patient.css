@@ -1,5 +1,5 @@
 /* Style pour les boutons */
-.connect-button, .anuler-button {
+.connect-button, .anuler-button, .delete-button {
     -fx-background-color: #007bff;
     -fx-text-fill: white;
     -fx-font-size: 14px;
@@ -12,6 +12,10 @@
 
 .anuler-button {
     -fx-background-color: #dc3545; /* Rouge similaire à Bootstrap */
+}
+
+.delete-button {
+    -fx-background-color: #dc3545; /* Rouge similaire à Bootstrap pour le bouton de suppression */
 }
 
 /* Style pour la barre de recherche */
@@ -59,6 +63,12 @@
 
 .table-view .table-row-cell:odd {
     -fx-background-color: #f8f9fa;
+}
+
+/* Highlight selected row with a different color */
+.table-view .table-row-cell:selected {
+    -fx-background-color: #007bff; /* Background color for selected row */
+    -fx-text-fill: white; /* Text color for selected row */
 }
 
 /* Style pour la pagination */

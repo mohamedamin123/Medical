@@ -29,4 +29,11 @@ public class UserReqDTO {
         this.dateDeNaissance = dateDeNaissance;
 
     }
+
+    public UserReqDTO(String nom, String prenom, String tel, String email) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.tel = tel;
+        this.email = email;
+    }
 }

@@ -20,6 +20,7 @@ public interface SecretaireService {
 
     List<SecretaireResDTO> findAllSecretaire();
 
+    List<SecretaireResDTO> findSecretairesByIdMedecin(Integer id);
 
      Optional<SecretaireResDTO> findSecretaireById(int id) ;
 

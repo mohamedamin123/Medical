@@ -267,4 +267,39 @@ public class javaFxAPI {
     }
 
 
+
+    public static void changeFenetre(String destination, String email, String role, MedecinResDTO medecin, SecretaireResDTO secretaire, Integer id, SecretaireResDTO newRendezVous) throws IOException {
+        ConfigurableApplicationContext springContext = JavaFXApp.getSpringContext();
+        if (springContext == null) {
+            log.error("Spring context is not initialized");
+            throw new IllegalStateException("Spring context is not initialized");
+        }
+
+        FXMLLoader fxmlLoader = new FXMLLoader(javaFxAPI.class.getResource("/templates/" + destination + ".fxml"));
+        fxmlLoader.setControllerFactory(springContext::getBean);
+
+        Parent root;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            log.error("Error loading FXML file for " + destination, e);
+            throw e;
+        }
+
+        Object controller = fxmlLoader.getController();
+        if (controller == null) {
+            log.error("Controller is null");
+            throw new IllegalStateException("Controller is not instantiated");
+        }
+
+        Stage newStage = new Stage();
+        newStage.setTitle(destination);
+        newStage.setScene(new Scene(root));
+
+        // Pass user data to the new stage
+        newStage.setUserData(new Object[]{email, role, medecin, secretaire,id,newRendezVous});
+
+        newStage.show();
+    }
+
 }

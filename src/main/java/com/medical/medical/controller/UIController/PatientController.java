@@ -3,6 +3,7 @@ package com.medical.medical.controller.UIController;
 import com.medical.medical.exceptions.UserException;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
+import com.medical.medical.models.dto.res.RendezVousResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.PagedDataSource;
 import javafx.application.Platform;
@@ -161,10 +162,41 @@ public class PatientController {
 
     }
 
+    @FXML
+    private void handleDeletePatient() {
+        // Récupérer le patient sélectionné
+        PatientResDTO selectedPatient = patientTable.getSelectionModel().getSelectedItem();
+
+        if (selectedPatient != null) {
+            // Supprimer le patient de la liste
+            patients.remove(selectedPatient);
+
+            // Supprimer le patient du contrôleur API
+            patientController.deletePatientById(selectedPatient.getIdPatient());
+
+            // Réinitialiser les données de la table
+            pagedDataSource = new PagedDataSource(patients, PAGE_SIZE);
+            pagination.setPageCount(pagedDataSource.getPageCount());
+            pagination.setCurrentPageIndex(0); // Reset to the first page
+            patientTable.setItems(pagedDataSource.getPage(0)); // Mettre à jour la table
+        } else {
+            showAlert("Aucune sélection", "Veuillez sélectionner un patient à supprimer.");
+        }
+    }
+
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     private void annuler() {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
-        if(medecin.getNom().isEmpty())
+        if(medecin==null)
         {
 
             try {

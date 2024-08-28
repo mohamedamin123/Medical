@@ -13,12 +13,15 @@ import java.util.Optional;
 @Repository
 
 public interface SecretaireRepo extends JpaRepository<Secretaire,Integer> {
+
+    List<Secretaire> findSecretairesByIdMedecin(Integer id);
     Optional<Secretaire> findSecretaireByEmail(String email);
     Optional<Secretaire> findSecretaireByTel(String tel);
 
     List<Secretaire> findSecretairesByDateDeNaissance(LocalDate dateDeNaissance);
 
     List<Secretaire> findSecretairesByPrenomOrNom(String prenom,String nom);
+
     @Query("SELECT e.password FROM Secretaire e WHERE e.email = :email")
     Optional<String> findPasswordByEmail(@Param("email") String email);
 }

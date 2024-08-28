@@ -195,7 +195,7 @@ public class ProfileController {
                 stage.close();
 
 
-                if(medecin.getNom().isEmpty())
+                if(medecin==null)
                 {
 
                     secretaire.setNom(secretaireReqDTO.getNom());
@@ -268,7 +268,7 @@ public class ProfileController {
     private void annulerBtn() throws IOException {
         Stage stage = (Stage) nom.getScene().getWindow();
         stage.close();
-        if(medecin.getNom().isEmpty())
+        if(medecin==null)
         {
 
             changeFenetre("acceuil",secretaire.getEmail(),"secretaire",medecin,secretaire);

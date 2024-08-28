@@ -6,6 +6,7 @@ import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.models.entity.Medecin;
 import com.medical.medical.models.entity.Patient;
 import com.medical.medical.models.entity.Patient;
+import com.medical.medical.models.entity.Secretaire;
 import com.medical.medical.models.mapper.PatientMapper;
 import com.medical.medical.repository.PatientRepo;
 import com.medical.medical.services.interf.PatientService;
@@ -39,10 +40,9 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientResDTO updatePatient(PatientReqDTO req) {
-        System.out.println("cc "+req.getIdPatient());
+
         // Convertir DTO en entité pour obtenir les nouvelles données
         Patient updatedMedecin = mapper.toEntity(req);
-        System.out.println(updatedMedecin);
 
         // Trouver le médecin existant par son email
         Optional<Patient> existingMedecinOptional = this.repository.findPatientByIdPatient(req.getIdPatient());
@@ -89,7 +89,11 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public List<PatientResDTO> findPatientsByIdMedecin(Integer id) {
         List<Patient> users = this.repository.findPatientsByIdMedecin(id);
-        return mapper.toAllRespDTO(users);    }
+        List<Patient> filteredRendezVousList = users.stream()
+                .filter(rendezVous -> rendezVous.getDeletedAt() == null)
+                .collect(Collectors.toList());
+        return mapper.toAllRespDTO(filteredRendezVousList);
+    }
 
 
     @Override

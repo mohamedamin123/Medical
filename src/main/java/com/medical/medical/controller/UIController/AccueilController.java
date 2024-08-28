@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -27,6 +28,10 @@ import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 @Slf4j
 public class AccueilController {
 
+    @FXML
+    private ImageView attente;
+    @FXML
+    private ImageView deconnecter;
     @FXML
     private ImageView profile;
 
@@ -107,6 +112,19 @@ public class AccueilController {
                             }
                         });
 
+                        deconnecter.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                deconnecterMethode();
+                            }
+                        });
+
+                        attente.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                attenteMethode();
+                            }
+                        });
 
                     } else {
                         log.error("User data array does not have the expected number of elements");
@@ -123,26 +141,55 @@ public class AccueilController {
         });
     }
 
+    private void attenteMethode() {
+    }
+
+    private void deconnecterMethode() {
+        try {
+            changeFenetre("login");
+            stage.close();
+        } catch (IOException e) {
+            log.error("Error changing window", e);
+        }
+
+    }
+
     private void setRendezVous() {
         try {
-            if(medecin.getNom().isEmpty())
+            if(medecin==null)
             {
 
                 changeFenetre("rendez_vous",secretaire.getEmail(),"secretaire",medecin,secretaire,idM);
+
             }
 
             else {
                 changeFenetre("rendez_vous",medecin.getEmail(),"medecin",medecin,secretaire,idM);
             }
+            stage.close();
+
 
             stage.close();
         } catch (IOException e) {
             log.error("Error changing window", e);
-        }    }
+        }
+    }
 
     private void setSecretaire() {
-        log.info("secretaire");
-    }
+
+        try {
+            if (medecin == null) {
+                showAlert(Alert.AlertType.WARNING, "Impossible", "Vous ne pouvez pas accéder à cette interface !");
+            } else {
+                log.info("Navigating to Secrétaire interface");
+                changeFenetre("secretaire", medecin.getEmail(), "medecin", medecin, secretaire, idM);
+                stage.close();
+            }
+
+
+        } catch (IOException e) {
+            log.error("Error changing window", e);
+        }    }
 
 
     private void getFullNames(MedecinResDTO medecin, SecretaireResDTO secretaire, String email, String role) {
@@ -189,7 +236,7 @@ public class AccueilController {
 
     private void setPatient() {
         try {
-            if(medecin.getNom().isEmpty())
+            if(medecin==null)
             {
 
                 changeFenetre("patient",secretaire.getEmail(),"secretaire",medecin,secretaire,idM);
@@ -198,11 +245,18 @@ public class AccueilController {
             else {
                 changeFenetre("patient",medecin.getEmail(),"medecin",medecin,secretaire,idM);
             }
-
             stage.close();
         } catch (IOException e) {
             log.error("Error changing window", e);
         }
     }
 
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

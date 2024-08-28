@@ -7,6 +7,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class SecretaireResDTO extends UserResDTO {
 
+    private int idSecretaire;
+
+
     private Integer idMedecin;
+
+    private String password;
 
 }
