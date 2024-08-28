@@ -1,25 +1,71 @@
-.connect-button {
+/* Style pour les boutons */
+.connect-button, .anuler-button {
     -fx-background-color: #007bff;
     -fx-text-fill: white;
-    -fx-font-size: 12px;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-padding: 10px 20px;
-    -fx-cursor: cursor;
-    -fx-text-alignment: center;
-    margin :15px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
 }
 
 .anuler-button {
-    -fx-background-color: red;
-    -fx-text-fill: white;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-padding: 10px 40px;
-    -fx-cursor: cursor;
-    -fx-text-alignment: center;
-    margin :15px;
+    -fx-background-color: #dc3545; /* Rouge similaire à Bootstrap */
 }
 
+/* Style pour la barre de recherche */
+.text-field {
+    -fx-padding: 10px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-font-size: 14px;
+}
+
+/* Style pour le titre */
 .titre {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
     -fx-text-alignment: center;
+    -fx-padding: 20px 0;
+}
+
+/* Style pour le TableView */
+.table-view {
+    -fx-padding: 10px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-font-size: 14px;
+    -fx-table-cell-border-color: #dee2e6;
+}
+
+/* Style pour les en-têtes de colonnes */
+.table-view .column-header-background {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+/* Style pour les lignes du tableau */
+.table-view .table-row-cell {
+    -fx-border-color: #dee2e6;
+    -fx-background-color: #ffffff;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+/* Style pour la pagination */
+.pagination {
+    -fx-padding: 10px;
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
 }

@@ -2,7 +2,6 @@ package com.medical.medical.controller.UIController;
 
 import com.medical.medical.controller.API.DossierMedicalController;
 import com.medical.medical.controller.API.PatientController;
-import com.medical.medical.controller.API.SecretaireController;
 import com.medical.medical.ennum.Sexe;
 import com.medical.medical.models.dto.req.DossierMedicalReqDTO;
 import com.medical.medical.models.dto.req.PatientReqDTO;
@@ -43,7 +42,7 @@ import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 
 @Component
 @Slf4j
-public class AddPatient {
+public class AddPatientController {
 
 
 
@@ -150,18 +149,21 @@ public class AddPatient {
                         fileHBox.getChildren().add(fileNameLabel);
 
                         Button deleteButton = new Button();
+                        deleteButton.getStyleClass().add("delete-button"); // Ajouter la classe de style
                         ImageView deleteIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/static/icons/supprimer.png")).toExternalForm()));
                         deleteIcon.setFitWidth(16);
                         deleteIcon.setFitHeight(16);
                         deleteButton.setGraphic(deleteIcon);
                         deleteButton.setOnAction(event -> {
                             fileListContainer.getChildren().remove(fileHBox);
-                            System.out.println("dossier id :"+dossier.getIdDossierMedical());
+
                             dossierMedicalController.findDossierMedicalByIdAfterDelete(dossier.getIdDossierMedical()); // Add deletion logic here
                         });
                         fileHBox.getChildren().add(deleteButton);
 
                         Button openButton = new Button("Ouvrir");
+                        openButton.getStyleClass().add("open-button"); // Ajouter la classe de style
+
                         openButton.setOnAction(event -> {
                             // Chemin pour stocker temporairement le fichier
                             Path path = Paths.get(System.getProperty("java.io.tmpdir"), dossier.getFichier());
@@ -177,6 +179,8 @@ public class AddPatient {
                                 // Affiche une alerte en cas d'erreur
                                 showAlert(Alert.AlertType.ERROR, "Erreur de Lecture de Fichier", "Erreur lors de la lecture du fichier: " + e.getMessage());
                             }
+                            stage.getScene().getStylesheets().add(getClass().getResource("/static/css/addPatient.css").toExternalForm());
+
                         });
 
 // Ajoute le bouton "Ouvrir" au conteneur HBox

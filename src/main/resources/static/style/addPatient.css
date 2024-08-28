@@ -1,9 +1,100 @@
-/* styles.css */
-
 /* Style for Labels */
+
+/* Styles pour les boutons */
+.button {
+    -fx-background-color: #4CAF50; /* Couleur de fond */
+    -fx-text-fill: white; /* Couleur du texte */
+    -fx-font-size: 14px; /* Taille de la police */
+    -fx-padding: 10px 20px; /* Espacement intérieur */
+    -fx-border-radius: 5px; /* Coins arrondis */
+    -fx-background-radius: 5px; /* Coins arrondis */
+}
+
+
+
+.image-view {
+    -fx-fit-width: 16px; /* Largeur de l'icône */
+    -fx-fit-height: 16px; /* Hauteur de l'icône */
+}
+
+.button.delete-button {
+    -fx-background-color: #f44336; /* Couleur de fond pour supprimer */
+}
+
+.button.delete-button:hover {
+    -fx-background-color: #da190b; /* Couleur de fond au survol pour supprimer */
+}
+
+.button.open-button {
+    -fx-background-color: #2196F3; /* Couleur de fond pour ouvrir */
+}
+
+.button.open-button:hover {
+    -fx-background-color: #0b79d0; /* Couleur de fond au survol pour ouvrir */
+}
+
+
+
+
+
+
+
 .label-bold {
     -fx-font-weight: bold;
-    -fx-font-size: 13px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50; /* Dark color for text */
     -fx-padding: 0 0 0 10px;
+}
+
+/* Style for Section Titles */
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #34495e; /* Slightly lighter color for section titles */
+    -fx-padding: 0 0 10px 0;
+}
+
+/* Style for TextFields */
+.text-field, .date-picker, .combo-box, .text-area {
+    -fx-padding: 5px;
+    -fx-border-radius: 5px;
+    -fx-background-color: #f9f9f9; /* Light background color */
+    -fx-border-color: #bdc3c7; /* Border color */
+    -fx-border-width: 1px;
+}
+
+/* Style for Buttons */
+.button-cancel {
+    -fx-background-color: #e74c3c; /* Red color for cancel button */
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+}
+
+.button-save {
+    -fx-background-color: #2ecc71; /* Green color for save button */
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+}
+
+.button-charge{
+    -fx-background-color: blue; /* Green color for save button */
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+}
+
+/* Style for TextArea */
+.text-area {
+    -fx-background-color: #fff; /* White background color */
+    -fx-border-color: #bdc3c7; /* Border color */
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+}
+
+/* Style for RadioButton */
+.radio-button {
+    -fx-padding: 5px 10px;
 }
 

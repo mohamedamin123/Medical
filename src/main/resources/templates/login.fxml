@@ -9,42 +9,40 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
 <VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="40.0" stylesheets="@../static/style/login.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.medical.medical.controller.UIController.LoginController">
 
    <!-- Titre -->
-   <Label styleClass="title-label" text="Connecter" VBox.vgrow="ALWAYS">
+   <Label styleClass="title-label" text="Connecter" VBox.vgrow="NEVER">
       <font>
-         <Font size="20.0" />
+         <Font size="28.0" />
       </font>
    </Label>
 
    <!-- Conteneur pour le formulaire -->
    <GridPane alignment="CENTER" hgap="20" vgap="20">
       <columnConstraints>
-         <ColumnConstraints percentWidth="15.0" />
-         <ColumnConstraints percentWidth="70.0" />
+         <ColumnConstraints minWidth="100.0" />
+         <ColumnConstraints hgrow="ALWAYS" />
       </columnConstraints>
 
       <rowConstraints>
-         <RowConstraints vgrow="ALWAYS" />
-         <RowConstraints vgrow="ALWAYS" />
+         <RowConstraints minHeight="50.0" vgrow="SOMETIMES" />
+         <RowConstraints minHeight="50.0" vgrow="SOMETIMES" />
       </rowConstraints>
 
       <!-- Champ email -->
       <Label styleClass="input-label" text="Email :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-      <TextField fx:id="emailConnecter" promptText="Email" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+      <TextField fx:id="emailConnecter" promptText="Entrez votre email" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
       <!-- Champ mot de passe -->
-      <Label styleClass="input-label" text="Password :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-      <PasswordField fx:id="passwordConnecter" promptText="Mot de passe" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Label styleClass="input-label" text="Mot de passe :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+      <PasswordField fx:id="passwordConnecter" promptText="Entrez votre mot de passe" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
    </GridPane>
 
    <!-- Bouton de connexion -->
-   <Button fx:id="myButton" styleClass="connect-button" text="Connecter" VBox.vgrow="ALWAYS" />
+   <Button fx:id="myButton" styleClass="connect-button" text="Connecter" VBox.vgrow="NEVER" />
 
    <!-- Message d'erreur -->
    <Label fx:id="loginErreur" styleClass="error-label" text="Votre email ou mot de passe est incorrect!!" visible="false" />
-
 </VBox>

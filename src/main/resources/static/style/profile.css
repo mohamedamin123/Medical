@@ -21,7 +21,7 @@
 }
 
 .buttonAnnuler {
-    -fx-background-color: red;
+    -fx-background-color: #dc3545; /* Rouge similaire à Bootstrap */
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-padding: 10px 20px;
