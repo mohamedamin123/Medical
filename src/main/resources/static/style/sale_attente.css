@@ -1,0 +1,49 @@
+#title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 10;
+}
+
+#patientTable {
+    -fx-border-color: #B0B0B0;
+    -fx-border-width: 2;
+    -fx-table-cell-border-color: transparent;
+}
+
+#statsLabel {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+#countLabel {
+    -fx-font-size: 16px;
+    -fx-text-fill: #2A9D8F;
+}
+
+Button {
+    -fx-background-color: #2A9D8F;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10;
+    -fx-background-radius: 5;
+}
+
+Button:hover {
+    -fx-background-color: #1E6F5C;
+}
+
+.button-back {
+    -fx-background-color: #3458db;
+}
+
+.button-add {
+    -fx-background-color: #3498db;
+}
+
+.button-edit {
+    -fx-background-color: #f39c12;
+}
+
+.button-delete {
+    -fx-background-color: #e74c3c;
+}

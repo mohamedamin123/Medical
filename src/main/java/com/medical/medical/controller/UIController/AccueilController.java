@@ -142,6 +142,21 @@ public class AccueilController {
     }
 
     private void attenteMethode() {
+        try {
+            if(medecin==null)
+            {
+
+                changeFenetre("salle_attente",secretaire.getEmail(),"secretaire",medecin,secretaire,idM);
+
+            }
+
+            else {
+                changeFenetre("salle_attente",medecin.getEmail(),"medecin",medecin,secretaire,idM);
+            }
+            stage.close();
+        } catch (IOException e) {
+            log.error("Error changing window", e);
+        }
     }
 
     private void deconnecterMethode() {
@@ -166,9 +181,6 @@ public class AccueilController {
             else {
                 changeFenetre("rendez_vous",medecin.getEmail(),"medecin",medecin,secretaire,idM);
             }
-            stage.close();
-
-
             stage.close();
         } catch (IOException e) {
             log.error("Error changing window", e);

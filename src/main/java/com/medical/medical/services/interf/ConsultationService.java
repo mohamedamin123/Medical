@@ -2,8 +2,10 @@ package com.medical.medical.services.interf;
 
 import com.medical.medical.models.dto.req.ConsultationReqDTO;
 import com.medical.medical.models.dto.res.ConsultationResDTO;
+import com.medical.medical.models.entity.Consultation;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +18,7 @@ public interface ConsultationService {
 
     List<ConsultationResDTO> findAllConsultation();
 
+    List<ConsultationResDTO> findConsultationsByIdMedecinAndJour(Integer id, LocalDate jour);
 
      Optional<ConsultationResDTO> findConsultationById(int id) ;
 

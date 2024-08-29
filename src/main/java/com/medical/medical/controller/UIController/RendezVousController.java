@@ -234,5 +234,6 @@ public class RendezVousController {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }    }
+        }
+    }
 }

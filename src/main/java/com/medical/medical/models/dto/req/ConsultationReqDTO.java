@@ -1,12 +1,15 @@
 package com.medical.medical.models.dto.req;
 
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 @Data
 @Builder
@@ -15,12 +18,19 @@ import java.util.Date;
 public class ConsultationReqDTO {
 
     private int idConsultation;
-    private String note;
 
-    private LocalDate dateDeConsultation;
+    private Integer idMedecin;
 
-    public ConsultationReqDTO(String note, LocalDate dateDeConsultation) {
-        this.note = note;
-        this.dateDeConsultation = dateDeConsultation;
+    private Integer idPatient;
+
+    private LocalDate jour;
+
+    private LocalTime heure;
+
+    public ConsultationReqDTO(Integer medecinId, Integer patientId, LocalDate jour, LocalTime heure) {
+        this.idMedecin = medecinId;
+        this.idPatient = patientId;
+        this.jour = jour;
+        this.heure = heure;
     }
 }

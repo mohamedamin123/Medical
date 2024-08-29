@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +29,10 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     public ConsultationResDTO saveConsultation(ConsultationReqDTO req) {
+        System.out.println(req);
         Consultation emp=mapper.toEntity(req);
+        System.out.println(emp);
+
         repository.save(emp);
         return mapper.toRespDTO(emp);
     }
@@ -48,6 +52,16 @@ public class ConsultationServiceImpl implements ConsultationService {
 
         List<Consultation> users = this.repository.findAll();
         return mapper.toAllRespDTO(users);
+    }
+
+    @Override
+    public List<ConsultationResDTO> findConsultationsByIdMedecinAndJour(Integer id, LocalDate jour) {
+
+        List<Consultation> consultations = this.repository.findConsultationsByIdMedecinAndJour(id,jour);
+        List<Consultation> filteredConsultations = consultations.stream()
+                .filter(consultation -> consultation.getDeletedAt() == null)
+                .collect(Collectors.toList());
+        return mapper.toAllRespDTO(filteredConsultations);
     }
 
 

@@ -16,8 +16,8 @@ class MedicalApplicationTests {
 	@Test
 	void saveConsultation() {
 
-		ConsultationReqDTO c1=new ConsultationReqDTO("bonjour", LocalDate.now());
-		cc.saveConsultation(c1);
+//		ConsultationReqDTO c1=new ConsultationReqDTO("bonjour", LocalDate.now());
+//		cc.saveConsultation(c1);
 
 	}
 

@@ -12,6 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -26,12 +27,13 @@ public class Consultation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_consultation")
     private int idConsultation;
-    @NotBlank
-    private String note;
 
-    @Column(name = "date_de_consultation")
-    @Temporal(TemporalType.DATE)
-    private LocalDate dateDeConsultation;
+    @Column(name = "jour")
+    private LocalDate jour;
+
+    @Column(name = "heure")
+    @Temporal(TemporalType.TIME)
+    private LocalTime heure;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -46,10 +48,10 @@ public class Consultation {
 
 //------------------------------------------------------------------------------------------------------------foreignKey
     @Column(name = "medecin_id")
-    private Integer medecinId;
+    private Integer idMedecin;
 
     @Column(name = "patient_id")
-    private Integer patientId;
+    private Integer idPatient;
 //-------------------------------------------------------------------------------------------------------------relations
 
     @JsonBackReference("consultation_medecin")

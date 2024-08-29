@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 @RestController
@@ -24,7 +25,13 @@ public class ConsultationController {
         return this.service.findAllConsultation();
     }
 
-    @GetMapping(path = "/find-by-id/{id}")
+    @GetMapping(path = "/find-all-by-medecin-id-and-date")
+    public List<ConsultationResDTO> findConsultationsByIdMedecinAndJour( @RequestParam Integer id, @RequestParam  LocalDate jour) {
+        return this.service.findConsultationsByIdMedecinAndJour(id,jour);
+    }
+
+
+        @GetMapping(path = "/find-by-id/{id}")
     public Optional<ConsultationResDTO> findConsultationById(@PathVariable(name = "id")  Integer id)
     {
         log.info("id de consultation est : {}", id);
