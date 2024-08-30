@@ -1,4 +1,4 @@
-package com.medical.medical.controller.UIController;
+package com.medical.medical.controller.UIController.autre;
 
 import com.medical.medical.controller.API.ConsultationController;
 import com.medical.medical.models.dto.res.ConsultationResDTO;

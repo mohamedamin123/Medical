@@ -1,4 +1,4 @@
-package com.medical.medical.controller.UIController;
+package com.medical.medical.controller.UIController.autre;
 
 import com.medical.medical.controller.API.MedecinController;
 import com.medical.medical.controller.API.SecretaireController;
@@ -166,7 +166,6 @@ public class AccueilController {
         } catch (IOException e) {
             log.error("Error changing window", e);
         }
-
     }
 
     private void setRendezVous() {

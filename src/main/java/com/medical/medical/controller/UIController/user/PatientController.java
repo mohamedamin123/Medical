@@ -1,20 +1,21 @@
-package com.medical.medical.controller.UIController;
+package com.medical.medical.controller.UIController.user;
 
 import com.medical.medical.exceptions.UserException;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
-import com.medical.medical.models.dto.res.SecretaireResDTO
-;
+import com.medical.medical.models.dto.res.RendezVousResDTO;
+import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.PagedDataSource;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -26,25 +27,28 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 
-@Component("uiSecretaireController")
+@Component("uiPatientController")
 @Slf4j
-public class SecretaireControle {
-    @FXML
-    private TableColumn<SecretaireResDTO, LocalDate>  dobColumn;
+public class PatientController {
     @FXML
     private Button cancelButton;
     @FXML
-    private TableColumn<SecretaireResDTO, Number> idColumn;
+    private TableColumn<PatientResDTO, Number> idColumn;
     @FXML
-    private TableColumn<SecretaireResDTO, String> phoneColumn;
+    private TableColumn<PatientResDTO, String> phoneColumn;
     @FXML
-    private TableView<SecretaireResDTO> secretaireTable;
+    private TableView<PatientResDTO> patientTable;
     @FXML
-    private TableColumn<SecretaireResDTO, String> nomColumn;
+    private TableColumn<PatientResDTO, String> cinColumn;
+    @FXML
+    private TableColumn<PatientResDTO, String> nomColumn;
+    @FXML
+    private TableColumn<PatientResDTO, LocalDate> dobColumn;
     @FXML
     private TextField searchField;
     @FXML
@@ -52,10 +56,9 @@ public class SecretaireControle {
     @FXML
     private Button addPatientButton;
 
-    private ObservableList<SecretaireResDTO>  secretaires
-;
+    private ObservableList<PatientResDTO> patients;
     private PagedDataSource pagedDataSource;
-
+    
     private final int PAGE_SIZE=12;
     private Stage stage;
     private Integer idM;
@@ -73,7 +76,7 @@ public class SecretaireControle {
     private SecretaireResDTO secretaire;
 
     @Autowired
-    private com.medical.medical.controller.API.SecretaireController secretaireController;
+    private com.medical.medical.controller.API.PatientController patientController;
 
 
 
@@ -91,7 +94,7 @@ public class SecretaireControle {
                 idM = (Integer) data[4];
 
                 // Initialiser les colonnes
-                idColumn.setCellFactory(column -> new TableCell<SecretaireResDTO, Number>() {
+                idColumn.setCellFactory(column -> new TableCell<PatientResDTO, Number>() {
                     @Override
                     protected void updateItem(Number item, boolean empty) {
                         super.updateItem(item, empty);
@@ -104,6 +107,7 @@ public class SecretaireControle {
                 });
 
                 // Configurer les colonnes
+                cinColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCIN()));
                 nomColumn.setCellValueFactory(cellData -> {
                     try {
                         return new ReadOnlyStringWrapper(cellData.getValue().getFullName());
@@ -115,12 +119,12 @@ public class SecretaireControle {
                 phoneColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTel()));
 
                 // Données d'exemple
-                   secretaires = FXCollections.observableArrayList(
+                patients = FXCollections.observableArrayList(
                         getDate()
                 );
 
                 // Initialiser PagedDataSource
-                pagedDataSource = new PagedDataSource(secretaires, PAGE_SIZE);
+                pagedDataSource = new PagedDataSource(patients, PAGE_SIZE);
 
                 // Configurer la pagination
                 pagination.setPageCount(pagedDataSource.getPageCount());
@@ -137,16 +141,16 @@ public class SecretaireControle {
                 });
 
                 // Gestion du clic sur les lignes
-                secretaireTable.setOnMouseClicked((MouseEvent event) -> {
+                patientTable.setOnMouseClicked((MouseEvent event) -> {
                     if (event.getClickCount() == 2) {
-                        showPatientDetails(secretaireTable.getSelectionModel().getSelectedItem());
+                        showPatientDetails(patientTable.getSelectionModel().getSelectedItem());
                     }
                 });
 
                 addPatientButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent actionEvent) {
-                        ajouterSecretaire();
+                        ajouterPatient();
                     }
                 });
 
@@ -156,6 +160,37 @@ public class SecretaireControle {
         });
 
 
+    }
+
+    @FXML
+    private void handleDeletePatient() {
+        // Récupérer le patient sélectionné
+        PatientResDTO selectedPatient = patientTable.getSelectionModel().getSelectedItem();
+
+        if (selectedPatient != null) {
+            // Supprimer le patient de la liste
+            patients.remove(selectedPatient);
+
+            // Supprimer le patient du contrôleur API
+            patientController.deletePatientById(selectedPatient.getIdPatient());
+
+            // Réinitialiser les données de la table
+            pagedDataSource = new PagedDataSource(patients, PAGE_SIZE);
+            pagination.setPageCount(pagedDataSource.getPageCount());
+            pagination.setCurrentPageIndex(0); // Reset to the first page
+            patientTable.setItems(pagedDataSource.getPage(0)); // Mettre à jour la table
+        } else {
+            showAlert("Aucune sélection", "Veuillez sélectionner un patient à supprimer.");
+        }
+    }
+
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private void annuler() {
@@ -180,55 +215,52 @@ public class SecretaireControle {
         }
     }
 
-    @FXML
-    private void handleDeleteSecretaire() {
-        // Récupérer le patient sélectionné
-        SecretaireResDTO selectedPatient = secretaireTable.getSelectionModel().getSelectedItem();
-
-        if (selectedPatient != null) {
-            // Supprimer le patient de la liste
-            secretaires.remove(selectedPatient);
-
-            // Supprimer le patient du contrôleur API
-            secretaireController.deleteSecretaireById(selectedPatient.getIdSecretaire());
-
-            // Réinitialiser les données de la table
-            pagedDataSource = new PagedDataSource(secretaires, PAGE_SIZE);
-            pagination.setPageCount(pagedDataSource.getPageCount());
-            pagination.setCurrentPageIndex(0); // Reset to the first page
-            secretaireTable.setItems(pagedDataSource.getPage(0)); // Mettre à jour la table
-        } else {
-            showAlert("Aucune sélection", "Veuillez sélectionner un patient à supprimer.");
-        }
-    }
-
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void ajouterSecretaire() {
+    private void ajouterPatient() {
         try {
             stage.close();
-            changeFenetre("addSecretaire",email,role,medecin,secretaire,idM);
+            changeFenetre("addPatient",email,role,medecin,secretaire,idM);
         } catch (IOException e) {
             log.error("Error changing window", e);
         }
     }
 
     private void filterTable(String query) throws UserException {
-        ObservableList<SecretaireResDTO> filteredList = FXCollections.observableArrayList();
+        ObservableList<PatientResDTO> filteredList = FXCollections.observableArrayList();
 
+        String normalizedQuery = query.replace("-", "").trim();
+        String[] queryParts = query.split("-");
 
-        for (SecretaireResDTO patient : secretaires) {
-            boolean matches = patient.getFullName().toLowerCase().contains(query.toLowerCase()) ||
+        for (PatientResDTO patient : patients) {
+            boolean matches = patient.getCIN().contains(query) ||
+                    patient.getFullName().toLowerCase().contains(query.toLowerCase()) ||
                     patient.getTel().contains(query);
 
-            if (matches ) {
+            LocalDate dob = patient.getDateDeNaissance();
+            String dobString = dob.toString(); // Format: YYYY-MM-DD
+            String year = dobString.substring(0, 4);
+            String month = dobString.substring(5, 7);
+            String day = dobString.substring(8, 10);
+
+            boolean dateMatches = false;
+            if (queryParts.length == 1) {
+                dateMatches = year.startsWith(normalizedQuery) ||
+                        month.startsWith(normalizedQuery) ||
+                        day.startsWith(normalizedQuery);
+            } else if (queryParts.length == 2) {
+                if (queryParts[0].length() >= 4) {
+                    dateMatches = year.startsWith(queryParts[0]) &&
+                            month.startsWith(queryParts[1]);
+                } else {
+                    dateMatches = month.startsWith(queryParts[0]) &&
+                            day.startsWith(queryParts[1]);
+                }
+            } else if (queryParts.length == 3) {
+                dateMatches = year.startsWith(queryParts[0]) &&
+                        month.startsWith(queryParts[1]) &&
+                        day.startsWith(queryParts[2]);
+            }
+
+            if (matches || dateMatches) {
                 filteredList.add(patient);
             }
         }
@@ -237,14 +269,14 @@ public class SecretaireControle {
         pagedDataSource = new PagedDataSource(filteredList, PAGE_SIZE);
         pagination.setPageCount(pagedDataSource.getPageCount());
         pagination.setCurrentPageIndex(0); // Reset to the first page
-        secretaireTable.setItems(pagedDataSource.getPage(0));
+        patientTable.setItems(pagedDataSource.getPage(0));
     }
 
-    private void showPatientDetails(SecretaireResDTO secretaire) {
+    private void showPatientDetails(PatientResDTO patient) {
         // Logique pour afficher les détails du patient
         try {
             stage.close();
-            changeFenetre("addSecretaire",email,role,medecin,secretaire,idM,secretaire);
+            changeFenetre("addPatient",email,role,medecin,secretaire,idM,patient);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -252,16 +284,16 @@ public class SecretaireControle {
 
     private VBox createPage(int pageIndex) {
         VBox box = new VBox();
-        box.getChildren().add(secretaireTable);
-        secretaireTable.setItems(pagedDataSource.getPage(pageIndex));
+        box.getChildren().add(patientTable);
+        patientTable.setItems(pagedDataSource.getPage(pageIndex));
         return box;
     }
 
-    private List<SecretaireResDTO> getDate() {
+    private List<PatientResDTO> getDate() {
 
-        List<SecretaireResDTO> SecretaireResDTOS;
-        SecretaireResDTOS= secretaireController.findSecretairesByIdMedecin(idM);
-        return SecretaireResDTOS;
+        List<PatientResDTO> patientResDTOS;
+        patientResDTOS=patientController.findPatientsByMedecinId(idM);
+         return patientResDTOS;
     }
 
 }

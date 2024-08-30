@@ -1,8 +1,10 @@
-package com.medical.medical.controller.UIController;
+package com.medical.medical.controller.UIController.autre;
 
+import com.medical.medical.controller.API.AdminController;
 import com.medical.medical.controller.API.MedecinController;
 import com.medical.medical.controller.API.SecretaireController;
 import com.medical.medical.ennum.Utilisateurs;
+import com.medical.medical.models.dto.res.AdminResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.javaFxAPI;
@@ -34,6 +36,9 @@ public class LoginController {
 
     @Autowired
     private SecretaireController secretaireController;
+
+    @Autowired
+    private AdminController adminController;
 
 
 
@@ -72,10 +77,14 @@ public class LoginController {
             } else {
                 Optional<MedecinResDTO> medecinResDTO = medecinController.findMedecinByEmail(email);
                 Optional<SecretaireResDTO> secretaireResDTO = secretaireController.findSecretaireByEmail(email);
+                Optional<AdminResDTO> adminResDTO = adminController.findAdminByEmail(email);
+
 
                 try {
                     Optional<String> passwordM = medecinController.findPasswordByEmail(email);
                     Optional<String> passwordS = secretaireController.findPasswordByEmail(email);
+                    Optional<String> passwordA = adminController.findPasswordByEmail(email);
+
 
                     if (passwordM.isPresent()) {
                         if (passwordEncoder.matches(password, passwordM.get())) {
@@ -101,7 +110,21 @@ public class LoginController {
                             loginErreur.setText("Mot de passe invalide pour Secretaire");
                             loginErreur.setVisible(true);
                         }
-                    } else {
+                    } else if (passwordA.isPresent()) {
+                        if (passwordEncoder.matches(password, passwordA.get())) {
+                            String response = javaFxAPI.login(email, password, "ADMIN");
+                            log.info(response);
+                            log.info("admin");
+                            changeFenetre(email, "admin", adminResDTO.get());
+
+                        } else {
+                            log.info("Invalid password for Secretaire");
+                            loginErreur.setText("Mot de passe invalide pour Secretaire");
+                            loginErreur.setVisible(true);
+                        }
+                    }
+
+                    else {
                         log.info("Invalid email or password");
                         loginErreur.setText("L'email et le mot de passe sont incorrects");
                         loginErreur.setVisible(true);
@@ -131,4 +154,25 @@ public class LoginController {
         // Show the new stage
         newStage.show();
     }
+
+
+    private void changeFenetre(String email, String role, AdminResDTO adminResDTO) throws IOException {
+        // Close the current window
+        Stage stage = (Stage) myButton.getScene().getWindow();
+        stage.close();
+
+        // Load the new scene
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/templates/home_admin.fxml"));
+        Parent root = fxmlLoader.load();
+        Stage newStage = new Stage();
+        newStage.setTitle("Accueil");
+        newStage.setScene(new Scene(root));
+
+        // Set the user data
+        newStage.setUserData(new Object[]{email, role, adminResDTO});
+
+        // Show the new stage
+        newStage.show();
+    }
+
 }

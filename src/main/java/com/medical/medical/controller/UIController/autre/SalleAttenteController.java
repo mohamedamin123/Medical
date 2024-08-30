@@ -1,8 +1,9 @@
-package com.medical.medical.controller.UIController;
+package com.medical.medical.controller.UIController.autre;
 
 import com.medical.medical.controller.API.ConsultationController;
 import com.medical.medical.controller.API.PatientController;
-import com.medical.medical.exceptions.UserException;
+import com.medical.medical.controller.UIController.JavaFXApp;
+import com.medical.medical.controller.UIController.ajouter.AjoutPatientAttController;
 import com.medical.medical.models.dto.res.*;
 import com.medical.medical.utils.PatientItem;
 import javafx.application.Platform;
@@ -29,8 +30,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="733.0" prefWidth="831.0" stylesheets="@../static/style/accueil.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.AccueilController">
+<AnchorPane prefHeight="733.0" prefWidth="831.0" stylesheets="@../static/style/accueil.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.autre.AccueilController">
    <!-- Main layout container -->
 
    <!-- Main layout container -->

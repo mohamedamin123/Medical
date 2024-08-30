@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="40.0" stylesheets="@../static/style/login.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.medical.medical.controller.UIController.LoginController">
+      fx:controller="com.medical.medical.controller.UIController.autre.LoginController">
 
    <!-- Titre -->
    <Label styleClass="title-label" text="Connecter" VBox.vgrow="NEVER">

@@ -1,6 +1,7 @@
 package com.medical.medical.security;
 
 import com.medical.medical.ennum.Utilisateurs;
+import com.medical.medical.models.entity.Admin;
 import com.medical.medical.models.entity.Medecin;
 import com.medical.medical.models.entity.Secretaire;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,16 +17,26 @@ public class UtulisateurDetail implements UserDetails {
     private final Medecin medecin;
     private final Secretaire secretaire;
 
+    private final Admin admin;
+
     // Constructeur pour Medecin
     public UtulisateurDetail(Medecin medecin) {
         this.medecin = medecin;
         this.secretaire = null;
+        this.admin=null;
     }
 
     // Constructeur pour Secretaire
     public UtulisateurDetail(Secretaire secretaire) {
         this.secretaire = secretaire;
         this.medecin = null;
+        this.admin=null;
+    }
+
+    public UtulisateurDetail(Admin admin) {
+        this.secretaire = null;
+        this.medecin = null;
+        this.admin=admin;
     }
 
     private Utilisateurs getRole() {
@@ -33,6 +44,9 @@ public class UtulisateurDetail implements UserDetails {
             return medecin.getRole();
         } else if (secretaire != null) {
             return secretaire.getRole();
+        }
+        else if (admin != null) {
+            return admin.getRole();
         }
         return null;
     }
@@ -55,6 +69,8 @@ public class UtulisateurDetail implements UserDetails {
             return medecin.getPassword();
         } else if (secretaire != null) {
             return secretaire.getPassword();
+        } else if (admin != null) {
+            return admin.getPassword();
         }
         return null;
     }
@@ -65,6 +81,9 @@ public class UtulisateurDetail implements UserDetails {
             return medecin.getEmail();
         } else if (secretaire != null) {
             return secretaire.getEmail();
+        }
+        else if (admin != null) {
+            return admin.getEmail();
         }
         return null;
     }

@@ -1,4 +1,4 @@
-package com.medical.medical.controller.UIController;
+package com.medical.medical.controller.UIController.ajouter;
 
 import com.medical.medical.controller.API.MedecinController;
 import com.medical.medical.controller.API.SecretaireController;

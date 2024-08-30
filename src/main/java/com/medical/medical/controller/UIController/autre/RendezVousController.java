@@ -1,4 +1,4 @@
-package com.medical.medical.controller.UIController;
+package com.medical.medical.controller.UIController.autre;
 
 import com.medical.medical.controller.API.PatientController;
 import com.medical.medical.exceptions.UserException;

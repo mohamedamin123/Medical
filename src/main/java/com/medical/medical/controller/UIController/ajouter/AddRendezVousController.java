@@ -1,4 +1,4 @@
-package com.medical.medical.controller.UIController;
+package com.medical.medical.controller.UIController.ajouter;
 
 import com.medical.medical.controller.API.MedecinController;
 import com.medical.medical.controller.API.PatientController;
@@ -23,16 +23,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static com.medical.medical.controller.UIController.RendezVousController.stageR;
+import static com.medical.medical.controller.UIController.autre.RendezVousController.stageR;
 import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 
 @Component
@@ -72,7 +70,7 @@ public class AddRendezVousController {
     private String role;
 
     @Autowired
-    private com.medical.medical.controller.UIController.RendezVousController rendezVousControllerUI;
+    private com.medical.medical.controller.UIController.autre.RendezVousController rendezVousControllerUI;
 
     private MedecinResDTO medecin;
     private SecretaireResDTO secretaire;

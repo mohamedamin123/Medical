@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.ComboBox?>
-<VBox alignment="CENTER" prefHeight="225.0" prefWidth="382.0" spacing="10" stylesheets="@../static/style/ajout_patient_att.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.AjoutPatientAttController">
+<VBox alignment="CENTER" prefHeight="225.0" prefWidth="382.0" spacing="10" stylesheets="@../static/style/ajout_patient_att.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.ajouter.AjoutPatientAttController">
     <Label text="Ajouter un Patient">
       <VBox.margin>
          <Insets bottom="10.0" />

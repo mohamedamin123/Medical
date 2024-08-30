@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" spacing="20" stylesheets="@../static/style/sale_attente.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.SalleAttenteController">
+<VBox alignment="TOP_CENTER" spacing="20" stylesheets="@../static/style/sale_attente.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.autre.SalleAttenteController">
 
     <!-- Titre de l'interface -->
     <Label id="title" text="Salle d'Attente" />

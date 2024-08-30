@@ -1,5 +1,6 @@
 package com.medical.medical.security;
 
+import com.medical.medical.services.impl.AdminServiceImpl;
 import com.medical.medical.services.impl.MedecinServiceImpl;
 import com.medical.medical.services.impl.SecretaireServiceImpl;
 import com.medical.medical.services.interf.MedecinService;
@@ -33,6 +34,8 @@ public class SecurityConfig {
 
     private final MedecinServiceImpl medecinService;
     private final SecretaireServiceImpl secretaireService;
+    private final AdminServiceImpl adminService;
+
 
 
     @Bean
@@ -59,6 +62,9 @@ public class SecurityConfig {
             UserDetails user = medecinService.loadUserByUsername(username);
             if (user == null) {
                 user = secretaireService.loadUserByUsername(username);
+            } else if (user == null) {
+                user = adminService.loadUserByUsername(username);
+
             }
             if (user == null) {
                 throw new UsernameNotFoundException("User not found");

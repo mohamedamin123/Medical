@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane prefHeight="312.0" prefWidth="540.0" stylesheets="@../static/style/add_rendez_vous.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.AddRendezVousController">
+<BorderPane prefHeight="312.0" prefWidth="540.0" stylesheets="@../static/style/add_rendez_vous.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.ajouter.AddRendezVousController">
     <center>
         <GridPane alignment="CENTER" hgap="10" vgap="10">
             <!-- Define columns -->

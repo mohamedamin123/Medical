@@ -1,4 +1,4 @@
-package com.medical.medical.controller.UIController;
+package com.medical.medical.controller.UIController.ajouter;
 
 import com.medical.medical.controller.API.DossierMedicalController;
 import com.medical.medical.controller.API.PatientController;
@@ -224,7 +224,6 @@ public class AddPatientController {
                 try {
                     stage.close();
                     changeFenetre("patient",email,role,medecin,secretaire,idM);
-                    System.out.println("bn "+idM);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -348,7 +347,6 @@ public class AddPatientController {
         }
         PatientReqDTO patientReqDTO;
         if(patientResDTO!=null) {
-            System.out.println("iddd : "+patientResDTO.getIdPatient());
              patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email2,dateNaissance,notes,batiment,code,cin,ville,sexee,idM,patientResDTO.getIdPatient());
 
 

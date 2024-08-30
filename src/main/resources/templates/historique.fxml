@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="10" stylesheets="@../static/style/profile.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.HistoriqueController">
+<VBox alignment="CENTER" spacing="10" stylesheets="@../static/style/profile.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.autre.HistoriqueController">
 
     <!-- Titre de l'interface -->
     <Label id="title" text="Nombre des patients">

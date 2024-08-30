@@ -1,7 +1,8 @@
-package com.medical.medical.controller.UIController;
+package com.medical.medical.controller.UIController.ajouter;
 
 import com.medical.medical.controller.API.ConsultationController;
 import com.medical.medical.controller.API.PatientController;
+import com.medical.medical.controller.UIController.autre.SalleAttenteController;
 import com.medical.medical.exceptions.UserException;
 import com.medical.medical.models.dto.req.ConsultationReqDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
@@ -28,7 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.medical.medical.controller.UIController.SalleAttenteController.stagee;
+import static com.medical.medical.controller.UIController.autre.SalleAttenteController.stagee;
 import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 
 @Component
