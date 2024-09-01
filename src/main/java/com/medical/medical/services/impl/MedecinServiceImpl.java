@@ -41,6 +41,8 @@ public class MedecinServiceImpl implements MedecinService , UserDetailsService {
     public MedecinResDTO saveMedecin(MedecinReqDTO req) {
         Medecin emp = mapper.toEntity(req);
         emp.setPassword(this.passwordEncoder.encode(emp.getPassword()));
+        emp.setStatut(true);
+
         repository.save(emp);
         return mapper.toRespDTO(emp);
     }
@@ -56,7 +58,7 @@ public class MedecinServiceImpl implements MedecinService , UserDetailsService {
         if (existingMedecinOptional.isPresent()) {
             // Obtenir le médecin existant
             Medecin existingMedecin = existingMedecinOptional.get();
-            System.out.println(existingMedecin);
+
 
             // Mettre à jour les champs pertinents avec les nouvelles valeurs
             existingMedecin.setNom(updatedMedecin.getNom());
@@ -71,10 +73,10 @@ public class MedecinServiceImpl implements MedecinService , UserDetailsService {
 
             // Réinitialiser 'deletedAt' si nécessaire
             existingMedecin.setDeletedAt(null);
+            existingMedecin.setStatut(true);
 
             // Enregistrer les modifications dans la base de données
             Medecin savedMedecin = repository.save(existingMedecin);
-            System.out.println(savedMedecin);
 
             // Convertir l'entité mise à jour en DTO de réponse
             return mapper.toRespDTO(savedMedecin);

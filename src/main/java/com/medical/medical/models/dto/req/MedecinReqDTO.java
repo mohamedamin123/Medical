@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @SuperBuilder
@@ -14,6 +15,8 @@ public class MedecinReqDTO extends UserReqDTO {
     private int idMedecin;
     private String specialite;
     private String password;
+    private LocalDateTime deletedAt;
+
 
     // Constructeur personnalisé
     public MedecinReqDTO(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String password) {

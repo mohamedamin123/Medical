@@ -16,6 +16,7 @@ public class UserReqDTO {
     private String email;
     private LocalDate dateDeNaissance;
     private Utilisateurs role;
+    private Boolean statut;
 
     // Constructeur par défaut
     public UserReqDTO() {}

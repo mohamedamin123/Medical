@@ -29,9 +29,9 @@ public class ConsultationServiceImpl implements ConsultationService {
 
     @Override
     public ConsultationResDTO saveConsultation(ConsultationReqDTO req) {
-        System.out.println(req);
+
         Consultation emp=mapper.toEntity(req);
-        System.out.println(emp);
+
 
         repository.save(emp);
         return mapper.toRespDTO(emp);

@@ -96,6 +96,17 @@ public class HomeAdminController {
                                     }
                                 }
                             });
+                            secretaireI.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    try {
+                                        changeFenetre("liste_secretaires", adminResDTO);
+                                        stage.close();
+                                    } catch (IOException e) {
+                                        log.error("Error changing window", e);
+                                    }
+                                }
+                            });
                         }
                     }
                 }

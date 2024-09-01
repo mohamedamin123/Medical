@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @SuperBuilder
@@ -13,6 +14,9 @@ public class SecretaireReqDTO extends UserReqDTO{
     private Integer idMedecin;
 
     private String password;
+
+    private LocalDateTime deletedAt;
+
 
     public SecretaireReqDTO(String nom, String prenom, String tel, String email, String password) {
         super(nom, prenom, tel, email);

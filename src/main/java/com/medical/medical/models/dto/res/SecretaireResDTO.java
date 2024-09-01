@@ -3,6 +3,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Data
 @SuperBuilder
 public class SecretaireResDTO extends UserResDTO {
@@ -13,5 +15,7 @@ public class SecretaireResDTO extends UserResDTO {
     private Integer idMedecin;
 
     private String password;
+    private LocalDateTime deletedAt;
+
 
 }

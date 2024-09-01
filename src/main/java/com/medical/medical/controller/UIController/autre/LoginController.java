@@ -12,10 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,10 +85,15 @@ public class LoginController {
 
                     if (passwordM.isPresent()) {
                         if (passwordEncoder.matches(password, passwordM.get())) {
+
                             String response = javaFxAPI.login(email, password, "medecin");
-                            log.info(response);
-                            log.info("medecin");
-                            changeFenetre(email, "medecin", medecinResDTO.orElse(null), null);
+
+                            if(medecinResDTO.get().getStatut()) {
+                                changeFenetre(email, "medecin", medecinResDTO.orElse(null), null);
+
+                            } else {
+                                showAlert(Alert.AlertType.WARNING, "Impossible", "Vous ne pouvez pas accéder à cette interface !");
+                            }
 
                         } else {
                             log.info("Invalid password for Medecin");
@@ -101,9 +103,12 @@ public class LoginController {
                     } else if (passwordS.isPresent()) {
                         if (passwordEncoder.matches(password, passwordS.get())) {
                             String response = javaFxAPI.login(email, password, "secretaire");
-                            log.info(response);
-                            log.info("secretaire");
-                            changeFenetre(email, "secretaire", null, secretaireResDTO.orElse(null));
+                            if(secretaireResDTO.get().getStatut()) {
+                                changeFenetre(email, "secretaire", null, secretaireResDTO.orElse(null));
+                            } else {
+                                showAlert(Alert.AlertType.WARNING, "Impossible", "Vous ne pouvez pas accéder à cette interface !");
+                            }
+
 
                         } else {
                             log.info("Invalid password for Secretaire");
@@ -174,5 +179,11 @@ public class LoginController {
         // Show the new stage
         newStage.show();
     }
-
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

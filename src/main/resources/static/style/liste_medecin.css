@@ -1,5 +1,5 @@
 /* Style pour les boutons */
-.connect-button, .anuler-button, .delete-button {
+.connect-button, .anuler-button, .delete-button ,.activate-button{
     -fx-background-color: #007bff;
     -fx-text-fill: white;
     -fx-font-size: 14px;
@@ -17,6 +17,7 @@
 .delete-button {
     -fx-background-color: #dc3545;
 }
+
 
 /* Style pour la barre de recherche */
 .text-field {
@@ -77,4 +78,36 @@
     -fx-border-color: #dee2e6;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
+}
+
+/* Style pour le bouton Voir */
+.button-voir {
+    -fx-background-color: #4CAF50; /* Couleur de fond verte */
+    -fx-text-fill: white; /* Couleur du texte en blanc */
+    -fx-font-size: 12px; /* Taille de police */
+    -fx-padding: 10px 15px; /* Espacement intérieur */
+    -fx-border-radius: 5px; /* Coins arrondis */
+    -fx-background-radius: 5px; /* Coins arrondis */
+    -fx-alignment: center;
+
+}
+
+
+
+/* Style pour le bouton Secrétaire */
+.button-secretaire {
+    -fx-background-color: #2196F3; /* Couleur de fond bleue */
+    -fx-text-fill: white; /* Couleur du texte en blanc */
+    -fx-font-size: 12px; /* Taille de police */
+    -fx-padding: 10px 15px; /* Espacement intérieur */
+    -fx-border-radius: 5px; /* Coins arrondis */
+    -fx-background-radius: 5px; /* Coins arrondis */
+    -fx-alignment: center;
+
+
+}
+
+.activate-button {
+    -fx-background-color: #4CAF50; /* Couleur de fond verte */
+
 }

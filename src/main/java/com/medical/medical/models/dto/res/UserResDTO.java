@@ -20,7 +20,7 @@ public class UserResDTO {
     private String email;
 
     private LocalDate dateDeNaissance;
-
+    private Boolean statut;
     public String getFullName() throws UserException {
         if (this.nom == null) {
             throw new UserException(UserException.NOM_INCORRECT);

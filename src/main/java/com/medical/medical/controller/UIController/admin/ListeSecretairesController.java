@@ -1,11 +1,13 @@
 package com.medical.medical.controller.UIController.admin;
 
+
 import com.medical.medical.controller.API.MedecinController;
+import com.medical.medical.controller.API.SecretaireController;
 import com.medical.medical.exceptions.UserException;
-import com.medical.medical.models.dto.req.MedecinReqDTO;
+import com.medical.medical.models.dto.req.SecretaireReqDTO;
 import com.medical.medical.models.dto.res.AdminResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
-import com.medical.medical.models.dto.res.PatientResDTO;
+import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.PagedDataSource;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -16,65 +18,62 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
+import java.util.Optional;
 
 import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 
 @Component
 @Slf4j
-public class ListeMedecinController {
-
+public class ListeSecretairesController {
 
     @FXML
+    private TableColumn<SecretaireResDTO,String>  medecinColumn;
+    @FXML
     private Button activateButton;
-    ObservableList<MedecinResDTO> medecinResDTOList;
+    ObservableList<SecretaireResDTO> SecretaireResDTOList;
 
 
     @FXML
     private TextField searchField;
 
     @FXML
-    private TableView<MedecinResDTO> medecinTable;
+    private TableView<SecretaireResDTO> secretaireTable;
 
     @FXML
-    private TableColumn <MedecinResDTO,String> statutColumn;
+    private TableColumn<SecretaireResDTO,String> statutColumn;
 
     @FXML
-    private TableColumn<MedecinResDTO, Number> idColumn;
+    private TableColumn<SecretaireResDTO, Number> idColumn;
 
     @FXML
-    private TableColumn<MedecinResDTO, String> nameColumn;
+    private TableColumn<SecretaireResDTO, String> nameColumn;
 
     @FXML
-    private TableColumn<MedecinResDTO, String> phoneColumn;
+    private TableColumn<SecretaireResDTO, String> phoneColumn;
+    
 
     @FXML
-    private TableColumn<MedecinResDTO, Button> secretairesColumn;
-
-    @FXML
-    private TableColumn<MedecinResDTO, Button> detailsColumn;
+    private TableColumn<SecretaireResDTO, Button> detailsColumn;
 
     @FXML
     private Pagination pagination;
 
     @FXML
     private Button cancelButton;
-
-    @FXML
-    private Button addMedecinButton;
+    
 
     @FXML
     private Button deleteButton;
+
+    @Autowired
+    private SecretaireController secretaireController;
 
     @Autowired
     private MedecinController medecinController;
@@ -85,14 +84,13 @@ public class ListeMedecinController {
 
     private AdminResDTO adminResDTO;
 
-    private MedecinResDTO selectedMedecin;
-    Stage stage;
+    private SecretaireResDTO selectedsecretaire;
 
     @FXML
     public void initialize() {
 
         Platform.runLater(() -> {
-              stage = (Stage) searchField.getScene().getWindow();
+            Stage  stage = (Stage) cancelButton.getScene().getWindow();
             if (stage != null) {
                 Object userData = stage.getUserData();
                 if (userData instanceof Object[] data) {
@@ -101,7 +99,7 @@ public class ListeMedecinController {
             }
         });
         // Initialiser les colonnes du tableau
-        idColumn.setCellFactory(column -> new TableCell<MedecinResDTO, Number>() {
+        idColumn.setCellFactory(column -> new TableCell<SecretaireResDTO, Number>() {
             @Override
             protected void updateItem(Number item, boolean empty) {
                 super.updateItem(item, empty);
@@ -113,7 +111,7 @@ public class ListeMedecinController {
             }
         });
 
-        statutColumn.setCellFactory(column -> new TableCell<MedecinResDTO, String>() {
+        statutColumn.setCellFactory(column -> new TableCell<SecretaireResDTO, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -121,8 +119,8 @@ public class ListeMedecinController {
                 if (empty || getTableRow() == null || getTableRow().getItem() == null) {
                     setText(null);
                 } else {
-                    MedecinResDTO medecin = getTableRow().getItem();
-                    if (medecin.getStatut() == Boolean.FALSE) {
+                    SecretaireResDTO secretaire = getTableRow().getItem();
+                    if (secretaire.getStatut() == Boolean.FALSE) {
                         setText("Supprimer");
                     } else {
                         setText("Activer");
@@ -143,13 +141,25 @@ public class ListeMedecinController {
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("tel"));
 
 
-        // Configurer les colonnes pour les boutons
-        secretairesColumn.setCellValueFactory(cellData -> {
-            Button button = new Button("Voir Secrétaires");
-            button.setOnAction(event -> handleShowSecretaires(cellData.getValue()));
-            button.getStyleClass().add("button-voir");
-            return new ReadOnlyObjectWrapper<>(button);
+
+        medecinColumn.setCellValueFactory(cellData -> {
+            SecretaireResDTO secretaire = cellData.getValue();
+            String medecinName = "Non assigné"; // Valeur par défaut si aucun médecin n'est trouvé
+
+            try {
+                Optional<MedecinResDTO> medecin = medecinController.findMedecinById(secretaire.getIdMedecin());
+                if (medecin != null) {
+                    medecinName = medecin.get().getFullName();
+                }
+            } catch (Exception e) {
+                log.error("Erreur lors de la récupération du médecin pour le secrétaire {} : {}", secretaire.getIdSecretaire(), e.getMessage());
+            }
+
+            return new ReadOnlyObjectWrapper<>(medecinName);
         });
+
+        // Configurer les colonnes pour les boutons
+
 
         detailsColumn.setCellValueFactory(cellData -> {
             Button button = new Button("Voir Détails");
@@ -158,15 +168,15 @@ public class ListeMedecinController {
             return new ReadOnlyObjectWrapper<>(button);
         });
 
-        medecinResDTOList= FXCollections.observableArrayList(
-                medecinController.findAllMedecin()
+        SecretaireResDTOList= FXCollections.observableArrayList(
+                secretaireController.findAllSecretaire()
         );
 
         // Charger les données dans le tableau
-        medecinTable.getItems().addAll(medecinResDTOList);
+        secretaireTable.getItems().addAll(SecretaireResDTOList);
 
         // Initialiser PagedDataSource
-        pagedDataSource = new PagedDataSource(medecinResDTOList, PAGE_SIZE);
+        pagedDataSource = new PagedDataSource(SecretaireResDTOList, PAGE_SIZE);
 
         // Configurer la pagination
         pagination.setPageCount(pagedDataSource.getPageCount());
@@ -187,20 +197,9 @@ public class ListeMedecinController {
             }
         });
 
-        addMedecinButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                Stage stage = (Stage) searchField.getScene().getWindow();
-                stage.close();
-                try {
-                    changeFenetre("addMedecin",adminResDTO);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        medecinTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            selectedMedecin = newValue;
+
+        secretaireTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            selectedsecretaire = newValue;
         });
         deleteButton.setOnAction(event -> handleDeleteButtonAction());
         activateButton.setOnAction(event -> handleActiverButtonAction());
@@ -208,42 +207,42 @@ public class ListeMedecinController {
 
     }
 
-    // Méthode pour afficher les secrétaires du médecin
-    private void handleShowSecretaires(MedecinResDTO medecinResDTO) {
-        try {
-            changeFenetre("liste_secretaires_detaille",adminResDTO,medecinResDTO);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
-    }
-
-    // Méthode pour voir les détails du médecin
-    private void handleShowDetails(MedecinResDTO medecinResDTO) {
+    // Méthode pour voir les détails du secretaire
+    private void handleShowDetails(SecretaireResDTO SecretaireResDTO) {
         try {
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.close();
-            changeFenetre("addMedecin",adminResDTO,medecinResDTO);
+            changeFenetre("addSecretaires",adminResDTO,SecretaireResDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
     private VBox createPage(int pageIndex) {
         VBox box = new VBox();
-        box.getChildren().add(medecinTable);
-        medecinTable.setItems(pagedDataSource.getPage(pageIndex));
+        box.getChildren().add(secretaireTable);
+        secretaireTable.setItems(pagedDataSource.getPage(pageIndex));
         return box;
     }
 
     private void filterTable(String query) throws UserException {
-        ObservableList<MedecinResDTO> filteredList = FXCollections.observableArrayList();
+        ObservableList<SecretaireResDTO> filteredList = FXCollections.observableArrayList();
 
-        for (MedecinResDTO patient : medecinResDTOList) {
-            boolean matches =
-                    patient.getFullName().toLowerCase().contains(query.toLowerCase()) ||
-                    patient.getTel().contains(query);
+        for (SecretaireResDTO secretaire : SecretaireResDTOList) {
+            boolean matches = false;
+            try {
+                Optional<MedecinResDTO> medecin = medecinController.findMedecinById(secretaire.getIdMedecin());
+                String medecinName = medecin.isPresent() ? medecin.get().getFullName() : "Non assigné";
+
+                matches = secretaire.getFullName().toLowerCase().contains(query.toLowerCase()) ||
+                        secretaire.getTel().contains(query) ||
+                        medecinName.toLowerCase().contains(query.toLowerCase());
+            } catch (Exception e) {
+                log.error("Erreur lors de la récupération du médecin pour le secrétaire {} : {}", secretaire.getIdSecretaire(), e.getMessage());
+            }
+
             if (matches) {
-                filteredList.add(patient);
+                filteredList.add(secretaire);
             }
         }
 
@@ -251,15 +250,16 @@ public class ListeMedecinController {
         pagedDataSource = new PagedDataSource(filteredList, PAGE_SIZE);
         pagination.setPageCount(pagedDataSource.getPageCount());
         pagination.setCurrentPageIndex(0); // Reset to the first page
-        medecinTable.setItems(pagedDataSource.getPage(0));
+        secretaireTable.setItems(pagedDataSource.getPage(0));
     }
+
     private void handleDeleteButtonAction() {
-        if (selectedMedecin == null) {
+        if (selectedsecretaire == null) {
             // Alerte si aucune ligne n'est sélectionnée
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Alerte");
             alert.setHeaderText(null);
-            alert.setContentText("Veuillez sélectionner un médecin à supprimer.");
+            alert.setContentText("Veuillez sélectionner un secretaire à supprimer.");
             alert.showAndWait();
             return;
         }
@@ -268,23 +268,24 @@ public class ListeMedecinController {
         Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmationAlert.setTitle("Confirmation");
         confirmationAlert.setHeaderText(null);
-        confirmationAlert.setContentText("Êtes-vous sûr de vouloir supprimer le médecin sélectionné ?");
+        confirmationAlert.setContentText("Êtes-vous sûr de vouloir supprimer le secretaire sélectionné ?");
         confirmationAlert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                // Supprimer le médecin
+                // Supprimer le secretaire
                 try {
-                    medecinController.deleteMedecinById(selectedMedecin.getIdMedecin());
-                    selectedMedecin.setStatut(Boolean.FALSE);
+                    secretaireController.deleteSecretaireById(selectedsecretaire.getIdSecretaire());
+                    selectedsecretaire.setStatut(Boolean.FALSE);
                     filterTable(searchField.getText()); // Réapplique le filtre
+                    Stage  stage = (Stage) searchField.getScene().getWindow();
                     stage.close();
-                    changeFenetre("liste_medecin", adminResDTO);
+                    changeFenetre("liste_secretaires", adminResDTO);
 
                 } catch (UserException e) {
                     // Gestion des erreurs de suppression
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                     errorAlert.setTitle("Erreur");
                     errorAlert.setHeaderText(null);
-                    errorAlert.setContentText("Une erreur est survenue lors de la suppression du médecin.");
+                    errorAlert.setContentText("Une erreur est survenue lors de la suppression du secretaire.");
                     errorAlert.showAndWait();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -294,12 +295,12 @@ public class ListeMedecinController {
     }
 
     private void handleActiverButtonAction() {
-        if (selectedMedecin == null) {
+        if (selectedsecretaire == null) {
             // Alerte si aucune ligne n'est sélectionnée
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Alerte");
             alert.setHeaderText(null);
-            alert.setContentText("Veuillez sélectionner un médecin à activer.");
+            alert.setContentText("Veuillez sélectionner un secretaire à activer.");
             alert.showAndWait();
             return;
         }
@@ -308,37 +309,38 @@ public class ListeMedecinController {
         Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmationAlert.setTitle("Confirmation");
         confirmationAlert.setHeaderText(null);
-        confirmationAlert.setContentText("Êtes-vous sûr de vouloir activer le médecin sélectionné ?");
+        confirmationAlert.setContentText("Êtes-vous sûr de vouloir activer le secretaire sélectionné ?");
         confirmationAlert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                // Supprimer le médecin
+                // Supprimer le secretaire
                 try {
 
-                    selectedMedecin.setStatut(Boolean.TRUE);
-                    selectedMedecin.setDeletedAt(null);
-                    MedecinReqDTO medecinReqDTO = MedecinReqDTO.builder()
-                            .idMedecin(selectedMedecin.getIdMedecin())
-                            .nom(selectedMedecin.getNom())
-                            .prenom(selectedMedecin.getPrenom())
-                            .tel(selectedMedecin.getTel())
-                            .email(selectedMedecin.getEmail())
-                            .dateDeNaissance(selectedMedecin.getDateDeNaissance())
-                            .specialite(selectedMedecin.getSpecialite())
+                    selectedsecretaire.setStatut(Boolean.TRUE);
+                    selectedsecretaire.setDeletedAt(null);
+                    SecretaireReqDTO secretaireReqDTO = SecretaireReqDTO.builder()
+                            .idSecretaire(selectedsecretaire.getIdSecretaire())
+                            .nom(selectedsecretaire.getNom())
+                            .prenom(selectedsecretaire.getPrenom())
+                            .tel(selectedsecretaire.getTel())
+                            .email(selectedsecretaire.getEmail())
+                            .dateDeNaissance(selectedsecretaire.getDateDeNaissance())
                             .statut(Boolean.TRUE)
                             .deletedAt(null)
                             .build();
-                    medecinController.updateMedecin(medecinReqDTO);
+                    secretaireController.updateSecretaire(secretaireReqDTO);
 
                     filterTable(searchField.getText()); // Réapplique le filtre
+                    Stage  stage = (Stage) searchField.getScene().getWindow();
+
                     stage.close();
-                    changeFenetre("liste_medecin", adminResDTO);
+                    changeFenetre("liste_secretaires", adminResDTO);
 
                 } catch (UserException e) {
                     // Gestion des erreurs de suppression
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                     errorAlert.setTitle("Erreur");
                     errorAlert.setHeaderText(null);
-                    errorAlert.setContentText("Une erreur est survenue lors de la activation du médecin.");
+                    errorAlert.setContentText("Une erreur est survenue lors de la activation du secretaire.");
                     errorAlert.showAndWait();
                 } catch (IOException e) {
                     throw new RuntimeException(e);

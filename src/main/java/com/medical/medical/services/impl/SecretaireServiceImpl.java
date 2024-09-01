@@ -42,6 +42,7 @@ public class SecretaireServiceImpl implements SecretaireService
     public SecretaireResDTO saveSecretaire(SecretaireReqDTO req) {
         Secretaire emp=mapper.toEntity(req);
         emp.setPassword(this.passwordEncoder.encode(emp.getPassword()));
+        emp.setStatut(true);
         repository.save(emp);
         return mapper.toRespDTO(emp);
     }
@@ -69,6 +70,7 @@ public class SecretaireServiceImpl implements SecretaireService
             existingMedecin.setUpdatedAt(LocalDateTime.now()); // Assurez-vous que vous avez un champ 'updatedAt' dans votre entité
 
             existingMedecin.setDeletedAt(null);
+            existingMedecin.setStatut(true);
 
             Secretaire savedMedecin = repository.save(existingMedecin);
 

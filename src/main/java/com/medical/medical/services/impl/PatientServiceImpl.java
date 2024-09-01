@@ -34,6 +34,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public PatientResDTO savePatient(PatientReqDTO req) {
         Patient emp=mapper.toEntity(req);
+        emp.setStatut(true);
         repository.save(emp);
         return mapper.toRespDTO(emp);
     }
@@ -68,6 +69,7 @@ public class PatientServiceImpl implements PatientService {
             existingMedecin.setUpdatedAt(LocalDateTime.now()); // Assurez-vous que vous avez un champ 'updatedAt' dans votre entité
 
             existingMedecin.setDeletedAt(null);
+            existingMedecin.setStatut(true);
 
             Patient savedMedecin = repository.save(existingMedecin);
 

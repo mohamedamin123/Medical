@@ -46,6 +46,7 @@ public class AdminServiceImpl implements AdminService, UserDetailsService {
     public AdminResDTO saveAdmin(AdminReqDTO req) {
         Admin emp = mapper.toEntity(req);
         emp.setPassword(this.passwordEncoder.encode(emp.getPassword()));
+        emp.setStatut(true);
         repository.save(emp);
         return mapper.toRespDTO(emp);
     }
@@ -75,7 +76,7 @@ public class AdminServiceImpl implements AdminService, UserDetailsService {
 
             // Réinitialiser 'deletedAt' si nécessaire
             existingAdmin.setDeletedAt(null);
-
+            existingAdmin.setStatut(true);
             // Enregistrer les modifications dans la base de données
             Admin savedAdmin = repository.save(existingAdmin);
 
