@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,11 +42,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/medecins/medecin/find-password-by-email").permitAll()
-
+                        .requestMatchers(HttpMethod.GET, "/secretaires/secretaire/find-password-by-email").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/admin/find-password-by-email").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(withDefaults()) // Configure form login (if needed)
@@ -62,7 +64,8 @@ public class SecurityConfig {
             UserDetails user = medecinService.loadUserByUsername(username);
             if (user == null) {
                 user = secretaireService.loadUserByUsername(username);
-            } else if (user == null) {
+            }
+            if (user == null) {
                 user = adminService.loadUserByUsername(username);
 
             }

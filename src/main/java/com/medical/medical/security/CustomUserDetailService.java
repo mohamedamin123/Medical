@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class CustomUserDetailService implements UserDetailsService {
 
     private final MedecinRepo medecinRepo;
@@ -26,22 +26,25 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         Optional<Medecin> medecin = medecinRepo.findMedecinByEmail(username);
         if (medecin.isPresent()) {
+            log.info("Found Medecin: {}", medecin.get());
             return new UtulisateurDetail(medecin.get());
         }
 
         Optional<Secretaire> secretaire = secretaireRepo.findSecretaireByEmail(username);
         if (secretaire.isPresent()) {
+            log.info("Found Secretaire: {}", secretaire.get());
             return new UtulisateurDetail(secretaire.get());
         }
 
         Optional<Admin> admin = adminRepo.findAdminByEmail(username);
         if (admin.isPresent()) {
+            log.info("Found Admin: {}", admin.get());
             return new UtulisateurDetail(admin.get());
         }
 
-        throw new UsernameNotFoundException("user not found");
+        log.warn("User not found: {}", username);
+        throw new UsernameNotFoundException("User not found");
     }
 }

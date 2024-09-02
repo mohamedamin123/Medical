@@ -156,6 +156,7 @@ public class AddPatientController {
                         deleteButton.setGraphic(deleteIcon);
                         deleteButton.setOnAction(event -> {
                             fileListContainer.getChildren().remove(fileHBox);
+                            dossierMedicalController.deleteDossierMedicalById(dossier.getIdDossierMedical());
 
                             dossierMedicalController.findDossierMedicalByIdAfterDelete(dossier.getIdDossierMedical()); // Add deletion logic here
                         });
@@ -163,7 +164,6 @@ public class AddPatientController {
 
                         Button openButton = new Button("Ouvrir");
                         openButton.getStyleClass().add("open-button"); // Ajouter la classe de style
-
                         openButton.setOnAction(event -> {
                             // Chemin pour stocker temporairement le fichier
                             Path path = Paths.get(System.getProperty("java.io.tmpdir"), dossier.getFichier());
@@ -174,13 +174,30 @@ public class AddPatientController {
 
                                 // Écrit le contenu du fichier dans un fichier temporaire
                                 Files.write(path, fileContent);
-                                //Desktop.getDesktop().open(path.toFile());
+
+                                // Décommenter pour ouvrir le fichier
+                                if (Desktop.isDesktopSupported()) {
+                                    Desktop.getDesktop().open(path.toFile());
+                                } else {
+                                    String os = System.getProperty("os.name").toLowerCase();
+                                    if (os.contains("win")) {
+                                        // Ouvrir le fichier sous Windows
+                                        Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", "start", path.toFile().getAbsolutePath()});
+                                    } else if (os.contains("mac")) {
+                                        // Ouvrir le fichier sous macOS
+                                        Runtime.getRuntime().exec(new String[]{"open", path.toFile().getAbsolutePath()});
+                                    } else if (os.contains("nix") || os.contains("nux")) {
+                                        // Ouvrir le fichier sous Linux/Unix
+                                        Runtime.getRuntime().exec(new String[]{"xdg-open", path.toFile().getAbsolutePath()});
+                                    } else {
+                                        showAlert(Alert.AlertType.ERROR, "Erreur", "L'ouverture de fichier n'est pas supportée sur cette plateforme.");
+                                    }
+                                }
+
                             } catch (IOException e) {
                                 // Affiche une alerte en cas d'erreur
                                 showAlert(Alert.AlertType.ERROR, "Erreur de Lecture de Fichier", "Erreur lors de la lecture du fichier: " + e.getMessage());
                             }
-                            stage.getScene().getStylesheets().add(getClass().getResource("/static/css/addPatient.css").toExternalForm());
-
                         });
 
 // Ajoute le bouton "Ouvrir" au conteneur HBox
@@ -251,6 +268,7 @@ public class AddPatientController {
         File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (selectedFile != null) {
+            // Ajout du fichier à la liste des fichiers affichés
             HBox fileHBox = new HBox(10);
             fileHBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
@@ -277,7 +295,19 @@ public class AddPatientController {
                                 showAlert(Alert.AlertType.ERROR, "Erreur", "L'ouverture du fichier n'est pas supportée sur ce système.");
                             }
                         } else {
-                            showAlert(Alert.AlertType.ERROR, "Erreur", "Le support Desktop n'est pas disponible.");
+                            String os = System.getProperty("os.name").toLowerCase();
+                            if (os.contains("win")) {
+                                // Ouvrir le fichier sous Windows
+                                Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", "start", selectedFile.getAbsolutePath()});
+                            } else if (os.contains("mac")) {
+                                // Ouvrir le fichier sous macOS
+                                Runtime.getRuntime().exec(new String[]{"open", selectedFile.getAbsolutePath()});
+                            } else if (os.contains("nix") || os.contains("nux")) {
+                                // Ouvrir le fichier sous Linux/Unix
+                                Runtime.getRuntime().exec(new String[]{"xdg-open", selectedFile.getAbsolutePath()});
+                            } else {
+                                showAlert(Alert.AlertType.ERROR, "Erreur", "L'ouverture de fichier n'est pas supportée sur cette plateforme.");
+                            }
                         }
                     } catch (IOException e) {
                         showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture du fichier: " + e.getMessage());
@@ -289,7 +319,6 @@ public class AddPatientController {
             fileListContainer.getChildren().add(fileHBox);
         }
     }
-
 
 
 
@@ -360,33 +389,11 @@ public class AddPatientController {
 
         }
 
-        if(fileListContainer!=null) {
-            for (var node : fileListContainer.getChildren()) {
-                if (node instanceof HBox fileHBox) {
-                    Label fileNameLabel = (Label) fileHBox.getChildren().get(0);
-                    String filePath = fileNameLabel.getText(); // Use the full path
-                    Path path = Paths.get(filePath);
-                    String fileName = path.getFileName().toString();
+        saveFichier();
 
-                    File file = new File(filePath);
-                    byte[] fileContent = new byte[0];
-                    try {
-                        fileContent = Files.readAllBytes(file.toPath());
-                    } catch (IOException e) {
-                        showAlert(Alert.AlertType.ERROR, "Erreur de Lecture de Fichier", "Erreur lors de la lecture du fichier: " + e.getMessage());
-                        continue;
-                    }
 
-                    String fileExtension = getFileExtension(file.getName());
 
-                    DossierMedicalReqDTO dossierMedicalReqDTO = new DossierMedicalReqDTO(fileExtension,fileName, fileContent, /* patient ID if needed */ patientResDTO.getIdPatient());
 
-                    // Call dossierMedicalController to save the file
-                    dossierMedicalController.saveDossierMedical(dossierMedicalReqDTO);
-
-                }
-            }
-        }
 
         stage.close();
         try {
@@ -396,6 +403,59 @@ public class AddPatientController {
         }
 
     }
+
+    private void saveFichier() {
+        if (fileListContainer != null) {
+            for (var node : fileListContainer.getChildren()) {
+                if (node instanceof HBox fileHBox) {
+                    Label fileNameLabel = (Label) fileHBox.getChildren().get(0);
+                    String filePath = fileNameLabel.getText(); // Utiliser le chemin complet
+                    Path path = Paths.get(filePath);
+                    String fileName = path.getFileName().toString();
+
+                    // Imprimer le chemin du fichier pour déboguer
+                    System.out.println("Chemin du fichier : " + filePath);
+
+                    File file = new File(filePath);
+
+                    // Vérification de l'existence du fichier
+//                    if (!file.exists()) {
+//                        showAlert(Alert.AlertType.ERROR, "Fichier Introuvable", "Le fichier n'existe pas : " + filePath);
+//                        continue;
+//                    }
+//
+//                    // Vérification des permissions
+//                    if (!file.canRead()) {
+//                        showAlert(Alert.AlertType.ERROR, "Erreur de Lecture de Fichier", "Le fichier ne peut pas être lu : " + filePath);
+//                        continue;
+//                    }
+
+                    byte[] fileContent;
+
+                    try {
+                        fileContent = Files.readAllBytes(file.toPath());
+                    } catch (IOException e) {
+                        //showAlert(Alert.AlertType.ERROR, "Erreur de Lecture de Fichier", "Erreur lors de la lecture du fichier: " + e.getMessage());
+                        continue; // Passer au fichier suivant en cas d'erreur
+                    }
+
+                    String fileExtension = getFileExtension(file.getName());
+
+                    DossierMedicalReqDTO dossierMedicalReqDTO = new DossierMedicalReqDTO(
+                            fileExtension,
+                            fileName,
+                            fileContent,
+                            patientResDTO.getIdPatient() // Utiliser l'ID du patient si nécessaire
+                    );
+
+                    // Appeler dossierMedicalController pour enregistrer le fichier
+                    dossierMedicalController.saveDossierMedical(dossierMedicalReqDTO);
+                }
+            }
+        }
+
+    }
+
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
