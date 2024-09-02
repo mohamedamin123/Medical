@@ -175,28 +175,30 @@ public class AddPatientController {
                                 // Écrit le contenu du fichier dans un fichier temporaire
                                 Files.write(path, fileContent);
 
-                                // Décommenter pour ouvrir le fichier
+                                // Vérifie si le fichier a été correctement créé
+                                if (!Files.exists(path)) {
+                                    showAlert(Alert.AlertType.ERROR, "Erreur", "Le fichier n'a pas pu être créé.");
+                                    return;
+                                }
+
+                                // Ouvrir le fichier
                                 if (Desktop.isDesktopSupported()) {
                                     Desktop.getDesktop().open(path.toFile());
                                 } else {
                                     String os = System.getProperty("os.name").toLowerCase();
                                     if (os.contains("win")) {
-                                        // Ouvrir le fichier sous Windows
-                                        Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", "start", path.toFile().getAbsolutePath()});
+                                        Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", "start", "\"\"", "\"" + path.toFile().getAbsolutePath() + "\""});
                                     } else if (os.contains("mac")) {
-                                        // Ouvrir le fichier sous macOS
                                         Runtime.getRuntime().exec(new String[]{"open", path.toFile().getAbsolutePath()});
                                     } else if (os.contains("nix") || os.contains("nux")) {
-                                        // Ouvrir le fichier sous Linux/Unix
                                         Runtime.getRuntime().exec(new String[]{"xdg-open", path.toFile().getAbsolutePath()});
                                     } else {
                                         showAlert(Alert.AlertType.ERROR, "Erreur", "L'ouverture de fichier n'est pas supportée sur cette plateforme.");
                                     }
                                 }
-
                             } catch (IOException e) {
-                                // Affiche une alerte en cas d'erreur
-                                showAlert(Alert.AlertType.ERROR, "Erreur de Lecture de Fichier", "Erreur lors de la lecture du fichier: " + e.getMessage());
+                                e.printStackTrace();
+                                showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur s'est produite lors de l'ouverture du fichier : " + e.getMessage());
                             }
                         });
 
@@ -331,10 +333,10 @@ public class AddPatientController {
 
         String prenom = prenomField.getText().trim();
 
-            if (!prenom.isEmpty()) {
-                prenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1).toLowerCase();
-                prenomField.setText(prenom);
-            }
+        if (!prenom.isEmpty()) {
+            prenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1).toLowerCase();
+            prenomField.setText(prenom);
+        }
 
         String cin = CINField.getText().trim();
         LocalDate dateNaissance = dobField.getValue(); // Keep as LocalDate
@@ -376,7 +378,7 @@ public class AddPatientController {
         }
         PatientReqDTO patientReqDTO;
         if(patientResDTO!=null) {
-             patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email2,dateNaissance,notes,batiment,code,cin,ville,sexee,idM,patientResDTO.getIdPatient());
+            patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email2,dateNaissance,notes,batiment,code,cin,ville,sexee,idM,patientResDTO.getIdPatient());
 
 
 
@@ -385,16 +387,11 @@ public class AddPatientController {
 
         }else {
             patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email2,dateNaissance,notes,batiment,code,cin,ville,sexee,idM);
-             patientResDTO=patientController.savePatient(patientReqDTO);
+            patientResDTO=patientController.savePatient(patientReqDTO);
 
         }
 
         saveFichier();
-
-
-
-
-
         stage.close();
         try {
             changeFenetre("patient",email,role,medecin,secretaire,idM);
