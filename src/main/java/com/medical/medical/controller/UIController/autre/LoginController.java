@@ -3,7 +3,6 @@ package com.medical.medical.controller.UIController.autre;
 import com.medical.medical.controller.API.AdminController;
 import com.medical.medical.controller.API.MedecinController;
 import com.medical.medical.controller.API.SecretaireController;
-import com.medical.medical.ennum.Utilisateurs;
 import com.medical.medical.models.dto.res.AdminResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
@@ -14,9 +13,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -37,7 +36,11 @@ public class LoginController {
     @Autowired
     private AdminController adminController;
 
-
+    // Static variable to store the password
+    @Getter
+    private static String savedPassword;
+    @Getter
+    private static String savedEmail;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -90,6 +93,9 @@ public class LoginController {
 
                             if(medecinResDTO.get().getStatut()) {
                                 changeFenetre(email, "medecin", medecinResDTO.orElse(null), null);
+                                savedPassword = password; // Store the password statically
+                                savedEmail = email; // Store the password statically
+
 
                             } else {
                                 showAlert(Alert.AlertType.WARNING, "Impossible", "Vous ne pouvez pas accéder à cette interface !");
@@ -104,6 +110,8 @@ public class LoginController {
                         if (passwordEncoder.matches(password, passwordS.get())) {
                             String response = javaFxAPI.login(email, password, "secretaire");
                             if(secretaireResDTO.get().getStatut()) {
+                                savedPassword = password; // Store the password statically
+                                savedEmail = email; // Store the password statically
                                 changeFenetre(email, "secretaire", null, secretaireResDTO.orElse(null));
                             } else {
                                 showAlert(Alert.AlertType.WARNING, "Impossible", "Vous ne pouvez pas accéder à cette interface !");
@@ -118,8 +126,8 @@ public class LoginController {
                     } else if (passwordA.isPresent()) {
                         if (passwordEncoder.matches(password, passwordA.get())) {
                             String response = javaFxAPI.login(email, password, "ADMIN");
-                            log.info(response);
-                            log.info("admin");
+                            savedPassword = password; // Store the password statically
+                            savedEmail = email; // Store the password statically
                             changeFenetre(email, "admin", adminResDTO.get());
 
                         } else {
@@ -186,4 +194,5 @@ public class LoginController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
 }

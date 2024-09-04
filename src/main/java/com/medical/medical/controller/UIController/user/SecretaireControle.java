@@ -6,6 +6,7 @@ import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO
 ;
 import com.medical.medical.utils.PagedDataSource;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -72,8 +73,8 @@ public class SecretaireControle {
     private MedecinResDTO medecin;
     private SecretaireResDTO secretaire;
 
-    @Autowired
-    private com.medical.medical.controller.API.SecretaireController secretaireController;
+//    @Autowired
+//    private com.medical.medical.controller.API.SecretaireController secretaireController;
 
 
 
@@ -115,9 +116,13 @@ public class SecretaireControle {
                 phoneColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTel()));
 
                 // Données d'exemple
-                   secretaires = FXCollections.observableArrayList(
-                        getDate()
-                );
+                try {
+                    secretaires = FXCollections.observableArrayList(
+                         getDate()
+                 );
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
 
                 // Initialiser PagedDataSource
                 pagedDataSource = new PagedDataSource(secretaires, PAGE_SIZE);
@@ -181,7 +186,7 @@ public class SecretaireControle {
     }
 
     @FXML
-    private void handleDeleteSecretaire() {
+    private void handleDeleteSecretaire() throws Exception {
         // Récupérer le patient sélectionné
         SecretaireResDTO selectedPatient = secretaireTable.getSelectionModel().getSelectedItem();
 
@@ -190,7 +195,9 @@ public class SecretaireControle {
             secretaires.remove(selectedPatient);
 
             // Supprimer le patient du contrôleur API
-            secretaireController.deleteSecretaireById(selectedPatient.getIdSecretaire());
+            //secretaireController.deleteSecretaireById(selectedPatient.getIdSecretaire());
+
+            ResAPI.deleteById("secretaire",selectedPatient.getIdSecretaire());
 
             // Réinitialiser les données de la table
             pagedDataSource = new PagedDataSource(secretaires, PAGE_SIZE);
@@ -257,11 +264,12 @@ public class SecretaireControle {
         return box;
     }
 
-    private List<SecretaireResDTO> getDate() {
+    private List<SecretaireResDTO> getDate() throws Exception {
 
-        List<SecretaireResDTO> SecretaireResDTOS;
-        SecretaireResDTOS= secretaireController.findSecretairesByIdMedecin(idM);
-        return SecretaireResDTOS;
+        List<SecretaireResDTO> secretaireResDTOS;
+        secretaireResDTOS=ResAPI.findByIdMedecin("secretaire",idM,SecretaireResDTO.class);
+        //SecretaireResDTOS= secretaireController.findSecretairesByIdMedecin(idM);
+        return secretaireResDTOS;
     }
 
 }

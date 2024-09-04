@@ -5,6 +5,7 @@ import com.medical.medical.models.dto.res.ConsultationResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.Historique;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,8 +42,7 @@ public class HistoriqueController {
     @FXML
     private Button closeButton;
 
-    @Autowired
-    private ConsultationController controller;
+
 
     Stage stage;
     @Setter
@@ -88,10 +88,16 @@ public class HistoriqueController {
     }
 
     private void loadTableData() {
-        
-        List<ConsultationResDTO> consultations = controller.findConsultationsByIdMedecin(idM);
+        List<ConsultationResDTO> consultations = null;
+        try {
+            consultations = ResAPI.findByIdMedecin("consultation",idM,ConsultationResDTO.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
 
         // Créer une Map pour compter les patients par date
+
         Map<LocalDate, Integer> datePatientCountMap = new HashMap<>();
         for (ConsultationResDTO consultation : consultations) {
             LocalDate date = consultation.getJour(); // Assurez-vous que la méthode getDate() renvoie LocalDate

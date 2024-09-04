@@ -6,6 +6,7 @@ import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.models.dto.res.RendezVousResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.PagedDataSource;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -75,8 +76,8 @@ public class PatientController {
     private MedecinResDTO medecin;
     private SecretaireResDTO secretaire;
 
-    @Autowired
-    private com.medical.medical.controller.API.PatientController patientController;
+//    @Autowired
+//    private com.medical.medical.controller.API.PatientController patientController;
 
 
 
@@ -119,9 +120,13 @@ public class PatientController {
                 phoneColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTel()));
 
                 // Données d'exemple
-                patients = FXCollections.observableArrayList(
-                        getDate()
-                );
+                try {
+                    patients = FXCollections.observableArrayList(
+                            getDate()
+                    );
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
 
                 // Initialiser PagedDataSource
                 pagedDataSource = new PagedDataSource(patients, PAGE_SIZE);
@@ -163,7 +168,7 @@ public class PatientController {
     }
 
     @FXML
-    private void handleDeletePatient() {
+    private void handleDeletePatient() throws Exception {
         // Récupérer le patient sélectionné
         PatientResDTO selectedPatient = patientTable.getSelectionModel().getSelectedItem();
 
@@ -172,7 +177,8 @@ public class PatientController {
             patients.remove(selectedPatient);
 
             // Supprimer le patient du contrôleur API
-            patientController.deletePatientById(selectedPatient.getIdPatient());
+           // patientController.deletePatientById(selectedPatient.getIdPatient());
+            ResAPI.deleteById("patient",selectedPatient.getIdPatient());
 
             // Réinitialiser les données de la table
             pagedDataSource = new PagedDataSource(patients, PAGE_SIZE);
@@ -289,10 +295,11 @@ public class PatientController {
         return box;
     }
 
-    private List<PatientResDTO> getDate() {
+    private List<PatientResDTO> getDate() throws Exception {
 
         List<PatientResDTO> patientResDTOS;
-        patientResDTOS=patientController.findPatientsByMedecinId(idM);
+        //patientResDTOS=patientController.findPatientsByMedecinId(idM);
+        patientResDTOS=ResAPI.findByIdMedecin("patient",idM,PatientResDTO.class);
          return patientResDTOS;
     }
 

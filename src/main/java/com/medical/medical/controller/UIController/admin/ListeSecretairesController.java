@@ -9,6 +9,7 @@ import com.medical.medical.models.dto.res.AdminResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.PagedDataSource;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -72,11 +73,11 @@ public class ListeSecretairesController {
     @FXML
     private Button deleteButton;
 
-    @Autowired
-    private SecretaireController secretaireController;
-
-    @Autowired
-    private MedecinController medecinController;
+//    @Autowired
+//    private SecretaireController secretaireController;
+//
+//    @Autowired
+//    private MedecinController medecinController;
 
     private final int PAGE_SIZE=7;
 
@@ -87,7 +88,7 @@ public class ListeSecretairesController {
     private SecretaireResDTO selectedsecretaire;
 
     @FXML
-    public void initialize() {
+    public void initialize() throws Exception {
 
         Platform.runLater(() -> {
             Stage  stage = (Stage) cancelButton.getScene().getWindow();
@@ -147,7 +148,9 @@ public class ListeSecretairesController {
             String medecinName = "Non assigné"; // Valeur par défaut si aucun médecin n'est trouvé
 
             try {
-                Optional<MedecinResDTO> medecin = medecinController.findMedecinById(secretaire.getIdMedecin());
+                Optional<MedecinResDTO> medecin ;
+                //medecin=medecinController.findMedecinById(secretaire.getIdMedecin());
+                medecin= Optional.ofNullable(ResAPI.findById("medecin", secretaire.getIdMedecin(), MedecinResDTO.class));
                 if (medecin != null) {
                     medecinName = medecin.get().getFullName();
                 }
@@ -169,7 +172,9 @@ public class ListeSecretairesController {
         });
 
         SecretaireResDTOList= FXCollections.observableArrayList(
-                secretaireController.findAllSecretaire()
+                //secretaireController.findAllSecretaire()
+                ResAPI.findAll("secretaire", SecretaireResDTO.class)
+
         );
 
         // Charger les données dans le tableau
@@ -231,7 +236,9 @@ public class ListeSecretairesController {
         for (SecretaireResDTO secretaire : SecretaireResDTOList) {
             boolean matches = false;
             try {
-                Optional<MedecinResDTO> medecin = medecinController.findMedecinById(secretaire.getIdMedecin());
+                Optional<MedecinResDTO> medecin ;
+                medecin= Optional.ofNullable(ResAPI.findById("medecin", secretaire.getIdSecretaire(), MedecinResDTO.class));
+                //medecinController.findMedecinById(secretaire.getIdMedecin());
                 String medecinName = medecin.isPresent() ? medecin.get().getFullName() : "Non assigné";
 
                 matches = secretaire.getFullName().toLowerCase().contains(query.toLowerCase()) ||
@@ -273,7 +280,8 @@ public class ListeSecretairesController {
             if (response == ButtonType.OK) {
                 // Supprimer le secretaire
                 try {
-                    secretaireController.deleteSecretaireById(selectedsecretaire.getIdSecretaire());
+                    ResAPI.deleteById("secretaire",selectedsecretaire.getIdSecretaire());
+                    //secretaireController.deleteSecretaireById(selectedsecretaire.getIdSecretaire());
                     selectedsecretaire.setStatut(Boolean.FALSE);
                     filterTable(searchField.getText()); // Réapplique le filtre
                     Stage  stage = (Stage) searchField.getScene().getWindow();
@@ -288,6 +296,8 @@ public class ListeSecretairesController {
                     errorAlert.setContentText("Une erreur est survenue lors de la suppression du secretaire.");
                     errorAlert.showAndWait();
                 } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -327,7 +337,8 @@ public class ListeSecretairesController {
                             .statut(Boolean.TRUE)
                             .deletedAt(null)
                             .build();
-                    secretaireController.updateSecretaire(secretaireReqDTO);
+                    ResAPI.update("secretaire",secretaireReqDTO);
+                   // secretaireController.updateSecretaire(secretaireReqDTO);
 
                     filterTable(searchField.getText()); // Réapplique le filtre
                     Stage  stage = (Stage) searchField.getScene().getWindow();
@@ -343,6 +354,8 @@ public class ListeSecretairesController {
                     errorAlert.setContentText("Une erreur est survenue lors de la activation du secretaire.");
                     errorAlert.showAndWait();
                 } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }

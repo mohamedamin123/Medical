@@ -1,9 +1,6 @@
 package com.medical.medical;
 
-import com.medical.medical.controller.API.AdminController;
-import com.medical.medical.controller.API.ConsultationController;
-import com.medical.medical.controller.API.MedecinController;
-import com.medical.medical.controller.API.PatientController;
+import com.medical.medical.controller.API.*;
 import com.medical.medical.models.dto.req.AdminReqDTO;
 import com.medical.medical.models.dto.req.ConsultationReqDTO;
 import com.medical.medical.models.dto.req.MedecinReqDTO;
@@ -27,6 +24,9 @@ class MedecinTests {
 //	private  PatientRepo repository;
     @Autowired
     private AdminController adminController;
+
+	@Autowired
+	private RendezVousController rendezVousController;
 //
 //
 //
@@ -58,7 +58,7 @@ class MedecinTests {
 	@Test
 	void find() {
 
-		System.out.println(adminController.findAdminByEmail("am@am"));
+		System.out.println(rendezVousController.findRendezVousByIdMedecin(4));
 
 	}
 

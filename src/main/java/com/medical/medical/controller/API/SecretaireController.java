@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/Secretaires/Secretaire")
+@RequestMapping("/secretaires/secretaire")
 @RequiredArgsConstructor
 @Slf4j
 public class SecretaireController {
@@ -59,7 +59,7 @@ public class SecretaireController {
         return this.service.findSecretairesByDateDeNaissance(date);
     }
 
-    @GetMapping(path = "/find-all-by-id-medecin")
+    @GetMapping(path = "/find-all-by-medecin-id")
     public List<SecretaireResDTO> findSecretairesByIdMedecin(@RequestParam  Integer id) {
         return this.service.findSecretairesByIdMedecin(id);
 

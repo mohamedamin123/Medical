@@ -30,11 +30,13 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.postgresql</groupId>-->
-<!--			<artifactId>postgresql</artifactId>-->
-<!--			<scope>runtime</scope>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
+
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -98,21 +100,11 @@
 			<version>${spring-security.version}</version>
 		</dependency>
 
-    </dependencies>
+
+
+	</dependencies>
 	<build>
 		<plugins>
-<!--			<plugin>-->
-<!--				<groupId>org.mapstruct</groupId>-->
-<!--				<artifactId>mapstruct-processor</artifactId>-->
-<!--				<version>1.5.5.Final</version>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<goals>-->
-<!--							<goal>process</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -126,20 +118,20 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>org.openjfx</groupId>
-				<artifactId>javafx-maven-plugin</artifactId>
-				<configuration>
-					<mainClass>com.medical.medical.MedicalApplication</mainClass> <!-- Remplacez par votre classe principale JavaFX -->
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>jlink</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>org.openjfx</groupId>-->
+<!--				<artifactId>javafx-maven-plugin</artifactId>-->
+<!--				<configuration>-->
+<!--					<mainClass>com.medical.medical.MedicalApplication</mainClass> &lt;!&ndash; Remplacez par votre classe principale JavaFX &ndash;&gt;-->
+<!--				</configuration>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<goals>-->
+<!--							<goal>jlink</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 </project>

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/Patients/Patient")
+@RequestMapping("/patients/patient")
 @RequiredArgsConstructor
 @Slf4j
 public class PatientController {
@@ -42,8 +42,8 @@ public class PatientController {
         return this.service.findPatientByEmail(email);
     }
 
-    @GetMapping(path = "/find-by-medecin/{id}")
-    public List<PatientResDTO> findPatientsByMedecinId(@PathVariable(name = "id")  Integer id)
+    @GetMapping(path = "/find-all-by-medecin-id")
+    public List<PatientResDTO> findPatientsByMedecinId(@RequestParam Integer id)
     {
         return this.service.findPatientsByIdMedecin(id);
     }

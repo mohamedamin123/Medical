@@ -19,9 +19,12 @@ import java.util.Base64;
 @Slf4j
 public class javaFxAPI {
 
+    private static final String URL_API = "http://192.168.163.66:8081/";
+
+
 
     public static String  login(String email, String password, String role) throws Exception {
-        String urlString = "http://localhost:8081/"+role.toLowerCase()+"s"+"/"+role.toLowerCase()+"/find-by-email/" + email;
+        String urlString = URL_API+role.toLowerCase()+"s"+"/"+role.toLowerCase()+"/find-by-email/" + email;
         URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");

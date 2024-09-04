@@ -6,6 +6,7 @@ import com.medical.medical.services.impl.SecretaireServiceImpl;
 import com.medical.medical.services.interf.MedecinService;
 import com.medical.medical.services.interf.SecretaireService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

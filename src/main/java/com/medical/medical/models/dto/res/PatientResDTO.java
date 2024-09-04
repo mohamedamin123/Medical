@@ -3,12 +3,15 @@ import com.medical.medical.ennum.Sexe;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
 @Data
 @SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PatientResDTO extends UserResDTO{
     private int idPatient;
     private String note;

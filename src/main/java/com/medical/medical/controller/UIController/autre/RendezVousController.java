@@ -6,6 +6,7 @@ import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.models.dto.res.RendezVousResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -54,11 +55,11 @@ public class RendezVousController {
 
     private List<RendezVousResDTO> rendezVousList = new ArrayList<>();
 
-    @Autowired
-    private com.medical.medical.controller.API.RendezVousController rendezVousController;
-
-    @Autowired
-    private PatientController patientController;
+//    @Autowired
+//    private com.medical.medical.controller.API.RendezVousController rendezVousController;
+//
+//    @Autowired
+//    private PatientController patientController;
 
     @Setter
     @Getter
@@ -105,14 +106,23 @@ public class RendezVousController {
 
 
             patientColumn.setCellValueFactory(cellData ->
-                    new SimpleStringProperty(cellData.getValue().getIdPatient() != null ? namePatient(cellData.getValue().getIdPatient()) : ""));
+            {
+                try {
+                    return new SimpleStringProperty(cellData.getValue().getIdPatient() != null ? namePatient(cellData.getValue().getIdPatient()) : "");
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
             motifColumn.setCellValueFactory(cellData ->
                     new SimpleStringProperty(cellData.getValue().getMotif() != null ? cellData.getValue().getMotif() : ""));
 
 
-
-            getData();
+            try {
+                getData();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             loadAppointments(LocalDate.now());
 
             // Configurer l'écouteur pour le sélecteur de date
@@ -121,8 +131,10 @@ public class RendezVousController {
         });
     }
 
-    private String namePatient(Integer idPatient) {
-        Optional<PatientResDTO> p1=patientController.findPatientById(idPatient);
+    private String namePatient(Integer idPatient) throws Exception {
+        Optional<PatientResDTO> p1;
+        //patientController.findPatientById(idPatient);
+        p1= Optional.ofNullable(ResAPI.findById("patient", idPatient, PatientResDTO.class));
         if(p1.isPresent()) {
             try {
                 return p1.get().getFullName();
@@ -180,13 +192,14 @@ public class RendezVousController {
     }
 
     @FXML
-    private void handleDeleteRendezVous() {
+    private void handleDeleteRendezVous() throws Exception {
         // Logique pour supprimer un rendez-vous sélectionné
         RendezVousResDTO selectedRendezVous = appointmentTable.getSelectionModel().getSelectedItem();
         if (selectedRendezVous != null) {
             rendezVousList.remove(selectedRendezVous);
             loadAppointments(datePicker.getValue());
-            rendezVousController.deleteRendezVousById(selectedRendezVous.getIdRendezVous());
+           // rendezVousController.deleteRendezVousById(selectedRendezVous.getIdRendezVous());
+            ResAPI.deleteById("rendezVous",selectedRendezVous.getIdRendezVous());
         } else {
             showAlert("Aucune sélection", "Veuillez sélectionner un rendez-vous à supprimer.");
         }
@@ -200,20 +213,38 @@ public class RendezVousController {
         alert.showAndWait();
     }
 
-    private void getData() {
-        // Exemple de données fictives pour les rendez-vous
+    private void getData() throws Exception {
         rendezVousList.clear();
 
-       List<RendezVousResDTO> exampleAppointments= rendezVousController.findRendezVousByIdMedecin(idM);
+        List<RendezVousResDTO> exampleAppointments;
+        exampleAppointments = ResAPI.findByIdMedecin("rendezVous", idM, RendezVousResDTO.class);
 
+        if (exampleAppointments != null) {
+            rendezVousList.addAll(exampleAppointments);
+        } else {
+            // Optionally, handle the case where no appointments are found
+            System.out.println("No appointments found for this Medecin.");
+        }
 
-
-        // Ajouter les rendez-vous fictifs à la liste
-        rendezVousList.addAll(exampleAppointments);
-
-        // Charger les rendez-vous pour la date actuelle
+        // Load the appointments for the selected date
         loadAppointments(datePicker.getValue());
     }
+
+//    private void getData() throws Exception {
+//        // Exemple de données fictives pour les rendez-vous
+//        rendezVousList.clear();
+//
+//       List<RendezVousResDTO> exampleAppointments;
+//       // rendezVousController.findRendezVousByIdMedecin(idM);
+//        exampleAppointments= ResAPI.findByIdMedecin("rendezVous",idM,RendezVousResDTO.class);
+//
+//
+//        // Ajouter les rendez-vous fictifs à la liste
+//        rendezVousList.addAll(exampleAppointments);
+//
+//        // Charger les rendez-vous pour la date actuelle
+//        loadAppointments(datePicker.getValue());
+//    }
 
 
     public void retour(ActionEvent actionEvent) {

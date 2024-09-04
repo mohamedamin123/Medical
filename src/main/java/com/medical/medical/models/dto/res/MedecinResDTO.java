@@ -1,29 +1,30 @@
 package com.medical.medical.models.dto.res;
-import lombok.Builder;
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
-
 @Data
 @SuperBuilder
-public class MedecinResDTO extends UserResDTO{
+@NoArgsConstructor
+public class MedecinResDTO extends UserResDTO {
 
     private int idMedecin;
     private String specialite;
     private LocalDateTime deletedAt;
-
+    private String password;
 
     @Override
     public String toString() {
         return "MedecinResDTO{" +
                 "nom='" + getNom() + '\'' +
-                ", prenom='" + getPrenom()+ '\'' +
+                ", prenom='" + getPrenom() + '\'' +
                 ", tel='" + getTel() + '\'' +
                 ", email='" + getEmail() + '\'' +
                 ", dateDeNaissance=" + getDateDeNaissance() +
-                "specialite='" + specialite + '\'' +
+                ", specialite='" + specialite + '\'' +
                 '}';
     }
 }

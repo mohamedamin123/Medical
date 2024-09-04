@@ -140,7 +140,11 @@ public class AjoutPatientAttController {
                     Integer idPatient = (selectedPatient != null) ? selectedPatient.getId() : null;
 
                     if (patientName != null && !patientName.isEmpty()) {
-                        salleAttenteController.addPatient(patientName, currentTime);
+                        try {
+                            salleAttenteController.addPatient(patientName, currentTime);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         closeWindow();
                         stagee.close();
                         ConsultationReqDTO consultationReqDTO = new ConsultationReqDTO(idM, idPatient, LocalDate.now(), LocalTime.now());

@@ -9,6 +9,7 @@ import com.medical.medical.models.dto.res.AdminResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.PagedDataSource;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -65,11 +66,11 @@ public class ListeSecretairesDetailleController {
     private Pagination pagination;
 
 
-    @Autowired
-    private SecretaireController secretaireController;
-
-    @Autowired
-    private MedecinController medecinController;
+//    @Autowired
+//    private SecretaireController secretaireController;
+//
+//    @Autowired
+//    private MedecinController medecinController;
 
     private final int PAGE_SIZE=7;
 
@@ -140,7 +141,9 @@ public class ListeSecretairesDetailleController {
                     String medecinName = "Non assigné"; // Valeur par défaut si aucun médecin n'est trouvé
 
                     try {
-                        Optional<MedecinResDTO> medecin = medecinController.findMedecinById(secretaire.getIdMedecin());
+                        Optional<MedecinResDTO> medecin ;
+                        // medecinController.findMedecinById(secretaire.getIdMedecin());
+                        medecin= Optional.ofNullable(ResAPI.findById("medecin", secretaire.getIdMedecin(), MedecinResDTO.class));
                         if (medecin != null) {
                             medecinName = medecin.get().getFullName();
                         }
@@ -161,9 +164,14 @@ public class ListeSecretairesDetailleController {
                     return new ReadOnlyObjectWrapper<>(button);
                 });
 
-                SecretaireResDTOList= FXCollections.observableArrayList(
-                        secretaireController.findSecretairesByIdMedecin(medecinResDTO.getIdMedecin())
-                );
+                try {
+                    SecretaireResDTOList= FXCollections.observableArrayList(
+                           // secretaireController.findSecretairesByIdMedecin(medecinResDTO.getIdMedecin())
+                            ResAPI.findByIdMedecin("secretaire",medecinResDTO.getIdMedecin(),SecretaireResDTO.class)
+                    );
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
 
                 // Charger les données dans le tableau
                 secretaireTable.getItems().addAll(SecretaireResDTOList);
@@ -216,7 +224,9 @@ public class ListeSecretairesDetailleController {
         for (SecretaireResDTO secretaire : SecretaireResDTOList) {
             boolean matches = false;
             try {
-                Optional<MedecinResDTO> medecin = medecinController.findMedecinById(secretaire.getIdMedecin());
+                Optional<MedecinResDTO> medecin ;
+                // medecinController.findMedecinById(secretaire.getIdMedecin());
+                medecin= Optional.ofNullable(ResAPI.findById("medecin", secretaire.getIdMedecin(), MedecinResDTO.class));
                 String medecinName = medecin.isPresent() ? medecin.get().getFullName() : "Non assigné";
 
                 matches = secretaire.getFullName().toLowerCase().contains(query.toLowerCase()) ||

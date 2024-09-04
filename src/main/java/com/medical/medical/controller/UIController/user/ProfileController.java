@@ -6,6 +6,7 @@ import com.medical.medical.models.dto.req.MedecinReqDTO;
 import com.medical.medical.models.dto.req.SecretaireReqDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -56,11 +57,11 @@ public class ProfileController {
 
     private SecretaireReqDTO secretaireReqDTO;
 
-    @Autowired
-    private MedecinController medecinController;
-
-    @Autowired
-    private SecretaireController secretaireController;
+//    @Autowired
+//    private MedecinController medecinController;
+//
+//    @Autowired
+//    private SecretaireController secretaireController;
 
     @FXML
     public void initialize() {
@@ -87,10 +88,7 @@ public class ProfileController {
 
     @FXML
     private void mettreAjour() throws IOException {
-        if (medecinController == null || secretaireController == null) {
-            log.error("Controllers not initialized");
-            return;
-        }
+
 
         boolean isUpdated = false;
 
@@ -159,7 +157,8 @@ public class ProfileController {
                         .build();
 
                 try {
-                    medecinController.updateMedecin(medecinReqDTO);
+                    ResAPI.update("medecin",medecinReqDTO);
+                   // medecinController.updateMedecin(medecinReqDTO);
                     log.info("Profile updated for Medecin: {}", medecinReqDTO.getNom());
                     isUpdated = true;
                 } catch (Exception e) {
@@ -176,7 +175,9 @@ public class ProfileController {
                         .build();
 
                 try {
-                    secretaireController.updateSecretaire(secretaireReqDTO);
+                   // secretaireController.updateSecretaire(secretaireReqDTO);
+                    ResAPI.update("secretaire",secretaireReqDTO);
+
                     log.info("Profile updated for Secretaire: {}", secretaireReqDTO.getNom());
                     isUpdated = true;
                 } catch (Exception e) {

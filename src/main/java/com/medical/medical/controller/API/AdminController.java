@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admins/admin")
 @RequiredArgsConstructor
 @Slf4j
 public class AdminController {

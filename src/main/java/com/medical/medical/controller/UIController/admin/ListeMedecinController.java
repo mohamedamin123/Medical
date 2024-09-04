@@ -7,6 +7,7 @@ import com.medical.medical.models.dto.res.AdminResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.utils.PagedDataSource;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -76,8 +77,8 @@ public class ListeMedecinController {
     @FXML
     private Button deleteButton;
 
-    @Autowired
-    private MedecinController medecinController;
+//    @Autowired
+//    private MedecinController medecinController;
 
     private final int PAGE_SIZE=7;
 
@@ -86,13 +87,13 @@ public class ListeMedecinController {
     private AdminResDTO adminResDTO;
 
     private MedecinResDTO selectedMedecin;
-    Stage stage;
 
     @FXML
     public void initialize() {
 
         Platform.runLater(() -> {
-              stage = (Stage) searchField.getScene().getWindow();
+            Stage stage;
+            stage = (Stage) searchField.getScene().getWindow();
             if (stage != null) {
                 Object userData = stage.getUserData();
                 if (userData instanceof Object[] data) {
@@ -158,9 +159,13 @@ public class ListeMedecinController {
             return new ReadOnlyObjectWrapper<>(button);
         });
 
-        medecinResDTOList= FXCollections.observableArrayList(
-                medecinController.findAllMedecin()
-        );
+        try {
+            medecinResDTOList= FXCollections.observableArrayList(
+                    ResAPI.findAll("medecin", MedecinResDTO.class)
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         // Charger les données dans le tableau
         medecinTable.getItems().addAll(medecinResDTOList);
@@ -273,7 +278,10 @@ public class ListeMedecinController {
             if (response == ButtonType.OK) {
                 // Supprimer le médecin
                 try {
-                    medecinController.deleteMedecinById(selectedMedecin.getIdMedecin());
+                    Stage stage;
+                    stage = (Stage) searchField.getScene().getWindow();
+                    ResAPI.deleteById("medecin",selectedMedecin.getIdMedecin());
+                    //medecinController.deleteMedecinById(selectedMedecin.getIdMedecin());
                     selectedMedecin.setStatut(Boolean.FALSE);
                     filterTable(searchField.getText()); // Réapplique le filtre
                     stage.close();
@@ -287,6 +295,8 @@ public class ListeMedecinController {
                     errorAlert.setContentText("Une erreur est survenue lors de la suppression du médecin.");
                     errorAlert.showAndWait();
                 } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -327,8 +337,10 @@ public class ListeMedecinController {
                             .statut(Boolean.TRUE)
                             .deletedAt(null)
                             .build();
-                    medecinController.updateMedecin(medecinReqDTO);
-
+                    ResAPI.update("medecin",medecinReqDTO);
+                    //medecinController.updateMedecin(medecinReqDTO);
+                    Stage stage;
+                    stage = (Stage) searchField.getScene().getWindow();
                     filterTable(searchField.getText()); // Réapplique le filtre
                     stage.close();
                     changeFenetre("liste_medecin", adminResDTO);
@@ -341,6 +353,8 @@ public class ListeMedecinController {
                     errorAlert.setContentText("Une erreur est survenue lors de la activation du médecin.");
                     errorAlert.showAndWait();
                 } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }

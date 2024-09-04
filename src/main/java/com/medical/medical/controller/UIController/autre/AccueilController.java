@@ -47,12 +47,6 @@ public class AccueilController {
     @FXML
     private Label name;
 
-    @Autowired
-    private MedecinController medecinController;
-
-    @Autowired
-    private SecretaireController secretaireController;
-
     @Setter
     @Getter
     private String email;

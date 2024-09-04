@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/RendezVouss/RendezVous")
+@RequestMapping("/rendezVouss/rendezVous")
 @RequiredArgsConstructor
 @Slf4j
 public class RendezVousController {
@@ -34,8 +34,8 @@ public class RendezVousController {
         return this.service.findRendezVousById(id);
     }
 
-    @GetMapping(path = "/find-by-id-medecin/{id}")
-    public List<RendezVousResDTO> findRendezVousByIdMedecin(@PathVariable(name = "id")  Integer id)
+    @GetMapping(path = "/find-all-by-medecin-id")
+    public List<RendezVousResDTO> findRendezVousByIdMedecin(@RequestParam Integer id)
     {
         return this.service.findRendezVousByIdMedecin(id);
     }

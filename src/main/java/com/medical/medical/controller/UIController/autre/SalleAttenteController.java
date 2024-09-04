@@ -6,6 +6,7 @@ import com.medical.medical.controller.UIController.JavaFXApp;
 import com.medical.medical.controller.UIController.ajouter.AjoutPatientAttController;
 import com.medical.medical.models.dto.res.*;
 import com.medical.medical.utils.PatientItem;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -78,13 +79,14 @@ public class SalleAttenteController {
     private Integer idM;
 
 
+
     Object userData;
 
-    @Autowired
-    private ConsultationController controller;
-
-    @Autowired
-    private PatientController patientController;
+//    @Autowired
+//    private ConsultationController controller;
+//
+//    @Autowired
+//    private PatientController patientController;
 
 
     @FXML
@@ -117,9 +119,19 @@ public class SalleAttenteController {
             addPatientButton.setOnAction(event -> openAddPatientWindow());
 
             // Gestion de l'événement pour supprimer un patient
-            removePatientButton.setOnAction(event -> removePatient());
+            removePatientButton.setOnAction(event -> {
+                try {
+                    removePatient();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
-            updatePatientCount();
+            try {
+                updatePatientCount();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
         });
 
@@ -147,28 +159,29 @@ public class SalleAttenteController {
             log.error("Erreur lors de l'ouverture de la fenêtre d'ajout de patient", e);
         }
     }
-    public void addPatient(String name, String time) {
+    public void addPatient(String name, String time) throws Exception {
         PatientItem newPatient = new PatientItem(name, time);
         patientList.add(newPatient);
         log.info("Added new patient: {} at {}", newPatient.getName(), time);
         updatePatientCount();
     }
-    private void removePatient() {
+    private void removePatient() throws Exception {
         PatientItem selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
             patientList.remove(selectedPatient);
-            controller.deleteConsultationById(selectedPatient.getId());
+            //controller.deleteConsultationById(selectedPatient.getId());
+            ResAPI.deleteById("consultation",selectedPatient.getId());
             updatePatientCount();
         } else {
             log.warn("No patient selected for removal.");
         }
     }
 
-    private void updatePatientCount() {
+    private void updatePatientCount() throws Exception {
         getDate();
     }
 
-    private void getDate() {
+    private void getDate() throws Exception {
         // Vide la liste actuelle de patients
         patientList.clear();
 
@@ -176,9 +189,13 @@ public class SalleAttenteController {
         LocalDate jour = LocalDate.now();
 
         // Récupère les consultations et les patients pour le médecin et la date spécifiés
-        List<ConsultationResDTO> exampleAppointments = controller.findConsultationsByIdMedecinAndJour(idM, jour);
-        List<PatientResDTO> patients = patientController.findPatientsByMedecinId(idM);
+        List<ConsultationResDTO> exampleAppointments;
+        // controller.findConsultationsByIdMedecinAndJour(idM, jour);
+        exampleAppointments=ResAPI.findByIdMedecinAndJOur("consultation",idM,jour,ConsultationResDTO.class);
+        List<PatientResDTO> patients;
+        // patientController.findPatientsByMedecinId(idM);
 
+        patients=ResAPI.findByIdMedecin("patient",idM,PatientResDTO.class);
         // Crée une Map pour associer les ID des patients avec leurs noms
         Map<Integer, String> patientIdToNameMap = new HashMap<>();
         for (PatientResDTO patient : patients) {

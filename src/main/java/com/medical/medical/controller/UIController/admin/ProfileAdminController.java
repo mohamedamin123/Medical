@@ -9,6 +9,7 @@ import com.medical.medical.models.dto.req.SecretaireReqDTO;
 import com.medical.medical.models.dto.res.AdminResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -57,8 +58,8 @@ public class ProfileAdminController {
 
     private AdminReqDTO adminReqDTO;
 
-    @Autowired
-    private AdminController adminController;
+//    @Autowired
+//    private AdminController adminController;
 
 
 
@@ -156,7 +157,8 @@ public class ProfileAdminController {
                         .build();
 
                 try {
-                    adminController.updateAdmin(adminReqDTO);
+                    //adminController.updateAdmin(adminReqDTO);
+                    ResAPI.update("admin",adminReqDTO);
                     isUpdated = true;
                 } catch (Exception e) {
                     log.error("Error updating Medecin profile", e);

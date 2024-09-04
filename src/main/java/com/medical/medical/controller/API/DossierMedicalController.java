@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/DossierMedicals/DossierMedical")
+@RequestMapping("/dossierMedicals/dossierMedical")
 @RequiredArgsConstructor
 @Slf4j
 public class DossierMedicalController {
