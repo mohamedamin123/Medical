@@ -66,6 +66,14 @@ public class ConsultationServiceImpl implements ConsultationService {
 
 
     @Override
+    public List<ConsultationResDTO> findConsultationsByIdMedecin(Integer id) {
+        List<Consultation> consultations = this.repository.findConsultationsByIdMedecin(id);
+        List<Consultation> filteredConsultations = consultations.stream()
+                .filter(consultation -> consultation.getDeletedAt() == null)
+                .collect(Collectors.toList());
+        return mapper.toAllRespDTO(filteredConsultations);    }
+
+    @Override
     public Optional<ConsultationResDTO> findConsultationById(int id) {
         Optional<Consultation> optionalConsultation = this.repository.findById(id);
         if (optionalConsultation.isPresent()) {
@@ -85,6 +93,8 @@ public class ConsultationServiceImpl implements ConsultationService {
                 .collect(Collectors.toList());
         return mapper.toAllRespDTO(filteredConsultations);
     }
+
+
 
     @Override
     public Optional<ConsultationResDTO> findConsultationByIdAfterDelete(int id) {

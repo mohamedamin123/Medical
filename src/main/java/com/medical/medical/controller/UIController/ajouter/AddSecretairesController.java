@@ -76,14 +76,17 @@ public class AddSecretairesController {
                             secretaireResDTO = (SecretaireResDTO) data[1];
                             // Traitez le cas pour SecretaireResDTO ici
                         }
-                       if(data[2]!=null)
-                       {
-                               int id = (int) data[2];
-                               if (id==1){
-                                   annuler.setVisible(false);
-                                   enregistrer.setVisible(false);
-                               }
-                       }
+//                        enregistrer.setVisible(false);
+//                       if(data.length>=3) {
+//                            if(data[2]!=null)
+//                            {
+//                                int id = (int) data[2];
+//                                if (id==1){
+//                                    annuler.setVisible(false);
+//                                    enregistrer.setVisible(false);
+//                                }
+//                            }
+//                        }
                     }
                     if(secretaireResDTO!=null) {
                         nom.setText(secretaireResDTO.getNom());
@@ -93,7 +96,18 @@ public class AddSecretairesController {
                         tel.setText(secretaireResDTO.getTel());
                         password.setText("a1e2r35f");
                         password.setEditable(false);
+
+                        nom.setEditable(false);
+                        prenom.setEditable(false);
+                        email.setEditable(false);
+                        dateDeNaissance.setEditable(false);
+                        tel.setEditable(false);
+                        password.setEditable(false);
+                        annuler.setVisible(false);
+                        enregistrer.setVisible(false);
                     }
+
+
 
                 }
                 enregistrer.setOnAction(event -> {
@@ -207,9 +221,9 @@ public class AddSecretairesController {
                     }
                     Stage stage = (Stage) nom.getScene().getWindow();
                     stage.close();
-                   if(secretaireResDTO!=null) {
+                    changeFenetre("liste_secretaires",admin);
+                    if(secretaireResDTO!=null) {
                         secretaireResDTO=null;
-                        changeFenetre("liste_secretaires",admin);
                     }
 
 
@@ -226,11 +240,11 @@ public class AddSecretairesController {
     private void annulerBtn() throws IOException {
         Stage stage = (Stage) nom.getScene().getWindow();
         stage.close();
+        changeFenetre("liste_secretaires",admin);
 
         if(secretaireResDTO!=null)
         {
             secretaireResDTO=null;
-            changeFenetre("liste_secretaires",admin);
 
 
         }

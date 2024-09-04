@@ -224,10 +224,10 @@ public class AddMedecinController {
                     }
                     Stage stage = (Stage) nom.getScene().getWindow();
                     stage.close();
+                    changeFenetre("liste_medecin",admin);
                     if(medecinResDTOO!=null)
                     {
                         medecinResDTOO=null;
-                        changeFenetre("liste_medecin",admin);
                     }
 
 
@@ -244,11 +244,11 @@ public class AddMedecinController {
     private void annulerBtn() throws IOException {
         Stage stage = (Stage) nom.getScene().getWindow();
         stage.close();
-
+        changeFenetre("liste_medecin",admin);
         if(medecinResDTOO!=null)
         {
             medecinResDTOO=null;
-            changeFenetre("liste_medecin",admin);
+
         }
     }
 }

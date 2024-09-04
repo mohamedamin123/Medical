@@ -30,6 +30,11 @@ public class ConsultationController {
         return this.service.findConsultationsByIdMedecinAndJour(id,jour);
     }
 
+    @GetMapping(path = "/find-all-by-medecin-id")
+    public List<ConsultationResDTO> findConsultationsByIdMedecin( @RequestParam Integer id) {
+        return this.service.findConsultationsByIdMedecin(id);
+    }
+
 
         @GetMapping(path = "/find-by-id/{id}")
     public Optional<ConsultationResDTO> findConsultationById(@PathVariable(name = "id")  Integer id)

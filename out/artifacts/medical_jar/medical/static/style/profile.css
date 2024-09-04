@@ -1,0 +1,47 @@
+/* Container for the GridPane */
+.container {
+    -fx-padding: 20px;
+    -fx-alignment: center;
+}
+
+/* Style for TextFields and DatePicker */
+.text-field, .date-picker {
+    -fx-pref-width: 300px; /* Set a fixed width for all input fields */
+    -fx-font-size: 15px;
+    -fx-pref-height: 30px;
+    -fx-padding: 5px;
+}
+
+.button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+
+.buttonAnnuler {
+    -fx-background-color: #dc3545; /* Rouge similaire à Bootstrap */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+
+.label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.erreur {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 2px 0 0 0;
+}
+
+/* Style for the Email field when it's not editable */
+.text-field[editable=false] {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #333;
+}

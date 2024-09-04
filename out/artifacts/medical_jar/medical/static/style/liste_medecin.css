@@ -1,0 +1,113 @@
+/* Style pour les boutons */
+.connect-button, .anuler-button, .delete-button ,.activate-button{
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.anuler-button {
+    -fx-background-color: #3458db;
+}
+
+.delete-button {
+    -fx-background-color: #dc3545;
+}
+
+
+/* Style pour la barre de recherche */
+.text-field {
+    -fx-padding: 10px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-font-size: 14px;
+}
+
+/* Style pour le titre */
+.titre {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+    -fx-padding: 20px 0;
+}
+
+/* Style pour le TableView */
+.table-view {
+    -fx-padding: 10px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-font-size: 14px;
+    -fx-table-cell-border-color: #dee2e6;
+}
+
+/* Style pour les en-têtes de colonnes */
+.table-view .column-header-background {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+/* Style pour les lignes du tableau */
+.table-view .table-row-cell {
+    -fx-border-color: #dee2e6;
+    -fx-background-color: #ffffff;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+}
+
+/* Style pour la pagination */
+.pagination {
+    -fx-padding: 10px;
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+/* Style pour le bouton Voir */
+.button-voir {
+    -fx-background-color: #4CAF50; /* Couleur de fond verte */
+    -fx-text-fill: white; /* Couleur du texte en blanc */
+    -fx-font-size: 12px; /* Taille de police */
+    -fx-padding: 10px 15px; /* Espacement intérieur */
+    -fx-border-radius: 5px; /* Coins arrondis */
+    -fx-background-radius: 5px; /* Coins arrondis */
+    -fx-alignment: center;
+
+}
+
+
+
+/* Style pour le bouton Secrétaire */
+.button-secretaire {
+    -fx-background-color: #2196F3; /* Couleur de fond bleue */
+    -fx-text-fill: white; /* Couleur du texte en blanc */
+    -fx-font-size: 12px; /* Taille de police */
+    -fx-padding: 10px 15px; /* Espacement intérieur */
+    -fx-border-radius: 5px; /* Coins arrondis */
+    -fx-background-radius: 5px; /* Coins arrondis */
+    -fx-alignment: center;
+
+
+}
+
+.activate-button {
+    -fx-background-color: #4CAF50; /* Couleur de fond verte */
+
+}

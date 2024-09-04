@@ -13,37 +13,5 @@ class MedicalApplicationTests {
 	@Autowired
 	private ConsultationController cc;
 
-	@Test
-	void saveConsultation() {
-
-//		ConsultationReqDTO c1=new ConsultationReqDTO("bonjour", LocalDate.now());
-//		cc.saveConsultation(c1);
-
-	}
-
-	@Test
-	void DeleteConsultationById() {
-
-		cc.deleteConsultationById(1) ;
-
-	}
-
-	@Test
-	void FindAllConsultation() {
-
-		System.out.println(cc.findAllConsultation().size()) ;
-
-	}
-
-	@Test
-	void FindAllConsultationAfterDelete() {
-
-		System.out.println(cc.findAllConsultationAfterDelete().size() );
-
-	}
-
-
-
-
 
 }

@@ -1,0 +1,52 @@
+/* Style de la fenêtre d'ajout de patient */
+
+#title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 10;
+}
+.root {
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 20;
+}
+
+.label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-padding-bottom: 15px;
+}
+
+.text-field,.cc {
+    -fx-font-size: 14px;
+    -fx-pref-width: 250px;
+    -fx-pref-height: 30px;
+    -fx-padding: 5;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c3c3c3;
+    -fx-border-radius: 5px;
+}
+
+.button {
+    -fx-font-size: 14px;
+    -fx-background-color: #007bff;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #0056b3;
+}
+
+.button:pressed {
+    -fx-background-color: #004080;
+}
+
+.button-delete {
+    -fx-background-color: #e74c3c;
+}
+.button-delete:hover {
+    -fx-background-color: #e74c3c;
+}

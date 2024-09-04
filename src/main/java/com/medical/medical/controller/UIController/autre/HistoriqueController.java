@@ -88,8 +88,8 @@ public class HistoriqueController {
     }
 
     private void loadTableData() {
-        LocalDate jour = LocalDate.now();
-        List<ConsultationResDTO> consultations = controller.findConsultationsByIdMedecinAndJour(idM, jour);
+        
+        List<ConsultationResDTO> consultations = controller.findConsultationsByIdMedecin(idM);
 
         // Créer une Map pour compter les patients par date
         Map<LocalDate, Integer> datePatientCountMap = new HashMap<>();

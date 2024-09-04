@@ -33,6 +33,7 @@ public class DossierMedical {
     @Column(name = "contenu_document", columnDefinition = "TEXT", nullable = true)
     private String fichier;
 
+//    @Lob
     @Column(name = "fichier", columnDefinition = "LONGBLOB", nullable = true)
     private byte[] contenue;
 

@@ -211,8 +211,8 @@ public class ListeSecretairesController {
     // Méthode pour voir les détails du secretaire
     private void handleShowDetails(SecretaireResDTO SecretaireResDTO) {
         try {
-            Stage stage = (Stage) searchField.getScene().getWindow();
-            stage.close();
+//            Stage stage = (Stage) searchField.getScene().getWindow();
+//            stage.close();
             changeFenetre("addSecretaires",adminResDTO,SecretaireResDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);

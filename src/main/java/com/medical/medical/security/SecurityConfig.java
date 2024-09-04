@@ -37,44 +37,70 @@ public class SecurityConfig {
     private final SecretaireServiceImpl secretaireService;
     private final AdminServiceImpl adminService;
 
-
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/login").permitAll() // Allow login requests
                         .requestMatchers(HttpMethod.GET, "/medecins/medecin/find-password-by-email").permitAll()
                         .requestMatchers(HttpMethod.GET, "/secretaires/secretaire/find-password-by-email").permitAll()
                         .requestMatchers(HttpMethod.GET, "/admin/find-password-by-email").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // Role ADMIN for /admin/** endpoints
+                                .requestMatchers("/medecins/medecin/**").hasAnyRole("MEDECIN","ADMIN") // Role MEDECIN for /medecins/medecin/** endpoints
+                                .requestMatchers("/secretaires/secretaire/**").hasAnyRole("SECRETAIRE","MEDECIN","ADMIN") // Role SECRETAIRE for /secretaires/secretaire/** endpoints
+                                .anyRequest().authenticated() // Require authentication for all o
                 )
-                .formLogin(withDefaults()) // Configure form login (if needed)
                 .httpBasic(withDefaults()) // Use HTTP Basic Authentication
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
+                .cors(AbstractHttpConfigurer::disable) // Disable CORS if not needed
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Use stateless sessions
                 );
 
         return http.build();
     }
+
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            UserDetails user = medecinService.loadUserByUsername(username);
-            if (user == null) {
-                user = secretaireService.loadUserByUsername(username);
-            }
-            if (user == null) {
+            System.out.println("Attempting to load user: " + username);
+
+            UserDetails user = null;
+
+            try {
                 user = adminService.loadUserByUsername(username);
+                if (user != null) {
+
+                    return user;
+                }
+            } catch (Exception e) {
 
             }
-            if (user == null) {
-                throw new UsernameNotFoundException("User not found");
+
+            try {
+                user = secretaireService.loadUserByUsername(username);
+                if (user != null) {
+                    return user;
+                }
+            } catch (Exception e) {
             }
-            return user;
+
+            try {
+                user = medecinService.loadUserByUsername(username);
+                if (user != null) {
+
+                    return user;
+                }
+            } catch (Exception e) {
+                System.out.println("Error in MedecinService: " + e.getMessage());
+            }
+
+            System.out.println("User not found");
+            throw new UsernameNotFoundException("User not found");
         };
     }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

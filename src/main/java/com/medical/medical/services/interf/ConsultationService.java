@@ -23,8 +23,10 @@ public interface ConsultationService {
      Optional<ConsultationResDTO> findConsultationById(int id) ;
 
      List<ConsultationResDTO> findAllConsultationAfterDelete();
+    List<ConsultationResDTO> findConsultationsByIdMedecin(Integer id);
 
-     Optional<ConsultationResDTO> findConsultationByIdAfterDelete(int id);
+
+    Optional<ConsultationResDTO> findConsultationByIdAfterDelete(int id);
 
     void deleteConsultation(ConsultationReqDTO req);
 

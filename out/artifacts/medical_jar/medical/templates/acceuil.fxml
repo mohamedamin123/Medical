@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="733.0" prefWidth="831.0" stylesheets="@../static/style/accueil.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.autre.AccueilController">
+   <!-- Main layout container -->
+
+   <!-- Main layout container -->
+   <!-- Main layout container -->
+   <VBox spacing="20" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+
+      <!-- Top Section with Logo and Profile -->
+      <HBox alignment="CENTER" spacing="10.0">
+         <ImageView fitHeight="83.0" fitWidth="100.0" preserveRatio="true">
+            <Image url="@../static/images/Logo.png" />
+            <HBox.margin>
+               <Insets left="50.0" right="300.0" />
+            </HBox.margin>
+         </ImageView>
+
+         <!-- Profile Section aligned to the right -->
+         <AnchorPane HBox.hgrow="ALWAYS">
+            <VBox alignment="CENTER" spacing="10.0" AnchorPane.rightAnchor="0.0">
+               <ImageView fitWidth="58.0" preserveRatio="true">
+                  <Image url="@../static/images/profil.png" />
+               </ImageView>
+               <Label fx:id="name" alignment="CENTER" style="-fx-font-size: 16;" text="Nom+prenom">
+                  <VBox.margin>
+                     <Insets top="10.0" />
+                  </VBox.margin>
+               </Label>
+            </VBox>
+         </AnchorPane>
+      </HBox>
+      <!-- Welcome Message -->
+      <Label alignment="CENTER" prefWidth="Infinity" style="-fx-font-size: 19px; -fx-font-family: 'Abyssinica SIL';" text="Bienvenue sur ganaMedical, vueillez choisir une action dans le menu" VBox.vgrow="ALWAYS">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </VBox.margin>
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+
+      <!-- Action Menu Section with Margins -->
+      <HBox alignment="CENTER" spacing="40">
+         <VBox alignment="CENTER" spacing="10">
+            <ImageView fx:id="patient" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+               <Image url="@../static/images/patient.png" />
+               <VBox.margin>
+                  <Insets right="70.0" />
+               </VBox.margin>
+            </ImageView>
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Patient" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets right="70.0" />
+               </VBox.margin></Label>
+         </VBox>
+
+         <VBox alignment="CENTER" spacing="10">
+            <ImageView fx:id="attente" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+               <Image url="@../static/images/attente.png" />
+               <VBox.margin>
+                  <Insets left="70.0" right="70.0" />
+               </VBox.margin>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </ImageView>
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Salle d'attente" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets left="70.0" right="70.0" />
+               </VBox.margin></Label>
+         </VBox>
+
+         <VBox alignment="CENTER" spacing="10">
+            <ImageView fx:id="profile" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+               <Image url="@../static/images/Utilisateur.png" />
+               <VBox.margin>
+                  <Insets left="70.0" />
+               </VBox.margin>
+               <viewport>
+                  <Rectangle2D height="150.0" />
+               </viewport>
+            </ImageView>
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Profile" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets left="70.0" />
+               </VBox.margin></Label>
+         </VBox>
+      </HBox>
+
+      <HBox alignment="CENTER" spacing="40">
+         <VBox alignment="CENTER" spacing="10">
+            <ImageView fx:id="rendezVous" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+               <Image url="@../static/images/Rendez_vous.png" />
+               <VBox.margin>
+                  <Insets right="70.0" />
+               </VBox.margin>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </ImageView>
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Rendez-vous" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets right="70.0" />
+               </VBox.margin></Label>
+         </VBox>
+
+         <VBox alignment="CENTER" spacing="10">
+            <ImageView fx:id="secretaireI" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+               <Image url="@../static/images/Secretaire.png" />
+               <VBox.margin>
+                  <Insets left="70.0" right="70.0" />
+               </VBox.margin>
+            </ImageView>
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Secrétaires" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets left="70.0" right="70.0" />
+               </VBox.margin></Label>
+         </VBox>
+
+         <VBox alignment="CENTER" spacing="10">
+            <ImageView fx:id="deconnecter" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+               <Image url="@../static/images/deconnerter.png" />
+               <VBox.margin>
+                  <Insets left="70.0" />
+               </VBox.margin>
+            </ImageView>
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Deconnerter" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets left="70.0" />
+               </VBox.margin></Label>
+         </VBox>
+      </HBox>
+
+</VBox>
+</AnchorPane>
