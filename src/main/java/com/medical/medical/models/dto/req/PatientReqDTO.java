@@ -2,6 +2,7 @@ package com.medical.medical.models.dto.req;
 import com.medical.medical.ennum.Sexe;
 import com.medical.medical.ennum.Utilisateurs;
 import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 public class PatientReqDTO extends UserReqDTO {
     private int idPatient;
     private String note;

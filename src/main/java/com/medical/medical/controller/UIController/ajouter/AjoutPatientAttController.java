@@ -9,6 +9,7 @@ import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.PatientItem;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -52,11 +53,11 @@ public class AjoutPatientAttController {
     @Setter
     private SalleAttenteController salleAttenteController;
 
-    @Autowired
-    private ConsultationController controller;
-
-    @Autowired
-    private PatientController patientController;
+//    @Autowired
+//    private ConsultationController controller;
+//
+//    @Autowired
+//    private PatientController patientController;
     Stage stage;
     @Setter
     @Getter
@@ -78,10 +79,6 @@ public class AjoutPatientAttController {
     @FXML
     public void initialize() {
         // Ensure patientController is properly injected
-        if (patientController == null) {
-            log.error("PatientController is not injected.");
-            return;
-        }
 
         Platform.runLater(() -> {
             try {
@@ -148,7 +145,13 @@ public class AjoutPatientAttController {
                         closeWindow();
                         stagee.close();
                         ConsultationReqDTO consultationReqDTO = new ConsultationReqDTO(idM, idPatient, LocalDate.now(), LocalTime.now());
-                        controller.saveConsultation(consultationReqDTO);
+                        //controller.saveConsultation(consultationReqDTO);
+                        try {
+                            ResAPI.save("consultation",consultationReqDTO);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+
                         try {
                             if(medecin==null)
                             {
@@ -186,11 +189,12 @@ public class AjoutPatientAttController {
         stage.close();
     }
 
-    private List<PatientItem> getNomPatient(Integer id) {
+    private List<PatientItem> getNomPatient(Integer id) throws Exception {
 
 
         // Fetch the list of patients associated with the given Medecin ID
-        List<PatientResDTO> patients = patientController.findPatientsByMedecinId(id);
+        //List<PatientResDTO> patients = patientController.findPatientsByMedecinId(id);
+        List<PatientResDTO> patients = ResAPI.findByIdMedecin("patient",id,PatientResDTO.class);
 
         // Create a list to store the FullName and ID pairs
         List<PatientItem> listNom = new ArrayList<>();

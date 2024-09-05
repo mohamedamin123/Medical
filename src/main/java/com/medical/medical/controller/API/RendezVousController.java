@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/rendezVouss/rendezVous")
+@RequestMapping("/rendezvouss/rendezvous")
 @RequiredArgsConstructor
 @Slf4j
 public class RendezVousController {

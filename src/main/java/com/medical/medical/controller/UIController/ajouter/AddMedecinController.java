@@ -6,6 +6,7 @@ import com.medical.medical.models.dto.req.MedecinReqDTO;
 import com.medical.medical.models.dto.res.AdminResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -67,8 +68,8 @@ public class AddMedecinController {
 
 
 
-    @Autowired
-    private MedecinController medecinController;
+//    @Autowired
+//    private MedecinController medecinController;
 
 
     @FXML
@@ -216,11 +217,13 @@ public class AddMedecinController {
 
                 try {
                     if(medecinResDTOO==null)
-                    medecinController.saveMedecin(medecin);
+                        ResAPI.save("medecin",medecin);
+//                    medecinController.saveMedecin(medecin);
                     else
                     {
                         medecin.setIdMedecin(medecinResDTOO.getIdMedecin());
-                        medecinController.updateMedecin(medecin);
+                        ResAPI.update("medecin",medecin);
+                      //  medecinController.updateMedecin(medecin);
                     }
                     Stage stage = (Stage) nom.getScene().getWindow();
                     stage.close();

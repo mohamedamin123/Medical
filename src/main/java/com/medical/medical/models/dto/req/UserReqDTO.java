@@ -1,14 +1,16 @@
 package com.medical.medical.models.dto.req;
 
 import com.medical.medical.ennum.Utilisateurs;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
 @Data
 @SuperBuilder
-
+@AllArgsConstructor
 public class UserReqDTO {
     private String nom;
     private String prenom;

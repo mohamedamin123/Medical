@@ -199,7 +199,7 @@ public class RendezVousController {
             rendezVousList.remove(selectedRendezVous);
             loadAppointments(datePicker.getValue());
            // rendezVousController.deleteRendezVousById(selectedRendezVous.getIdRendezVous());
-            ResAPI.deleteById("rendezVous",selectedRendezVous.getIdRendezVous());
+            ResAPI.deleteById("rendezvous",selectedRendezVous.getIdRendezVous());
         } else {
             showAlert("Aucune sélection", "Veuillez sélectionner un rendez-vous à supprimer.");
         }
@@ -217,7 +217,7 @@ public class RendezVousController {
         rendezVousList.clear();
 
         List<RendezVousResDTO> exampleAppointments;
-        exampleAppointments = ResAPI.findByIdMedecin("rendezVous", idM, RendezVousResDTO.class);
+        exampleAppointments = ResAPI.findByIdMedecin("rendezvous", idM, RendezVousResDTO.class);
 
         if (exampleAppointments != null) {
             rendezVousList.addAll(exampleAppointments);
@@ -236,7 +236,7 @@ public class RendezVousController {
 //
 //       List<RendezVousResDTO> exampleAppointments;
 //       // rendezVousController.findRendezVousByIdMedecin(idM);
-//        exampleAppointments= ResAPI.findByIdMedecin("rendezVous",idM,RendezVousResDTO.class);
+//        exampleAppointments= ResAPI.findByIdMedecin("rendezvous",idM,RendezVousResDTO.class);
 //
 //
 //        // Ajouter les rendez-vous fictifs à la liste

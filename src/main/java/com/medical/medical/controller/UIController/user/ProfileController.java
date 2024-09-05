@@ -26,6 +26,12 @@ import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 @Slf4j
 public class ProfileController {
     @FXML
+    private Label specialiteL;
+    @FXML
+    private Label specialiteError;
+    @FXML
+    private TextField specialite;
+    @FXML
     private Button annuler;
     @FXML
     private Button enregistrer;
@@ -132,6 +138,8 @@ public class ProfileController {
             telError.setText("");
         }
 
+
+
         // Validate and set the date of birth field
         LocalDate selectedDate = dateDeNaissance.getValue();
         if (selectedDate == null || selectedDate.isAfter(LocalDate.now())) {
@@ -148,12 +156,22 @@ public class ProfileController {
                 dateDeNaissanceError.getText().isEmpty()) {
 
             if (medecin != null) {
+
+                String spText = specialite.getText().trim();
+                if (spText.isEmpty()) {
+                    specialiteError.setText("Veuillez entrer votre specialite");
+                    return;
+                } else {
+                    specialiteError.setText("");
+                }
+
                  medecinReqDTO = MedecinReqDTO.builder()
                         .nom(nom.getText())
                         .prenom(prenom.getText())
                         .email(email.getText())
                         .tel(tel.getText())
                         .dateDeNaissance(dateDeNaissance.getValue())
+                         .specialite(specialite.getText())
                         .build();
 
                 try {
@@ -211,6 +229,7 @@ public class ProfileController {
                     medecin.setPrenom(medecinReqDTO.getPrenom());
                     medecin.setTel(medecinReqDTO.getTel());
                     medecin.setDateDeNaissance(medecinReqDTO.getDateDeNaissance());
+                    medecin.setSpecialite(medecinReqDTO.getSpecialite());
                     changeFenetre("acceuil",medecin.getEmail(),"medecin",medecin,secretaire);
                 }
 
@@ -246,6 +265,7 @@ public class ProfileController {
                         prenom.setText(medecin.getPrenom());
                         email.setText(medecin.getEmail());
                         tel.setText(medecin.getTel());
+                        specialite.setText(medecin.getSpecialite());
 
                         if (medecin.getDateDeNaissance() != null) {
                             dateDeNaissance.setValue(medecin.getDateDeNaissance());
@@ -256,6 +276,8 @@ public class ProfileController {
                         email.setText(secretaire.getEmail());
                         tel.setText(secretaire.getTel());
 
+                        specialite.setVisible(false);
+                        specialiteL.setVisible(false);
                         if (secretaire.getDateDeNaissance() != null) {
                             dateDeNaissance.setValue(secretaire.getDateDeNaissance());
                         }

@@ -8,6 +8,7 @@ import com.medical.medical.models.dto.req.SecretaireReqDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -70,11 +71,11 @@ public class AddSecretaireController {
     private SecretaireResDTO secret;
 
 
-    @Autowired
-    private MedecinController medecinController;
-
-    @Autowired
-    private SecretaireController secretaireController;
+//    @Autowired
+//    private MedecinController medecinController;
+//
+//    @Autowired
+//    private SecretaireController secretaireController;
 
     @FXML
     public void initialize() {
@@ -125,10 +126,6 @@ public class AddSecretaireController {
 
     @FXML
     private void mettreAjour() throws IOException {
-        if (medecinController == null) {
-            log.error("Controllers not initialized");
-            return;
-        }
 
         boolean isUpdated = false;
 
@@ -211,14 +208,17 @@ public class AddSecretaireController {
 
                 try {
                     if(secret==null){
-                        secretaireController.saveSecretaire(secretaireReqDTO);
+                        //secretaireController.saveSecretaire(secretaireReqDTO);
+                        ResAPI.save("secretaire",secretaireReqDTO);
                         Stage stage = (Stage) nom.getScene().getWindow();
                         stage.close();
                         changeFenetre("secretaire",medecin.getEmail(),"medecin",medecin,secretaire,idM);
                     }else {
                         if(passwordEncoder.matches(password.getText(),secret.getPassword())) {
                             secretaireReqDTO.setIdSecretaire(secret.getIdSecretaire());
-                            secretaireController.updateSecretaire(secretaireReqDTO);
+                            //secretaireController.updateSecretaire(secretaireReqDTO);
+                            ResAPI.update("secretaire",secretaireReqDTO);
+
                             Stage stage = (Stage) nom.getScene().getWindow();
                             stage.close();
                             changeFenetre("secretaire",medecin.getEmail(),"medecin",medecin,secretaire,idM);

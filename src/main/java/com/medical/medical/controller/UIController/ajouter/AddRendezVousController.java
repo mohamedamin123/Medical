@@ -11,6 +11,7 @@ import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.models.dto.res.RendezVousResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.PatientItem;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -52,14 +53,14 @@ public class AddRendezVousController {
     @FXML
     private TextField motifTextField;
 
-    @Autowired
-    private RendezVousController rendezVousController;
-
-    @Autowired
-    private PatientController patientController;
-
-    @Autowired
-    private MedecinController medecinController;
+//    @Autowired
+//    private RendezVousController rendezVousController;
+//
+//    @Autowired
+//    private PatientController patientController;
+//
+//    @Autowired
+//    private MedecinController medecinController;
 
     @Setter
     @Getter
@@ -104,8 +105,17 @@ public class AddRendezVousController {
                     LocalTime.of(15, 0), LocalTime.of(16, 0), LocalTime.of(17, 0)
             ));
 
-            medecinComboBox.setText(getNomMedecin());
-            List<PatientItem> patientList = getNomPatient(idM);
+            try {
+                medecinComboBox.setText(getNomMedecin());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            List<PatientItem> patientList = null;
+            try {
+                patientList = getNomPatient(idM);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
             // Set the items of the ComboBox with PatientItem objects
             patientComboBox.setItems(FXCollections.observableArrayList(patientList));
@@ -141,7 +151,12 @@ public class AddRendezVousController {
                     datePicker.setValue(resDTO.getJour());
                     heureComboBox.setValue(resDTO.getHeure());
                     motifTextField.setText(resDTO.getMotif());
-                    PatientItem p=new PatientItem(getNomPatientS(resDTO.getIdPatient()),resDTO.getIdPatient());
+                    PatientItem p= null;
+                    try {
+                        p = new PatientItem(getNomPatientS(resDTO.getIdPatient()),resDTO.getIdPatient());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                     patientComboBox.setValue(p);
                 }
             }
@@ -150,7 +165,7 @@ public class AddRendezVousController {
 
 
     @FXML
-    private void handleAddRendezVous() {
+    private void handleAddRendezVous() throws Exception {
         // Récupérer les valeurs saisies
         LocalDate date = datePicker.getValue();
         LocalTime heure = heureComboBox.getValue();
@@ -180,10 +195,13 @@ public class AddRendezVousController {
         rendezVousControllerUI.loadAppointments(date);
 
         if(resDTO==null) {
-            rendezVousController.saveRendezVous(newRendezVous);
+            //rendezVousController.saveRendezVous(newRendezVous);
+            ResAPI.save("rendezVous",newRendezVous);
         }else {
             newRendezVous.setIdRendezVous(resDTO.getIdRendezVous());
-            rendezVousController.updateRendezVous(newRendezVous);
+            //rendezVousController.updateRendezVous(newRendezVous);
+            ResAPI.update("rendezVous",newRendezVous);
+
         }
 
 
@@ -214,11 +232,13 @@ public class AddRendezVousController {
         alert.showAndWait();
     }
 
-    private List<PatientItem> getNomPatient(Integer id) {
+    private List<PatientItem> getNomPatient(Integer id) throws Exception {
 
 
         // Fetch the list of patients associated with the given Medecin ID
-        List<PatientResDTO> patients = patientController.findPatientsByMedecinId(id);
+        List<PatientResDTO> patients;
+        // patientController.findPatientsByMedecinId(id);
+        patients=ResAPI.findByIdMedecin("patient",id,PatientResDTO.class);
 
         // Create a list to store the FullName and ID pairs
         List<PatientItem> listNom = new ArrayList<>();
@@ -235,11 +255,13 @@ public class AddRendezVousController {
         return listNom;
     }
 
-    private String getNomPatientS(Integer id) {
+    private String getNomPatientS(Integer id) throws Exception {
 
 
         // Fetch the list of patients associated with the given Medecin ID
-        Optional<PatientResDTO> patients = patientController.findPatientById(id);
+        //Optional<PatientResDTO> patients = patientController.findPatientById(id);
+        Optional<PatientResDTO> patients = Optional.ofNullable(ResAPI.findById("patient", id, PatientResDTO.class));
+
 
         String name="";
         if(patients.isPresent()) {
@@ -253,8 +275,9 @@ public class AddRendezVousController {
         return name;
     }
 
-    private String getNomMedecin() {
-        Optional<MedecinResDTO> medecinResDTO=medecinController.findMedecinById(idM);
+    private String getNomMedecin() throws Exception {
+        //Optional<MedecinResDTO> medecinResDTO=medecinController.findMedecinById(idM);
+        Optional<MedecinResDTO> medecinResDTO= Optional.ofNullable(ResAPI.findById("medecin", idM, MedecinResDTO.class));
         String name="";
 
         if(medecinResDTO.isPresent()) {

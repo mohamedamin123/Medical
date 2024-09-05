@@ -43,8 +43,12 @@
     <DatePicker fx:id="dateDeNaissance" promptText="Date de naissance" GridPane.columnIndex="1" GridPane.rowIndex="9" />
     <Label fx:id="dateDeNaissanceError" styleClass="erreur" GridPane.columnIndex="1" GridPane.rowIndex="10" />
 
+    <Label fx:id="specialiteL"  text="Specialite:" GridPane.columnIndex="0" GridPane.rowIndex="11" />
+    <TextField fx:id="specialite" promptText="Specialite" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+    <Label fx:id="specialiteError" styleClass="erreur" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+
     <!-- Buttons for Actions -->
-    <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="11">
+    <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="13">
         <Button fx:id="annuler" styleClass="buttonAnnuler" text="Annuler" />
         <Button fx:id="enregistrer" styleClass="button" text="Enregistrer" />
     </HBox>

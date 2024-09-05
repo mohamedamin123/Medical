@@ -5,6 +5,7 @@ import com.medical.medical.ennum.Utilisateurs;
 import com.medical.medical.models.dto.req.SecretaireReqDTO;
 import com.medical.medical.models.dto.res.AdminResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -59,8 +60,8 @@ public class AddSecretairesController {
 
 
 
-    @Autowired
-    private SecretaireController secretaireController;
+//    @Autowired
+//    private SecretaireController secretaireController;
 
 
     @FXML
@@ -213,11 +214,14 @@ public class AddSecretairesController {
 
                 try {
                     if(secretaireResDTO==null)
-                    secretaireController.saveSecretaire(secretaireReqDTO);
+                    //secretaireController.saveSecretaire(secretaireReqDTO);
+                    ResAPI.save("secretaire",secretaireReqDTO);
+
                     else
                     {
                         secretaireReqDTO.setIdMedecin(secretaireResDTO.getIdSecretaire());
-                        secretaireController.updateSecretaire(secretaireReqDTO);
+                        //secretaireController.updateSecretaire(secretaireReqDTO);
+                        ResAPI.update("secretaire",secretaireReqDTO);
                     }
                     Stage stage = (Stage) nom.getScene().getWindow();
                     stage.close();

@@ -1,12 +1,9 @@
 package com.medical.medical.controller.UIController.autre;
 
-import com.medical.medical.controller.API.AdminController;
-import com.medical.medical.controller.API.MedecinController;
-import com.medical.medical.controller.API.SecretaireController;
 import com.medical.medical.models.dto.res.AdminResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
-import com.medical.medical.utils.javaFxAPI;
+import com.medical.medical.utils.ResAPI;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -27,16 +23,6 @@ import java.util.Optional;
 @Slf4j
 public class LoginController {
 
-    @Autowired
-    private MedecinController medecinController;
-
-    @Autowired
-    private SecretaireController secretaireController;
-
-    @Autowired
-    private AdminController adminController;
-
-    // Static variable to store the password
     @Getter
     private static String savedPassword;
     @Getter
@@ -63,7 +49,7 @@ public class LoginController {
 
             if (email.isEmpty() && password.isEmpty()) {
                 log.info("Email or password is empty");
-                loginErreur.setText("L'email et le mot de passe sont vide");
+                loginErreur.setText("L'email et le mot de passe sont vides");
                 loginErreur.setVisible(true);
 
             } else if (email.isEmpty()) {
@@ -75,118 +61,102 @@ public class LoginController {
                 loginErreur.setText("Mot de passe est vide");
                 loginErreur.setVisible(true);
             } else {
-                Optional<MedecinResDTO> medecinResDTO = medecinController.findMedecinByEmail(email);
-                Optional<SecretaireResDTO> secretaireResDTO = secretaireController.findSecretaireByEmail(email);
-                Optional<AdminResDTO> adminResDTO = adminController.findAdminByEmail(email);
-
-
                 try {
-                    Optional<String> passwordM = medecinController.findPasswordByEmail(email);
-                    Optional<String> passwordS = secretaireController.findPasswordByEmail(email);
-                    Optional<String> passwordA = adminController.findPasswordByEmail(email);
-
-
-                    if (passwordM.isPresent()) {
-                        if (passwordEncoder.matches(password, passwordM.get())) {
-
-                            String response = javaFxAPI.login(email, password, "medecin");
-
-                            if(medecinResDTO.get().getStatut()) {
-                                changeFenetre(email, "medecin", medecinResDTO.orElse(null), null);
-                                savedPassword = password; // Store the password statically
-                                savedEmail = email; // Store the password statically
-
-
+                    // Try to login as Secretaire
+                    Optional<SecretaireResDTO> secretaireResDTO = Optional.ofNullable(ResAPI.login("secretaire", email, password, SecretaireResDTO.class));
+                    if (secretaireResDTO.isPresent()) {
+                        log.info("Secretaire found");
+                        if (passwordEncoder.matches(password, secretaireResDTO.get().getPassword())) {
+                            if (secretaireResDTO.get().getStatut()) {
+                                savedPassword = password;
+                                savedEmail = email;
+                                changeFenetre(email, "secretaire", null, secretaireResDTO.orElse(null));
+                                return;
                             } else {
                                 showAlert(Alert.AlertType.WARNING, "Impossible", "Vous ne pouvez pas accéder à cette interface !");
+                                return;
                             }
+                        } else {
+                            log.info("Invalid password for Secretaire");
+                            loginErreur.setText("Mot de passe invalide pour Secretaire");
+                            loginErreur.setVisible(true);
+                            return;
+                        }
+                    }
 
+                    // Try to login as Medecin
+                    Optional<MedecinResDTO> medecinResDTO = Optional.ofNullable(ResAPI.login("medecin", email, password, MedecinResDTO.class));
+                    if (medecinResDTO.isPresent()) {
+                        log.info("Medecin found");
+                        if (passwordEncoder.matches(password, medecinResDTO.get().getPassword())) {
+                            if (medecinResDTO.get().getStatut()) {
+                                savedPassword = password;
+                                savedEmail = email;
+                                changeFenetre(email, "medecin", medecinResDTO.orElse(null), null);
+                                return;
+                            } else {
+                                showAlert(Alert.AlertType.WARNING, "Impossible", "Vous ne pouvez pas accéder à cette interface !");
+                                return;
+                            }
                         } else {
                             log.info("Invalid password for Medecin");
                             loginErreur.setText("Mot de passe invalide pour Médecin");
                             loginErreur.setVisible(true);
-                        }
-                    } else if (passwordS.isPresent()) {
-                        if (passwordEncoder.matches(password, passwordS.get())) {
-                            String response = javaFxAPI.login(email, password, "secretaire");
-                            if(secretaireResDTO.get().getStatut()) {
-                                savedPassword = password; // Store the password statically
-                                savedEmail = email; // Store the password statically
-                                changeFenetre(email, "secretaire", null, secretaireResDTO.orElse(null));
-                            } else {
-                                showAlert(Alert.AlertType.WARNING, "Impossible", "Vous ne pouvez pas accéder à cette interface !");
-                            }
-
-
-                        } else {
-                            log.info("Invalid password for Secretaire");
-                            loginErreur.setText("Mot de passe invalide pour Secretaire");
-                            loginErreur.setVisible(true);
-                        }
-                    } else if (passwordA.isPresent()) {
-                        if (passwordEncoder.matches(password, passwordA.get())) {
-                            String response = javaFxAPI.login(email, password, "ADMIN");
-                            savedPassword = password; // Store the password statically
-                            savedEmail = email; // Store the password statically
-                            changeFenetre(email, "admin", adminResDTO.get());
-
-                        } else {
-                            log.info("Invalid password for Secretaire");
-                            loginErreur.setText("Mot de passe invalide pour Secretaire");
-                            loginErreur.setVisible(true);
+                            return;
                         }
                     }
 
-                    else {
-                        log.info("Invalid email or password");
-                        loginErreur.setText("L'email et le mot de passe sont incorrects");
-                        loginErreur.setVisible(true);
+
+                    // Try to login as Admin
+                    Optional<AdminResDTO> adminResDTO = Optional.ofNullable(ResAPI.login("admin", email, password, AdminResDTO.class));
+                    if (adminResDTO.isPresent()) {
+                        log.info("Admin found");
+                        if (passwordEncoder.matches(password, adminResDTO.get().getPassword())) {
+                            savedPassword = password;
+                            savedEmail = email;
+                            changeFenetre(email, "admin", adminResDTO.get());
+                            return;
+                        } else {
+                            log.info("Invalid password for Admin");
+                            loginErreur.setText("Mot de passe invalide pour Admin");
+                            loginErreur.setVisible(true);
+                            return;
+                        }
                     }
                 } catch (Exception e) {
-                    log.error("An error occurred: ", e);
+                    loginErreur.setText("L'email ou/et le mot de passe sont incorrects");
+                    loginErreur.setVisible(true);
                 }
             }
         });
     }
 
     private void changeFenetre(String email, String role, MedecinResDTO medecin, SecretaireResDTO secretaire) throws IOException {
-        // Close the current window
         Stage stage = (Stage) myButton.getScene().getWindow();
         stage.close();
 
-        // Load the new scene
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/templates/acceuil.fxml"));
         Parent root = fxmlLoader.load();
         Stage newStage = new Stage();
         newStage.setTitle("Accueil");
         newStage.setScene(new Scene(root));
-
-        // Set the user data
         newStage.setUserData(new Object[]{email, role, medecin, secretaire});
-
-        // Show the new stage
         newStage.show();
     }
 
-
     private void changeFenetre(String email, String role, AdminResDTO adminResDTO) throws IOException {
-        // Close the current window
         Stage stage = (Stage) myButton.getScene().getWindow();
         stage.close();
 
-        // Load the new scene
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/templates/home_admin.fxml"));
         Parent root = fxmlLoader.load();
         Stage newStage = new Stage();
         newStage.setTitle("Accueil");
         newStage.setScene(new Scene(root));
-
-        // Set the user data
         newStage.setUserData(new Object[]{email, role, adminResDTO});
-
-        // Show the new stage
         newStage.show();
     }
+
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -194,5 +164,4 @@ public class LoginController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 }

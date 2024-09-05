@@ -9,6 +9,7 @@ import com.medical.medical.models.dto.res.DossierMedicalResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
+import com.medical.medical.utils.ResAPI;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -81,11 +82,11 @@ public class AddPatientController {
     private Stage stage;
 
 
-    @Autowired
-    private PatientController patientController;
-
-    @Autowired
-    private DossierMedicalController dossierMedicalController;
+//    @Autowired
+//    private PatientController patientController;
+//
+//    @Autowired
+//    private DossierMedicalController dossierMedicalController;
 
     private Integer idM;
 
@@ -139,7 +140,14 @@ public class AddPatientController {
                     RadioButton selectedSexeButton = (sexeEnum == Sexe.HOMME) ? (RadioButton) sexe.getToggles().get(0) : (RadioButton) sexe.getToggles().get(1);
                     selectedSexeButton.setSelected(true);
                 }
-                List<DossierMedicalResDTO> dossierMedicalResDTOS= dossierMedicalController.findDossierMedicalByIdPatientAfterDelete(patientResDTO.getIdPatient());
+                //List<DossierMedicalResDTO> dossierMedicalResDTOS= dossierMedicalController.findDossierMedicalByIdPatientAfterDelete(patientResDTO.getIdPatient());
+                List<DossierMedicalResDTO> dossierMedicalResDTOS= null;
+                try {
+                    dossierMedicalResDTOS = ResAPI.findAllByIdPatient("dossiermedical", DossierMedicalResDTO.class,patientResDTO.getIdPatient());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
                 if (dossierMedicalResDTOS != null) {
                     for (DossierMedicalResDTO dossier : dossierMedicalResDTOS) {
                         HBox fileHBox = new HBox(10);
@@ -156,9 +164,15 @@ public class AddPatientController {
                         deleteButton.setGraphic(deleteIcon);
                         deleteButton.setOnAction(event -> {
                             fileListContainer.getChildren().remove(fileHBox);
-                            dossierMedicalController.deleteDossierMedicalById(dossier.getIdDossierMedical());
+                            try {
+                                ResAPI.deleteById("dossiermedical",dossier.getIdDossierMedical());
+                                ResAPI.findAfterDelete("dossiermedical",dossier.getIdDossierMedical(),DossierMedicalResDTO.class);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            //dossierMedicalController.deleteDossierMedicalById(dossier.getIdDossierMedical());
 
-                            dossierMedicalController.findDossierMedicalByIdAfterDelete(dossier.getIdDossierMedical()); // Add deletion logic here
+                         //   dossierMedicalController.findDossierMedicalByIdAfterDelete(dossier.getIdDossierMedical()); // Add deletion logic here
                         });
                         fileHBox.getChildren().add(deleteButton);
 
@@ -237,7 +251,13 @@ public class AddPatientController {
             chargerFichierButton.setOnAction(event -> handleChargerFichier());
 
             // Setup save button action
-            saveButton.setOnAction(event -> handleSave());
+            saveButton.setOnAction(event -> {
+                try {
+                    handleSave();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
             annulerButton.setOnAction(event -> {
                 try {
@@ -324,7 +344,7 @@ public class AddPatientController {
 
 
 
-    private void handleSave() {
+    private void handleSave() throws Exception {
         String nom = nomField.getText().trim().trim();
         if (!nom.isEmpty()) {
             nom = nom.substring(0, 1).toUpperCase() + nom.substring(1).toLowerCase();
@@ -379,15 +399,13 @@ public class AddPatientController {
         PatientReqDTO patientReqDTO;
         if(patientResDTO!=null) {
             patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email2,dateNaissance,notes,batiment,code,cin,ville,sexee,idM,patientResDTO.getIdPatient());
-
-
-
-
-            patientResDTO=patientController.updatePatient(patientReqDTO);
+            //patientResDTO=patientController.updatePatient(patientReqDTO);
+            ResAPI.update("patient",patientReqDTO);
 
         }else {
             patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email2,dateNaissance,notes,batiment,code,cin,ville,sexee,idM);
-            patientResDTO=patientController.savePatient(patientReqDTO);
+           // patientResDTO=patientController.savePatient(patientReqDTO);
+            ResAPI.save("patient",patientReqDTO);
 
         }
 
@@ -401,7 +419,7 @@ public class AddPatientController {
 
     }
 
-    private void saveFichier() {
+    private void saveFichier() throws Exception {
         if (fileListContainer != null) {
             for (var node : fileListContainer.getChildren()) {
                 if (node instanceof HBox fileHBox) {
@@ -446,7 +464,9 @@ public class AddPatientController {
                     );
 
                     // Appeler dossierMedicalController pour enregistrer le fichier
-                    dossierMedicalController.saveDossierMedical(dossierMedicalReqDTO);
+                    //dossierMedicalController.saveDossierMedical(dossierMedicalReqDTO);
+                    ResAPI.save("dossiermedical",dossierMedicalReqDTO);
+
                 }
             }
         }
