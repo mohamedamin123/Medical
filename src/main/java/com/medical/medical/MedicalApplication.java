@@ -13,7 +13,7 @@ public class MedicalApplication {
 	public static void main(String[] args) {
 
 		Application.launch(JavaFXApp.class, args);
-		SpringApplication.run(MedicalApplication.class, args);
+		//SpringApplication.run(MedicalApplication.class, args);
 
 	}
 
