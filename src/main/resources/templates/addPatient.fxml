@@ -58,8 +58,11 @@
                 <TextField fx:id="CINField" promptText="CIN" />
 
                 <Label styleClass="label-bold" text="Date de Naissance : * (Obligatoire)" />
+                <HBox alignment="CENTER_LEFT" spacing="15">
                 <DatePicker fx:id="dobField" prefHeight="24.0" promptText="Date de naissance" />
-
+                <Label styleClass="label-bold" text="Age" />
+                <TextField fx:id="ageField" promptText="Age" editable="false" />
+                </HBox>
                 <Label styleClass="label-bold" text="Téléphone: * (Obligatoire)" />
                 <TextField fx:id="TelField" promptText="Téléphone" />
 

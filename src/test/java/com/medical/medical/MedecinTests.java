@@ -1,67 +1,46 @@
 package com.medical.medical;
 
-import com.medical.medical.controller.API.*;
-import com.medical.medical.models.dto.req.AdminReqDTO;
-import com.medical.medical.models.dto.req.ConsultationReqDTO;
-import com.medical.medical.models.dto.req.MedecinReqDTO;
-import com.medical.medical.models.dto.res.MedecinResDTO;
-import com.medical.medical.models.dto.res.PatientResDTO;
-import com.medical.medical.models.entity.Medecin;
-import com.medical.medical.models.entity.Patient;
-import com.medical.medical.repository.PatientRepo;
+import com.medical.medical.controller.API.AdminController;
+import com.medical.medical.controller.API.MedicamentController;
+import com.medical.medical.controller.API.RendezVousController;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
 @SpringBootTest
 class MedecinTests {
-//	@Autowired
-//	private MedecinController medecinController;
-//	@Autowired
-//	private  PatientRepo repository;
-    @Autowired
-    private AdminController adminController;
+
+	@Autowired
+	private AdminController adminController;
 
 	@Autowired
 	private RendezVousController rendezVousController;
-//
-//
-//
+
+	@Autowired
+	private MedicamentController medicamentController;
+
+//	@Autowired
+//	private UpdateDatabaseConfig updateDatabaseConfig;
+
 //	@Test
-//	void save() {
-//		LocalDate dateOfBirth = LocalDate.of(2001, 6, 13); // Example date: May 15, 1980
-//		AdminReqDTO adminReqDTO=new AdminReqDTO("gana","amin","95147455","mohamedaming146@gmail.com",dateOfBirth,"Souad123+");
-//		adminController.saveAdmin(adminReqDTO);
+//	void testDatabaseScanner() {
+//		MySQLScanner scanner = new MySQLScanner(updateDatabaseConfig,"amin","amin");
+//
+//		// Lancez la mise à jour de la configuration de la base de données si disponible
+//		String foundIp = scanner.updateDatabaseConfigIfAvailable();
+//
+//		if (foundIp != null) {
+//			System.out.println("Database found at: " + foundIp);
+//		} else {
+//			System.out.println("No MySQL server with the database " + " found.");
+//		}
 //	}
-//
-//	@Test
-//	void miseAjour() {
-//
-//		Optional<Patient> p=repository.findPatientByIdPatient(14);
-//		System.out.println(p);
-//
-////		medecinController.updateMedecin(medecin);
-//
-//	}
-//
-//	@Test
-//	void find_all() {
-//
-//		System.out.println(medecinController.findAllMedecin());
-//
-//	}
-//
 
 	@Test
 	void find() {
-
-		System.out.println(rendezVousController.findRendezVousByIdMedecin(4));
-
+		String name="PANADOL EXTRA";
+		System.out.println(name.toLowerCase());
+		System.out.println(medicamentController.getDrugData(name.toLowerCase()));
 	}
-
-
-
 }

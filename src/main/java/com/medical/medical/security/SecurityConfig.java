@@ -44,9 +44,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/login").permitAll() // Allow login requests
                         .requestMatchers("/admins/admin/**").hasRole("ADMIN") // Role ADMIN for /admin/** endpoints
-                                .requestMatchers("/medecins/medecin/**").hasAnyRole("MEDECIN","ADMIN") // Role MEDECIN for /medecins/medecin/** endpoints
-                                .requestMatchers("/secretaires/secretaire/**").hasAnyRole("SECRETAIRE","MEDECIN","ADMIN") // Role SECRETAIRE for /secretaires/secretaire/** endpoints
-                                .anyRequest().authenticated() // Require authentication for all o
+                        .requestMatchers("/medecins/medecin/**").hasAnyRole("MEDECIN","ADMIN") // Role MEDECIN for /medecins/medecin/** endpoints
+                        .requestMatchers("/secretaires/secretaire/**").hasAnyRole("SECRETAIRE","MEDECIN","ADMIN") // Role SECRETAIRE for /secretaires/secretaire/** endpoints
+                        .anyRequest().authenticated() // Require authentication for all o
                 )
                 .httpBasic(withDefaults()) // Use HTTP Basic Authentication
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection

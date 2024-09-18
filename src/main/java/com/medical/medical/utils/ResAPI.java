@@ -1,10 +1,8 @@
 package com.medical.medical.utils;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.medical.medical.controller.UIController.autre.LoginController;
-import com.medical.medical.models.dto.res.DossierMedicalResDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,11 +17,14 @@ import java.util.List;
 
 public class ResAPI {
 
-    private static final String URL_API = "http://192.168.163.66:8081/";
+    private static final String IP_ADDRESS = "localhost"; // Obtenir l'IP de la machine locale
+    private static final String URL = "http://" + IP_ADDRESS; // URL base avec l'IP récupérée
+    private static final String URL_API = URL+":8081/";
     private static final ObjectMapper objectMapper = new ObjectMapper(); // Jackson ObjectMapper
 
     static {
         objectMapper.registerModule(new JavaTimeModule());
+        System.out.println("ip : "+ IP_ADDRESS);
     }
 
 

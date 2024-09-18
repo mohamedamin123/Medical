@@ -1,6 +1,5 @@
 package com.medical.medical.controller.UIController.autre;
 
-import com.medical.medical.controller.API.PatientController;
 import com.medical.medical.exceptions.UserException;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.PatientResDTO;
@@ -10,6 +9,7 @@ import com.medical.medical.utils.ResAPI;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -17,20 +17,19 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.medical.medical.utils.javaFxAPI.changeFenetre;
-
-@Component("uiRendezVousController")
+@Component("rendez_vousUI")
 public class RendezVousController {
+
+    @FXML
+    private TextField searchField;
 
     @FXML
     private DatePicker datePicker;
@@ -54,12 +53,7 @@ public class RendezVousController {
     private VBox rootLayout;
 
     private List<RendezVousResDTO> rendezVousList = new ArrayList<>();
-
-//    @Autowired
-//    private com.medical.medical.controller.API.RendezVousController rendezVousController;
-//
-//    @Autowired
-//    private PatientController patientController;
+    private List<PatientResDTO> patients = new ArrayList<>();
 
     @Setter
     @Getter
@@ -71,12 +65,15 @@ public class RendezVousController {
 
     private MedecinResDTO medecin;
     private SecretaireResDTO secretaire;
-
     private Integer idM;
 
-    public static   Stage stageR;
+    public static Stage stageR;
 
     Object userData;
+
+    // Debounce variables
+    private Timer debounceTimer;
+    private static final int DEBOUNCE_DELAY_MS = 300;
 
     @FXML
     public void initialize() {
@@ -85,7 +82,7 @@ public class RendezVousController {
             stageR = (Stage) datePicker.getScene().getWindow();
 
             if (stageR != null) {
-                 userData = stageR.getUserData();
+                userData = stageR.getUserData();
                 if (userData instanceof Object[] data) {
                     if (data.length >= 4) {
                         email = (String) data[0];
@@ -96,17 +93,14 @@ public class RendezVousController {
                     }
                 }
             }
-            // Assurez-vous que chaque colonne a un cellValueFactory correctement configuré
+
             jourColumn.setCellValueFactory(cellData ->
                     new SimpleStringProperty(cellData.getValue().getJour() != null ? cellData.getValue().getJour().toString() : ""));
 
             heureColumn.setCellValueFactory(cellData ->
                     new SimpleStringProperty(cellData.getValue().getHeure() != null ? cellData.getValue().getHeure().toString() : ""));
 
-
-
-            patientColumn.setCellValueFactory(cellData ->
-            {
+            patientColumn.setCellValueFactory(cellData -> {
                 try {
                     return new SimpleStringProperty(cellData.getValue().getIdPatient() != null ? namePatient(cellData.getValue().getIdPatient()) : "");
                 } catch (Exception e) {
@@ -117,25 +111,37 @@ public class RendezVousController {
             motifColumn.setCellValueFactory(cellData ->
                     new SimpleStringProperty(cellData.getValue().getMotif() != null ? cellData.getValue().getMotif() : ""));
 
-
             try {
                 getData();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+
             loadAppointments(LocalDate.now());
 
-            // Configurer l'écouteur pour le sélecteur de date
+            // Configure listeners for date and search fields
             datePicker.setValue(LocalDate.now());
-            datePicker.valueProperty().addListener((observable, oldValue, newValue) -> loadAppointments(newValue));
+            datePicker.valueProperty().addListener((observable, oldValue, newValue) -> applyFilters());
+
+            // Implement debounce for search field
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (debounceTimer != null) {
+                    debounceTimer.cancel();
+                }
+                debounceTimer = new Timer();
+                debounceTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Platform.runLater(() -> applyFilters());
+                    }
+                }, DEBOUNCE_DELAY_MS);
+            });
         });
     }
 
     private String namePatient(Integer idPatient) throws Exception {
-        Optional<PatientResDTO> p1;
-        //patientController.findPatientById(idPatient);
-        p1= Optional.ofNullable(ResAPI.findById("patient", idPatient, PatientResDTO.class));
-        if(p1.isPresent()) {
+        Optional<PatientResDTO> p1 = Optional.ofNullable(ResAPI.findById("patient", idPatient, PatientResDTO.class));
+        if (p1.isPresent()) {
             try {
                 return p1.get().getFullName();
             } catch (UserException e) {
@@ -145,29 +151,45 @@ public class RendezVousController {
         return null;
     }
 
+    private void applyFilters() {
+        LocalDate selectedDate = datePicker.getValue();
+        String searchName = searchField.getText().trim().toLowerCase();
+
+        List<RendezVousResDTO> filteredAppointments = rendezVousList.stream()
+                .filter(rendezVous -> {
+                    try {
+                        return (selectedDate == null || rendezVous.getJour().equals(selectedDate))
+                                && (searchName.isEmpty() || namePatient(rendezVous.getIdPatient()).toLowerCase().contains(searchName));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+
+        appointmentTable.setItems(FXCollections.observableList(filteredAppointments));
+    }
+
     public void loadAppointments(LocalDate date) {
-        // Effacer le tableau actuel
-        appointmentTable.getItems().clear();
+        String searchName = searchField.getText().trim().toLowerCase();
 
-        // Filtrer les rendez-vous par date sélectionnée
-        List<RendezVousResDTO> filteredAppointments = new ArrayList<>();
-        for (RendezVousResDTO rendezVous : rendezVousList) {
-            if (rendezVous.getJour().equals(date)) {
-                filteredAppointments.add(rendezVous);
-            }
-        }
+        List<RendezVousResDTO> filteredAppointments = rendezVousList.stream()
+                .filter(rendezVous -> {
+                    try {
+                        return (date == null || rendezVous.getJour().equals(date))
+                                && (searchName.isEmpty() || namePatient(rendezVous.getIdPatient()).toLowerCase().contains(searchName));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
 
-        // Mettre à jour le tableau avec les rendez-vous filtrés
         appointmentTable.setItems(FXCollections.observableList(filteredAppointments));
     }
 
     @FXML
     private void handleAddRendezVous() {
-        // Logique pour ajouter un nouveau rendez-vous
-
         try {
-            changeFenetre("add_rendezvous",email,role,medecin,secretaire,idM);
-
+            changeFenetre("add_rendezvous", email, role, medecin, secretaire, idM);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -175,17 +197,13 @@ public class RendezVousController {
 
     @FXML
     private void handleEditRendezVous() {
-        // Logique pour modifier un rendez-vous sélectionné
         RendezVousResDTO selectedRendezVous = appointmentTable.getSelectionModel().getSelectedItem();
         if (selectedRendezVous != null) {
             try {
-                changeFenetre("add_rendezvous",email,role,medecin,secretaire,idM,selectedRendezVous);
-
-
+                changeFenetre("add_rendezvous", email, role, medecin, secretaire, idM, selectedRendezVous);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
         } else {
             showAlert("Aucune sélection", "Veuillez sélectionner un rendez-vous à modifier.");
         }
@@ -193,13 +211,19 @@ public class RendezVousController {
 
     @FXML
     private void handleDeleteRendezVous() throws Exception {
-        // Logique pour supprimer un rendez-vous sélectionné
         RendezVousResDTO selectedRendezVous = appointmentTable.getSelectionModel().getSelectedItem();
         if (selectedRendezVous != null) {
+            // Remove the selected appointment from the displayed list directly
+            appointmentTable.getItems().remove(selectedRendezVous);
+
+            // Remove the appointment from the full appointment list
             rendezVousList.remove(selectedRendezVous);
-            loadAppointments(datePicker.getValue());
-           // rendezVousController.deleteRendezVousById(selectedRendezVous.getIdRendezVous());
-            ResAPI.deleteById("rendezvous",selectedRendezVous.getIdRendezVous());
+
+            // Delete the appointment from the API or database
+            ResAPI.deleteById("rendezvous", selectedRendezVous.getIdRendezVous());
+
+            // Optional: Refresh the table view
+            appointmentTable.refresh();
         } else {
             showAlert("Aucune sélection", "Veuillez sélectionner un rendez-vous à supprimer.");
         }
@@ -215,53 +239,38 @@ public class RendezVousController {
 
     private void getData() throws Exception {
         rendezVousList.clear();
-
-        List<RendezVousResDTO> exampleAppointments;
-        exampleAppointments = ResAPI.findByIdMedecin("rendezvous", idM, RendezVousResDTO.class);
-
+        List<RendezVousResDTO> exampleAppointments = ResAPI.findByIdMedecin("rendezvous", idM, RendezVousResDTO.class);
         if (exampleAppointments != null) {
             rendezVousList.addAll(exampleAppointments);
+            Set<Integer> uniquePatientIds = new HashSet<>();
+
+            for (RendezVousResDTO rendezVousResDTO : exampleAppointments) {
+                Integer patientId = rendezVousResDTO.getIdPatient();
+                if (!uniquePatientIds.contains(patientId)) {
+                    PatientResDTO patient = ResAPI.findById("patient", patientId, PatientResDTO.class);
+                    if (patient != null) {
+                        patients.add(patient);
+                        uniquePatientIds.add(patientId);
+                    }
+                }
+            }
         } else {
-            // Optionally, handle the case where no appointments are found
             System.out.println("No appointments found for this Medecin.");
         }
-
-        // Load the appointments for the selected date
-        loadAppointments(datePicker.getValue());
+        applyFilters(); // Apply filters to update the table view
     }
-
-//    private void getData() throws Exception {
-//        // Exemple de données fictives pour les rendez-vous
-//        rendezVousList.clear();
-//
-//       List<RendezVousResDTO> exampleAppointments;
-//       // rendezVousController.findRendezVousByIdMedecin(idM);
-//        exampleAppointments= ResAPI.findByIdMedecin("rendezvous",idM,RendezVousResDTO.class);
-//
-//
-//        // Ajouter les rendez-vous fictifs à la liste
-//        rendezVousList.addAll(exampleAppointments);
-//
-//        // Charger les rendez-vous pour la date actuelle
-//        loadAppointments(datePicker.getValue());
-//    }
-
 
     public void retour(ActionEvent actionEvent) {
         stageR.close();
-        if(medecin==null)
-        {
-
+        if (medecin == null) {
             try {
-                changeFenetre("acceuil",secretaire.getEmail(),"secretaire",medecin,secretaire,idM);
+                changeFenetre("acceuil", secretaire.getEmail(), "secretaire", medecin, secretaire, idM);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
-
-        else {
+        } else {
             try {
-                changeFenetre("acceuil",medecin.getEmail(),"medecin",medecin,secretaire,idM);
+                changeFenetre("acceuil", medecin.getEmail(), "medecin", medecin, secretaire, idM);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

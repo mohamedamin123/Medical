@@ -3,6 +3,7 @@ package com.medical.medical.controller.UIController.ajouter;
 import com.medical.medical.controller.API.DossierMedicalController;
 import com.medical.medical.controller.API.PatientController;
 import com.medical.medical.ennum.Sexe;
+import com.medical.medical.exceptions.UserException;
 import com.medical.medical.models.dto.req.DossierMedicalReqDTO;
 import com.medical.medical.models.dto.req.PatientReqDTO;
 import com.medical.medical.models.dto.res.DossierMedicalResDTO;
@@ -36,6 +37,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,8 +48,8 @@ import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 public class AddPatientController {
 
 
-
-
+    @FXML
+    private TextField ageField;
     @FXML
     private VBox fileListContainer;
 
@@ -135,6 +137,14 @@ public class AddPatientController {
                 batimentComboBox.setValue(patientResDTO.getRemboursement());
                 codeField.setText(patientResDTO.getIdUnique());
                 notesField.setText(patientResDTO.getNote());
+                try {
+                    ageField.setText(String.valueOf(patientResDTO.getAge()));
+                } catch (UserException e) {
+                    throw new RuntimeException(e);
+                }
+
+
+
                 Sexe sexeEnum = patientResDTO.getSexe();
                 if (sexeEnum != null) {
                     RadioButton selectedSexeButton = (sexeEnum == Sexe.HOMME) ? (RadioButton) sexe.getToggles().get(0) : (RadioButton) sexe.getToggles().get(1);
@@ -163,16 +173,27 @@ public class AddPatientController {
                         deleteIcon.setFitHeight(16);
                         deleteButton.setGraphic(deleteIcon);
                         deleteButton.setOnAction(event -> {
-                            fileListContainer.getChildren().remove(fileHBox);
-                            try {
-                                ResAPI.deleteById("dossiermedical",dossier.getIdDossierMedical());
-                                ResAPI.findAfterDelete("dossiermedical",dossier.getIdDossierMedical(),DossierMedicalResDTO.class);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                            //dossierMedicalController.deleteDossierMedicalById(dossier.getIdDossierMedical());
+                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                            alert.setTitle("Confirmation de suppression");
+                            alert.setHeaderText("Supprimer le fichier");
+                            alert.setContentText("Êtes-vous sûr de vouloir supprimer ce fichier ?");
 
-                         //   dossierMedicalController.findDossierMedicalByIdAfterDelete(dossier.getIdDossierMedical()); // Add deletion logic here
+                            // Customize the buttons in the alert
+                            ButtonType buttonYes = new ButtonType("Oui");
+                            ButtonType buttonNo = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
+                            alert.getButtonTypes().setAll(buttonYes, buttonNo);
+                            alert.showAndWait().ifPresent(response -> {
+                                if (response == buttonYes) {
+                                    // If the user clicked "Oui", proceed with deletion
+                                    fileListContainer.getChildren().remove(fileHBox);
+                                    try {
+                                        ResAPI.deleteById("dossiermedical", dossier.getIdDossierMedical());
+                                        ResAPI.findAfterDelete("dossiermedical", dossier.getIdDossierMedical(), DossierMedicalResDTO.class);
+                                    } catch (Exception e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            });
                         });
                         fileHBox.getChildren().add(deleteButton);
 
@@ -237,6 +258,16 @@ public class AddPatientController {
                 }
             });
 
+            dobField.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) {
+                    try {
+                        ageField.setText(getAge(newValue));
+
+                    } catch (UserException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
             // Restrict TelField to 8 digits only
             TelField.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue.length() > 8) {
@@ -246,6 +277,7 @@ public class AddPatientController {
                     TelField.setText(newValue.replaceAll("[^\\d]", ""));
                 }
             });
+
 
             // Setup file chooser for "Charger fichier" button
             chargerFichierButton.setOnAction(event -> handleChargerFichier());
@@ -302,7 +334,22 @@ public class AddPatientController {
             deleteIcon.setFitWidth(16);
             deleteIcon.setFitHeight(16);
             deleteButton.setGraphic(deleteIcon);
-            deleteButton.setOnAction(event -> fileListContainer.getChildren().remove(fileHBox));
+
+            deleteButton.setOnAction(event ->
+            {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation de suppression");
+                alert.setHeaderText("Supprimer le fichier");
+                alert.setContentText("Êtes-vous sûr de vouloir supprimer ce fichier ?");
+                ButtonType buttonYes = new ButtonType("Oui");
+                ButtonType buttonNo = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
+                alert.getButtonTypes().setAll(buttonYes, buttonNo);
+                alert.showAndWait().ifPresent(response -> {
+                    if (response == buttonYes) {
+                        fileListContainer.getChildren().remove(fileHBox);
+                    }
+                    });
+            });
             fileHBox.getChildren().add(deleteButton);
 
             Button openButton = new Button("Ouvrir");
@@ -396,6 +443,9 @@ public class AddPatientController {
             showAlert(Alert.AlertType.ERROR, "Erreur de Validation", "Le numéro de téléphone doit comporter exactement 8 chiffres.");
             return;
         }
+
+
+
         PatientReqDTO patientReqDTO;
         if(patientResDTO!=null) {
             patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email2,dateNaissance,notes,batiment,code,cin,ville,sexee,idM,patientResDTO.getIdPatient());
@@ -432,19 +482,6 @@ public class AddPatientController {
                     System.out.println("Chemin du fichier : " + filePath);
 
                     File file = new File(filePath);
-
-                    // Vérification de l'existence du fichier
-//                    if (!file.exists()) {
-//                        showAlert(Alert.AlertType.ERROR, "Fichier Introuvable", "Le fichier n'existe pas : " + filePath);
-//                        continue;
-//                    }
-//
-//                    // Vérification des permissions
-//                    if (!file.canRead()) {
-//                        showAlert(Alert.AlertType.ERROR, "Erreur de Lecture de Fichier", "Le fichier ne peut pas être lu : " + filePath);
-//                        continue;
-//                    }
-
                     byte[] fileContent;
 
                     try {
@@ -484,12 +521,10 @@ public class AddPatientController {
         int index = fileName.lastIndexOf('.');
         return (index > 0) ? fileName.substring(index + 1).toLowerCase() : "";
     }
-    public void openFile(String path) {
-        try {
-            // Utilisez HostServices pour ouvrir un fichier ou une URL
-            hostServices.showDocument(path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+    public String getAge(LocalDate date) throws UserException {
+        return String.valueOf(Period.between(date, LocalDate.now()).getYears());
     }
+
+
 }
