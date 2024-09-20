@@ -1,78 +1,110 @@
 package com.medical.medical.services.impl;
 
+import com.medical.medical.models.dto.req.MedicamentReqDTO;
 import com.medical.medical.models.dto.res.MedicamentResDTO;
+import com.medical.medical.models.entity.Medicament;
+import com.medical.medical.models.mapper.MedicamentMapper;
+import com.medical.medical.repository.MedicamentRepo;
 import com.medical.medical.services.interf.MedicamentService;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Primary
+@RequiredArgsConstructor
 public class MedicamentServiceImpl implements MedicamentService {
 
-    private static final String API_URL = "https://api.fda.gov/drug/label.json?search=active_ingredient:%s";
+    private final MedicamentMapper mapper;
+
+    private final MedicamentRepo repository;
+
+//------------------------------------------------------------------------------------------------------------------save
 
     @Override
-    public MedicamentResDTO getDrugInfo(String activeIngredient) {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = String.format(API_URL, activeIngredient);
+    public MedicamentResDTO saveMedicament(MedicamentReqDTO req) {
+        Medicament emp=mapper.toEntity(req);
+        repository.save(emp);
+        return mapper.toRespDTO(emp);
+    }
 
-        try {
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-            String responseBody = response.getBody();
+    @Override
+    public MedicamentResDTO updateMedicament(MedicamentReqDTO req) {
+        Medicament emp=mapper.toEntity(req);
+        emp.setCreatedAt(this.repository.findById(req.getIdMedicament()).get().getCreatedAt());
+        Medicament saved= repository.save(emp);
+        return mapper.toRespDTO(saved);
+    }
+//------------------------------------------------------------------------------------------------------------------find
 
-            // Parse JSON response
-            JSONObject jsonResponse = new JSONObject(responseBody);
-            JSONArray results = jsonResponse.getJSONArray("results");
+    @Override
+    public List<MedicamentResDTO> findAllMedicament() {
 
-            // Check if results are empty
-            if (results.length() == 0) {
-                MedicamentResDTO notFoundDTO = new MedicamentResDTO();
-                notFoundDTO.setIngredientActif("Non disponible");
-                notFoundDTO.setUsage("Non disponible");
-                notFoundDTO.setAvertissements("Aucune information disponible pour cet ingrédient.");
-                notFoundDTO.setIngredientsInactifs("Non disponible");
-                notFoundDTO.setPosologieEtAdministration("Non disponible");
-                return notFoundDTO;
-            }
+        List<Medicament> users = this.repository.findAll();
+        return mapper.toAllRespDTO(users);
+    }
 
-            // Process the first result if available
-            JSONObject drugInfo = results.getJSONObject(0);
 
-            // Create and populate DTO
-            MedicamentResDTO drugInfoDTO = new MedicamentResDTO();
-            drugInfoDTO.setIngredientActif(drugInfo.optJSONArray("active_ingredient") != null
-                    ? drugInfo.getJSONArray("active_ingredient").join(", ")
-                    : "Non disponible");
-            drugInfoDTO.setUsage(drugInfo.optJSONArray("purpose") != null
-                    ? drugInfo.getJSONArray("purpose").join(", ")
-                    : "Non disponible");
-            drugInfoDTO.setAvertissements(drugInfo.optJSONArray("warnings") != null
-                    ? drugInfo.getJSONArray("warnings").join(", ")
-                    : "Non disponible");
-            drugInfoDTO.setIngredientsInactifs(drugInfo.optJSONArray("inactive_ingredient") != null
-                    ? drugInfo.getJSONArray("inactive_ingredient").join(", ")
-                    : "Non disponible");
-            drugInfoDTO.setPosologieEtAdministration(drugInfo.optJSONArray("dosage_and_administration") != null
-                    ? drugInfo.getJSONArray("dosage_and_administration").join(", ")
-                    : "Non disponible");
-
-            return drugInfoDTO;
-
-        } catch (Exception e) {
-            // Handle errors gracefully
-            MedicamentResDTO errorDTO = new MedicamentResDTO();
-            errorDTO.setIngredientActif("Erreur");
-            errorDTO.setUsage("Erreur");
-            errorDTO.setAvertissements("Erreur lors de la récupération des informations.");
-            errorDTO.setIngredientsInactifs("Erreur");
-            errorDTO.setPosologieEtAdministration("Erreur");
-            return errorDTO;
+    @Override
+    public Optional<MedicamentResDTO> findMedicamentById(int id) {
+        Optional<Medicament> optionalMedicament = this.repository.findById(id);
+        if (optionalMedicament.isPresent()) {
+            MedicamentResDTO MedicamentResDTO = mapper.toRespDTO(optionalMedicament.get());
+            return Optional.of(MedicamentResDTO);
+        } else {
+            return Optional.empty();
         }
+    }
+
+    @Override
+    public List<MedicamentResDTO> findAllMedicamentAfterDelete() {
+        List<Medicament> Medicaments = this.repository.findAll();
+        List<Medicament> filteredMedicaments = Medicaments.stream()
+                .filter(Medicament -> Medicament.getDeletedAt() == null)
+                .collect(Collectors.toList());
+        return mapper.toAllRespDTO(filteredMedicaments);
+    }
+
+    @Override
+    public Optional<MedicamentResDTO> findMedicamentByIdAfterDelete(int id) {
+        Optional<Medicament> optionalMedicament = this.repository.findById(id);
+        if (optionalMedicament.isPresent() && optionalMedicament.get().getDeletedAt() == null) {
+            MedicamentResDTO MedicamentResDTO = mapper.toRespDTO(optionalMedicament.get());
+            return Optional.of(MedicamentResDTO);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<MedicamentResDTO> findMedicamentsByIdPatient(Integer id){
+        List<Medicament> Medicaments = this.repository.findMedicamentsByIdPatient(id);
+        List<Medicament> filteredMedicaments = Medicaments.stream()
+                .filter(Medicament -> Medicament.getDeletedAt() == null)
+                .collect(Collectors.toList());
+        return mapper.toAllRespDTO(filteredMedicaments);
+    }
+
+
+//----------------------------------------------------------------------------------------------------------------delete
+
+
+    @Override
+    public void deleteMedicament(MedicamentReqDTO req) {
+        Medicament emp=this.repository.findById(req.getIdMedicament()).get();
+        emp.setDeletedAt(LocalDateTime.now());
+        repository.save(emp);
+    }
+
+    @Override
+    public void deleteMedicamentById(int id) {
+        Medicament emp=this.repository.findById(id).get();
+        emp.setDeletedAt(LocalDateTime.now());
+        repository.save(emp);
     }
 }

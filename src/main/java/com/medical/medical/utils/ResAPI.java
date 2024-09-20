@@ -254,6 +254,7 @@ public class ResAPI {
 
     public static <T> String delete(String role, T data) throws Exception {
         String endpoint = role.toLowerCase() + "s/" + role.toLowerCase() + "/delete";
+
         return sendRequest(endpoint, "DELETE", data);
     }
 

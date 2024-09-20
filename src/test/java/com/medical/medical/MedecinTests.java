@@ -1,7 +1,7 @@
 package com.medical.medical;
 
 import com.medical.medical.controller.API.AdminController;
-import com.medical.medical.controller.API.MedicamentController;
+import com.medical.medical.controller.API.DrugController;
 import com.medical.medical.controller.API.RendezVousController;
 
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ class MedecinTests {
 	private RendezVousController rendezVousController;
 
 	@Autowired
-	private MedicamentController medicamentController;
+	private DrugController drugController;
 
 //	@Autowired
 //	private UpdateDatabaseConfig updateDatabaseConfig;
@@ -41,6 +41,6 @@ class MedecinTests {
 	void find() {
 		String name="PANADOL EXTRA";
 		System.out.println(name.toLowerCase());
-		System.out.println(medicamentController.getDrugData(name.toLowerCase()));
+		System.out.println(drugController.getDrugData(name.toLowerCase()));
 	}
 }

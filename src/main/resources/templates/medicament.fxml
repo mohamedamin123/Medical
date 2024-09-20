@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<BorderPane prefHeight="389.0" prefWidth="835.0" stylesheets="@../static/style/add_rendez_vous.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.autre.MedicamentController">
+    <center>
+        <GridPane alignment="CENTER" hgap="10" vgap="10">
+            <!-- Define columns -->
+            <columnConstraints>
+                <ColumnConstraints halignment="RIGHT" />
+                <ColumnConstraints halignment="LEFT" />
+                <ColumnConstraints />
+            </columnConstraints>
+
+            <!-- Define rows -->
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints vgrow="ALWAYS" />
+                <RowConstraints vgrow="ALWAYS" />
+                <RowConstraints vgrow="ALWAYS" />
+                <RowConstraints vgrow="ALWAYS" />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
+
+            <!-- Patient -->
+            <Label text="Medicaments:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <ComboBox fx:id="medicamentComboBox" visibleRowCount="15" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+            <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <TextArea fx:id="medicamentDescrip" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+            <!-- Add new medication -->
+            <Label text="Ajouter autre:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+            <TextField fx:id="medicamentAjouter" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+            <Label text="Ajouter description:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+            <TextArea fx:id="medicamentDescripAjouter" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+            <!-- Button Container -->
+            <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="7">
+
+                <Button fx:id="ajouter" styleClass="ajouter" text="Ajouter">
+                    <HBox.margin>
+                        <Insets left="20.0" />
+                    </HBox.margin>
+                </Button>
+                <Button fx:id="supprimer" styleClass="supprimer" text="Supprimer">
+                    <HBox.margin>
+                        <Insets left="20.0" />
+                    </HBox.margin>
+                </Button>
+                <Button fx:id="miseAJour" styleClass="miseAJour" text="Mise à jour">
+                    <HBox.margin>
+                        <Insets left="20.0" />
+                    </HBox.margin>
+                </Button>
+            </HBox>
+        </GridPane>
+    </center>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+</BorderPane>

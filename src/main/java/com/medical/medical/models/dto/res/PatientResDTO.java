@@ -1,5 +1,6 @@
 package com.medical.medical.models.dto.res;
 import com.medical.medical.ennum.Sexe;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,8 +22,7 @@ public class PatientResDTO extends UserResDTO{
     private Integer idMedecin;
     private Sexe sexe;
     private String adresse;
-
-
+    private Boolean maladie;
 
     public PatientResDTO(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String note, String idUnique, String CIN,String ville) {
         super(nom, prenom, tel, email, dateDeNaissance);

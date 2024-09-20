@@ -24,6 +24,7 @@ public class PatientReqDTO extends UserReqDTO {
     private Integer idMedecin;
     private Sexe sexe;
     private String adresse;
+    private Boolean maladie;
 
 
     public PatientReqDTO(String nom, String prenom, String tel, String email, LocalDate dateDeNaissance, String note, String batiment, String idUnique, String CIN,String ville) {

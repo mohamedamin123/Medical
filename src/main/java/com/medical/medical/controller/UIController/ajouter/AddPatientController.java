@@ -13,6 +13,8 @@ import com.medical.medical.models.dto.res.SecretaireResDTO;
 import com.medical.medical.utils.ResAPI;
 import javafx.application.HostServices;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -46,8 +48,12 @@ import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 @Component
 @Slf4j
 public class AddPatientController {
-
-
+    @FXML
+    private Label labelMedicament;
+    @FXML
+    private Button chargerMedicamentsButton;
+    @FXML
+    private ComboBox<String> maladieComboBox;
     @FXML
     private TextField ageField;
     @FXML
@@ -143,6 +149,12 @@ public class AddPatientController {
                     throw new RuntimeException(e);
                 }
 
+                Boolean maladie=patientResDTO.getMaladie();
+                if(maladie){
+                    maladieComboBox.setValue("oui");
+                }else {
+                    maladieComboBox.setValue("non");
+                }
 
 
                 Sexe sexeEnum = patientResDTO.getSexe();
@@ -300,6 +312,21 @@ public class AddPatientController {
                 }
             });
 
+            if(patientResDTO==null){
+                chargerMedicamentsButton.setVisible(false);
+                labelMedicament.setVisible(false);
+            }
+            chargerMedicamentsButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    try {
+                        changeFenetre("medicament",patientResDTO.getIdPatient());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+
 
         });
 
@@ -413,6 +440,7 @@ public class AddPatientController {
         String code = codeField.getText().trim();
         String notes = notesField.getText().trim();
         String ville = villeField.getText().trim();
+        String maladie = (maladieComboBox.getValue() != null) ? maladieComboBox.getValue().trim() : "non"; // Avoid NullPointerException
 
         String sexeValue = ((RadioButton) sexe.getSelectedToggle()).getText();
         Sexe sexee = sexeValue.equals("Homme") ? Sexe.HOMME : Sexe.FEMME;
@@ -450,10 +478,12 @@ public class AddPatientController {
         if(patientResDTO!=null) {
             patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email2,dateNaissance,notes,batiment,code,cin,ville,sexee,idM,patientResDTO.getIdPatient());
             //patientResDTO=patientController.updatePatient(patientReqDTO);
+            patientReqDTO.setMaladie(maladie.equals("oui"));
             ResAPI.update("patient",patientReqDTO);
 
         }else {
             patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email2,dateNaissance,notes,batiment,code,cin,ville,sexee,idM);
+            patientReqDTO.setMaladie(maladie.equals("oui"));
            // patientResDTO=patientController.savePatient(patientReqDTO);
             ResAPI.save("patient",patientReqDTO);
 

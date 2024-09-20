@@ -85,6 +85,13 @@
     -fx-border-radius: 5px;
 }
 
+.button-medicament{
+    -fx-background-color: #f39c12; /* Green color for save button */
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+}
+
 /* Style for TextArea */
 .text-area {
     -fx-background-color: #fff; /* White background color */

@@ -41,43 +41,41 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientResDTO updatePatient(PatientReqDTO req) {
+        // Find the existing patient by ID
+        Optional<Patient> existingPatientOptional = this.repository.findPatientByIdPatient(req.getIdPatient());
 
-        // Convertir DTO en entité pour obtenir les nouvelles données
-        Patient updatedMedecin = mapper.toEntity(req);
+        if (existingPatientOptional.isPresent()) {
+            Patient existingPatient = existingPatientOptional.get();
 
-        // Trouver le médecin existant par son email
-        Optional<Patient> existingMedecinOptional = this.repository.findPatientByIdPatient(req.getIdPatient());
+            // Update existing patient with new values from DTO
+            updatePatientFromDTO(existingPatient, req);
 
-        if (existingMedecinOptional.isPresent()) {
+            existingPatient.setUpdatedAt(LocalDateTime.now());
+            existingPatient.setDeletedAt(null);
+            existingPatient.setStatut(true);
 
-            // Obtenir le médecin existant
-            Patient existingMedecin = existingMedecinOptional.get();
-
-            // Mettre à jour les champs pertinents avec les nouvelles valeurs
-            existingMedecin.setNom(updatedMedecin.getNom());
-            existingMedecin.setPrenom(updatedMedecin.getPrenom());
-            existingMedecin.setTel(updatedMedecin.getTel());
-            existingMedecin.setEmail(updatedMedecin.getEmail());
-            existingMedecin.setDateDeNaissance(updatedMedecin.getDateDeNaissance());
-            existingMedecin.setCIN(updatedMedecin.getCIN());
-            existingMedecin.setIdUnique(updatedMedecin.getIdUnique());
-            existingMedecin.setAdresse(updatedMedecin.getAdresse());
-            existingMedecin.setRemboursement(updatedMedecin.getRemboursement());
-            existingMedecin.setNote(updatedMedecin.getNote());
-            existingMedecin.setSexe(updatedMedecin.getSexe());
-
-            existingMedecin.setUpdatedAt(LocalDateTime.now()); // Assurez-vous que vous avez un champ 'updatedAt' dans votre entité
-
-            existingMedecin.setDeletedAt(null);
-            existingMedecin.setStatut(true);
-
-            Patient savedMedecin = repository.save(existingMedecin);
-
-            return mapper.toRespDTO(savedMedecin);
+            Patient updatedPatient = repository.save(existingPatient);
+            return mapper.toRespDTO(updatedPatient);
         }
 
         return null;
     }
+
+    private void updatePatientFromDTO(Patient patient, PatientReqDTO req) {
+        patient.setNom(req.getNom());
+        patient.setPrenom(req.getPrenom());
+        patient.setTel(req.getTel());
+        patient.setEmail(req.getEmail());
+        patient.setDateDeNaissance(req.getDateDeNaissance());
+        patient.setCIN(req.getCIN());
+        patient.setIdUnique(req.getIdUnique());
+        patient.setAdresse(req.getAdresse());
+        patient.setRemboursement(req.getRemboursement());
+        patient.setNote(req.getNote());
+        patient.setSexe(req.getSexe());
+        patient.setMaladie(req.getMaladie());
+    }
+
 //------------------------------------------------------------------------------------------------------------------find
 
     @Override

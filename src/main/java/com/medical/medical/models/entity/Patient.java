@@ -47,6 +47,12 @@ public class Patient extends User {
     @Column(name = "adresse", nullable = false)
     private String adresse;
 
+    @Column(nullable = false)
+    private Boolean maladie;
+
+    @JsonManagedReference("medicament_patient")
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Medicament> medicaments;
 //----------------------------------------------------------------------------------------------------------------------
     @Column(name = "medecin_id")
     private Integer idMedecin;

@@ -1,15 +1,14 @@
 package com.medical.medical.controller.API;
 
+import com.medical.medical.models.dto.req.MedicamentReqDTO;
 import com.medical.medical.models.dto.res.MedicamentResDTO;
-import com.medical.medical.services.impl.MedicamentServiceImpl;
+import com.medical.medical.services.interf.MedicamentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/medicaments/medicament")
@@ -17,14 +16,70 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class MedicamentController {
 
-    private final MedicamentServiceImpl medicamentService;
+    private final MedicamentService service;
 
-    @GetMapping("/{activeIngredient}")
-    public ResponseEntity<MedicamentResDTO> getDrugData(@PathVariable String activeIngredient) {
-        MedicamentResDTO drugInfo = medicamentService.getDrugInfo(activeIngredient);
-        if ("Aucune information disponible pour cet ingrédient.".equals(drugInfo.getAvertissements())) {
-            return new ResponseEntity<>(drugInfo, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(drugInfo, HttpStatus.OK);
+//------------------------------------------------------------------------------------------------------------------find
+    @GetMapping(path = "/find-all")
+    public List<MedicamentResDTO> findAllMedicament()
+    {
+        return this.service.findAllMedicament();
+    }
+
+    @GetMapping(path = "/find-by-id/{id}")
+    public Optional<MedicamentResDTO> findMedicamentById(@PathVariable(name = "id")  Integer id)
+    {
+        log.info("id de Medicament est : {}", id);
+
+        return this.service.findMedicamentById(id);
+    }
+
+    @GetMapping(path = "/find-by-id-pation-after-delete/{id}")
+    public List<MedicamentResDTO> findMedicamentByIdPatientAfterDelete(@PathVariable(name = "id")  Integer id)
+    {
+        log.info("id de Medicament est : {}", id);
+
+        return this.service.findMedicamentsByIdPatient(id);
+    }
+
+    @GetMapping(path = "/find-all-after-delete")
+    public List<MedicamentResDTO> findAllMedicamentAfterDelete()
+    {
+        return this.service.findAllMedicamentAfterDelete();
+    }
+
+    @GetMapping(path = "/after-delete/find-by-id/{id}")
+    public Optional<MedicamentResDTO> findMedicamentByIdAfterDelete(@PathVariable(name = "id")  Integer id)
+    {
+        log.info("id de MedicamentResDTO est : {}", id);
+
+        return this.service.findMedicamentByIdAfterDelete(id);
+    }
+
+//------------------------------------------------------------------------------------------------------------------save
+
+    @PostMapping(path = "/save")
+    public void saveMedicament(@RequestBody MedicamentReqDTO user)
+    {
+        this.service.saveMedicament(user);
+    }
+
+    @PutMapping(path = "/update")
+    public void updateMedicament(@RequestBody MedicamentReqDTO user)
+    {
+        this.service.updateMedicament(user);
+    }
+
+//----------------------------------------------------------------------------------------------------------------delete
+
+    @DeleteMapping(path = "/delete-by-id/{id}")
+    public void deleteMedicamentById(@PathVariable(name = "id")  Integer id)
+    {
+        this.service.deleteMedicamentById(id);
+    }
+
+    @DeleteMapping(path = "/delete")
+    public void deleteMedicament(@RequestBody MedicamentReqDTO user)
+    {
+        this.service.deleteMedicament(user);
     }
 }
