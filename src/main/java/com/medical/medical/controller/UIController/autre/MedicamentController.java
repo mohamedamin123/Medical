@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Component("medicamentUI")
 public class MedicamentController {
 
@@ -61,58 +62,70 @@ public class MedicamentController {
     }
 
     private void handleAjouter(ActionEvent event) {
-        ajouterMedicament();
+        if (LoginController.getSavedRole().equals("secretaire")) {
+            showAlertError("Secretaire n'est pas autorisé à ajouter un médicament.");
+        } else {
+            ajouterMedicament();
+        }
     }
 
-    private void handleSupprimer(ActionEvent event) {
-        MedicamentResDTO selectedMedicament = medicamentComboBox.getSelectionModel().getSelectedItem();
-        if (selectedMedicament != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmation de suppression de "+selectedMedicament.getNom());
-            alert.setHeaderText("Êtes-vous sûr de vouloir supprimer ce médicament ?");
-            alert.setContentText("Cette action ne peut pas être annulée.");
 
-            if (alert.showAndWait().filter(ButtonType.OK::equals).isPresent()) {
-                try {
-                    ResAPI.deleteById("medicament", selectedMedicament.getIdMedicament()); // Assume there is a delete method
-                    medicamentResDTOList.remove(selectedMedicament);
-                    medicamentComboBox.getItems().remove(selectedMedicament);
-                    if(medicamentResDTOList.isEmpty())
-                        medicamentDescrip.clear();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("Erreur lors de la suppression du médicament");
+    private void handleSupprimer(ActionEvent event) {
+        if (LoginController.getSavedRole().equals("secretaire")) {
+            showAlertError("Secretaire n'est pas autorisé à supprimer un médicament.");
+        } else {
+            MedicamentResDTO selectedMedicament = medicamentComboBox.getSelectionModel().getSelectedItem();
+            if (selectedMedicament != null) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation de suppression de " + selectedMedicament.getNom());
+                alert.setHeaderText("Êtes-vous sûr de vouloir supprimer ce médicament ?");
+                alert.setContentText("Cette action ne peut pas être annulée.");
+
+                if (alert.showAndWait().filter(ButtonType.OK::equals).isPresent()) {
+                    try {
+                        ResAPI.deleteById("medicament", selectedMedicament.getIdMedicament());
+                        medicamentResDTOList.remove(selectedMedicament);
+                        medicamentComboBox.getItems().remove(selectedMedicament);
+                        if (medicamentResDTOList.isEmpty()) medicamentDescrip.clear();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Erreur lors de la suppression du médicament");
+                    }
                 }
             }
         }
     }
 
     private void handleMiseAJour(ActionEvent event) {
-        MedicamentResDTO selectedMedicament = medicamentComboBox.getSelectionModel().getSelectedItem();
-        if (selectedMedicament != null) {
-            String newDescription = medicamentDescrip.getText();
-            if (newDescription.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Erreur de saisie");
-                alert.setHeaderText("Description manquante");
-                alert.setContentText("La description ne peut pas être vide.");
-                alert.showAndWait();
-                return;
-            }
+        if (LoginController.getSavedRole().equals("secretaire")) {
+            showAlertError("Secretaire n'est pas autorisé à mettre à jour un médicament.");
+        } else {
+            MedicamentResDTO selectedMedicament = medicamentComboBox.getSelectionModel().getSelectedItem();
+            if (selectedMedicament != null) {
+                String newDescription = medicamentDescrip.getText();
+                if (newDescription.isEmpty()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Erreur de saisie");
+                    alert.setHeaderText("Description manquante");
+                    alert.setContentText("La description ne peut pas être vide.");
+                    alert.showAndWait();
+                    return;
+                }
 
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmation de mise à jour de "+selectedMedicament.getNom() );
-            alert.setHeaderText("Êtes-vous sûr de vouloir mettre à jour la description ?");
-            alert.setContentText("La mise à jour remplacera l'ancienne description.");
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation de mise à jour de " + selectedMedicament.getNom());
+                alert.setHeaderText("Êtes-vous sûr de vouloir mettre à jour la description ?");
+                alert.setContentText("La mise à jour remplacera l'ancienne description.");
 
-            if (alert.showAndWait().filter(ButtonType.OK::equals).isPresent()) {
-                try {
-                    selectedMedicament.setDescription(newDescription);
-                    ResAPI.update("medicament", selectedMedicament); // Assume there is an update method
-                    medicamentComboBox.getItems().set(medicamentComboBox.getItems().indexOf(selectedMedicament), selectedMedicament);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("Erreur lors de la mise à jour du médicament");
+                if (alert.showAndWait().filter(ButtonType.OK::equals).isPresent()) {
+                    try {
+                        selectedMedicament.setDescription(newDescription);
+                        ResAPI.update("medicament", selectedMedicament);
+                        medicamentComboBox.getItems().set(medicamentComboBox.getItems().indexOf(selectedMedicament), selectedMedicament);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Erreur lors de la mise à jour du médicament");
+                    }
                 }
             }
         }
@@ -187,4 +200,12 @@ public class MedicamentController {
             System.out.println("Erreur lors de l'ajout du médicament");
         }
     }
+    private void showAlertError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Action non autorisée");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 }

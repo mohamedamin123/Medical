@@ -27,7 +27,8 @@ import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 @Component
 @Slf4j
 public class AccueilController {
-
+    @FXML
+    private ImageView medicament;
     @FXML
     private ImageView attente;
     @FXML
@@ -120,6 +121,14 @@ public class AccueilController {
                             }
                         });
 
+                        medicament.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                medicamentMethode();
+                            }
+                        });
+
+
                     } else {
                         log.error("User data array does not have the expected number of elements");
                         name.setText("User data array does not have the expected number of elements");
@@ -133,6 +142,15 @@ public class AccueilController {
                 name.setText("Stage is null");
             }
         });
+    }
+
+    private void medicamentMethode() {
+        try {
+            changeFenetre("liste_drug");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private void attenteMethode() {

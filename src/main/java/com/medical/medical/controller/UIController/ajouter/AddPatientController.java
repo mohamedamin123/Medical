@@ -88,14 +88,6 @@ public class AddPatientController {
     @FXML
     private ToggleGroup sexe;
     private Stage stage;
-
-
-//    @Autowired
-//    private PatientController patientController;
-//
-//    @Autowired
-//    private DossierMedicalController dossierMedicalController;
-
     private Integer idM;
 
     @Setter
@@ -110,8 +102,6 @@ public class AddPatientController {
     private SecretaireResDTO secretaire;
 
     private PatientResDTO patientResDTO;
-    @Setter
-    private HostServices hostServices;
 
     @FXML
     public void initialize() {
@@ -131,209 +121,214 @@ public class AddPatientController {
                     patientResDTO = null; // or handle the case when data[5] does not exist or is not of type PatientResDTO
                 }
             }
+            getData();
+            setData();
+            enregistrerFichier();
+            save();
+            annuler();
+            changeMedicament();
+        });
+    }
 
-            if (patientResDTO != null) {
-                nomField.setText(patientResDTO.getNom());
-                prenomField.setText(patientResDTO.getPrenom());
-                CINField.setText(patientResDTO.getCIN());
-                dobField.setValue(patientResDTO.getDateDeNaissance());
-                emailField.setText(patientResDTO.getEmail());
-                TelField.setText(patientResDTO.getTel());
-                villeField.setText(patientResDTO.getAdresse());
-                batimentComboBox.setValue(patientResDTO.getRemboursement());
-                codeField.setText(patientResDTO.getIdUnique());
-                notesField.setText(patientResDTO.getNote());
+    private void enregistrerFichier() {
+        chargerFichierButton.setOnAction(event -> handleChargerFichier());
+    }
+
+    private void setData() {
+        CINField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.length() > 8) {
+                CINField.setText(newValue.substring(0, 8));
+            }
+            if (!newValue.matches("\\d*")) {
+                CINField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
+        dobField.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
                 try {
-                    ageField.setText(String.valueOf(patientResDTO.getAge()));
+                    ageField.setText(getAge(newValue));
+
                 } catch (UserException e) {
                     throw new RuntimeException(e);
                 }
-
-                Boolean maladie=patientResDTO.getMaladie();
-                if(maladie){
-                    maladieComboBox.setValue("oui");
-                }else {
-                    maladieComboBox.setValue("non");
-                }
-
-
-                Sexe sexeEnum = patientResDTO.getSexe();
-                if (sexeEnum != null) {
-                    RadioButton selectedSexeButton = (sexeEnum == Sexe.HOMME) ? (RadioButton) sexe.getToggles().get(0) : (RadioButton) sexe.getToggles().get(1);
-                    selectedSexeButton.setSelected(true);
-                }
-                //List<DossierMedicalResDTO> dossierMedicalResDTOS= dossierMedicalController.findDossierMedicalByIdPatientAfterDelete(patientResDTO.getIdPatient());
-                List<DossierMedicalResDTO> dossierMedicalResDTOS= null;
-                try {
-                    dossierMedicalResDTOS = ResAPI.findAllByIdPatient("dossiermedical", DossierMedicalResDTO.class,patientResDTO.getIdPatient());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
-                if (dossierMedicalResDTOS != null) {
-                    for (DossierMedicalResDTO dossier : dossierMedicalResDTOS) {
-                        HBox fileHBox = new HBox(10);
-                        fileHBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-
-                        Label fileNameLabel = new Label(dossier.getFichier()); // Display file name
-                        fileHBox.getChildren().add(fileNameLabel);
-
-                        Button deleteButton = new Button();
-                        deleteButton.getStyleClass().add("delete-button"); // Ajouter la classe de style
-                        ImageView deleteIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/static/icons/supprimer.png")).toExternalForm()));
-                        deleteIcon.setFitWidth(16);
-                        deleteIcon.setFitHeight(16);
-                        deleteButton.setGraphic(deleteIcon);
-                        deleteButton.setOnAction(event -> {
-                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                            alert.setTitle("Confirmation de suppression");
-                            alert.setHeaderText("Supprimer le fichier");
-                            alert.setContentText("Êtes-vous sûr de vouloir supprimer ce fichier ?");
-
-                            // Customize the buttons in the alert
-                            ButtonType buttonYes = new ButtonType("Oui");
-                            ButtonType buttonNo = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
-                            alert.getButtonTypes().setAll(buttonYes, buttonNo);
-                            alert.showAndWait().ifPresent(response -> {
-                                if (response == buttonYes) {
-                                    // If the user clicked "Oui", proceed with deletion
-                                    fileListContainer.getChildren().remove(fileHBox);
-                                    try {
-                                        ResAPI.deleteById("dossiermedical", dossier.getIdDossierMedical());
-                                        ResAPI.findAfterDelete("dossiermedical", dossier.getIdDossierMedical(), DossierMedicalResDTO.class);
-                                    } catch (Exception e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }
-                            });
-                        });
-                        fileHBox.getChildren().add(deleteButton);
-
-                        Button openButton = new Button("Ouvrir");
-                        openButton.getStyleClass().add("open-button"); // Ajouter la classe de style
-                        openButton.setOnAction(event -> {
-                            // Chemin pour stocker temporairement le fichier
-                            Path path = Paths.get(System.getProperty("java.io.tmpdir"), dossier.getFichier());
-
-                            try {
-                                // Récupère le contenu du fichier (LONG BLOB) depuis la base de données
-                                byte[] fileContent = dossier.getContenue();
-
-                                // Écrit le contenu du fichier dans un fichier temporaire
-                                Files.write(path, fileContent);
-
-                                // Vérifie si le fichier a été correctement créé
-                                if (!Files.exists(path)) {
-                                    showAlert(Alert.AlertType.ERROR, "Erreur", "Le fichier n'a pas pu être créé.");
-                                    return;
-                                }
-
-                                // Ouvrir le fichier
-                                if (Desktop.isDesktopSupported()) {
-                                    Desktop.getDesktop().open(path.toFile());
-                                } else {
-                                    String os = System.getProperty("os.name").toLowerCase();
-                                    if (os.contains("win")) {
-                                        Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", "start", "\"\"", "\"" + path.toFile().getAbsolutePath() + "\""});
-                                    } else if (os.contains("mac")) {
-                                        Runtime.getRuntime().exec(new String[]{"open", path.toFile().getAbsolutePath()});
-                                    } else if (os.contains("nix") || os.contains("nux")) {
-                                        Runtime.getRuntime().exec(new String[]{"xdg-open", path.toFile().getAbsolutePath()});
-                                    } else {
-                                        showAlert(Alert.AlertType.ERROR, "Erreur", "L'ouverture de fichier n'est pas supportée sur cette plateforme.");
-                                    }
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur s'est produite lors de l'ouverture du fichier : " + e.getMessage());
-                            }
-                        });
-
-// Ajoute le bouton "Ouvrir" au conteneur HBox
-                        fileHBox.getChildren().add(openButton);
-
-// Ajoute le conteneur HBox (contenant le bouton) à la liste des fichiers
-                        fileListContainer.getChildren().add(fileHBox);
-
-
-                    }
-                }
             }
-
-            // Restrict CINField to 8 digits only
-            CINField.textProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue.length() > 8) {
-                    CINField.setText(newValue.substring(0, 8));
-                }
-                if (!newValue.matches("\\d*")) {
-                    CINField.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            });
-
-            dobField.valueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue != null) {
-                    try {
-                        ageField.setText(getAge(newValue));
-
-                    } catch (UserException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
-            // Restrict TelField to 8 digits only
-            TelField.textProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue.length() > 8) {
-                    TelField.setText(newValue.substring(0, 8));
-                }
-                if (!newValue.matches("\\d*")) {
-                    TelField.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            });
-
-
-            // Setup file chooser for "Charger fichier" button
-            chargerFichierButton.setOnAction(event -> handleChargerFichier());
-
-            // Setup save button action
-            saveButton.setOnAction(event -> {
-                try {
-                    handleSave();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
-            annulerButton.setOnAction(event -> {
-                try {
-                    stage.close();
-                    changeFenetre("patient",email,role,medecin,secretaire,idM);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
-            if(patientResDTO==null){
-                chargerMedicamentsButton.setVisible(false);
-                labelMedicament.setVisible(false);
-            }
-            chargerMedicamentsButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    try {
-                        changeFenetre("medicament",patientResDTO.getIdPatient());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
-
-
         });
-
+        // Restrict TelField to 8 digits only
+        TelField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.length() > 8) {
+                TelField.setText(newValue.substring(0, 8));
+            }
+            if (!newValue.matches("\\d*")) {
+                TelField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
 
     }
 
+    private void getData() {
+        if (patientResDTO != null) {
+            nomField.setText(patientResDTO.getNom());
+            prenomField.setText(patientResDTO.getPrenom());
+            CINField.setText(patientResDTO.getCIN());
+            dobField.setValue(patientResDTO.getDateDeNaissance());
+            emailField.setText(patientResDTO.getEmail());
+            TelField.setText(patientResDTO.getTel());
+            villeField.setText(patientResDTO.getAdresse());
+            batimentComboBox.setValue(patientResDTO.getRemboursement());
+            codeField.setText(patientResDTO.getIdUnique());
+            notesField.setText(patientResDTO.getNote());
+            try {
+                ageField.setText(String.valueOf(patientResDTO.getAge()));
+            } catch (UserException e) {
+                throw new RuntimeException(e);
+            }
 
+            Boolean maladie=patientResDTO.getMaladie();
+            if(maladie){
+                maladieComboBox.setValue("oui");
+            }else {
+                maladieComboBox.setValue("non");
+            }
+
+
+            Sexe sexeEnum = patientResDTO.getSexe();
+            if (sexeEnum != null) {
+                RadioButton selectedSexeButton = (sexeEnum == Sexe.HOMME) ? (RadioButton) sexe.getToggles().get(0) : (RadioButton) sexe.getToggles().get(1);
+                selectedSexeButton.setSelected(true);
+            }
+            //List<DossierMedicalResDTO> dossierMedicalResDTOS= dossierMedicalController.findDossierMedicalByIdPatientAfterDelete(patientResDTO.getIdPatient());
+            List<DossierMedicalResDTO> dossierMedicalResDTOS= null;
+            try {
+                dossierMedicalResDTOS = ResAPI.findAllByIdPatient("dossiermedical", DossierMedicalResDTO.class,patientResDTO.getIdPatient());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            if (dossierMedicalResDTOS != null) {
+                for (DossierMedicalResDTO dossier : dossierMedicalResDTOS) {
+                    HBox fileHBox = new HBox(10);
+                    fileHBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+                    Label fileNameLabel = new Label(dossier.getFichier()); // Display file name
+                    fileHBox.getChildren().add(fileNameLabel);
+
+                    Button deleteButton = new Button();
+                    deleteButton.getStyleClass().add("delete-button"); // Ajouter la classe de style
+                    ImageView deleteIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/static/icons/supprimer.png")).toExternalForm()));
+                    deleteIcon.setFitWidth(16);
+                    deleteIcon.setFitHeight(16);
+                    deleteButton.setGraphic(deleteIcon);
+                    deleteButton.setOnAction(event -> {
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("Confirmation de suppression");
+                        alert.setHeaderText("Supprimer le fichier");
+                        alert.setContentText("Êtes-vous sûr de vouloir supprimer ce fichier ?");
+
+                        // Customize the buttons in the alert
+                        ButtonType buttonYes = new ButtonType("Oui");
+                        ButtonType buttonNo = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
+                        alert.getButtonTypes().setAll(buttonYes, buttonNo);
+                        alert.showAndWait().ifPresent(response -> {
+                            if (response == buttonYes) {
+                                // If the user clicked "Oui", proceed with deletion
+                                fileListContainer.getChildren().remove(fileHBox);
+                                try {
+                                    ResAPI.deleteById("dossiermedical", dossier.getIdDossierMedical());
+                                    ResAPI.findAfterDelete("dossiermedical", dossier.getIdDossierMedical(), DossierMedicalResDTO.class);
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        });
+                    });
+                    fileHBox.getChildren().add(deleteButton);
+
+                    Button openButton = new Button("Ouvrir");
+                    openButton.getStyleClass().add("open-button"); // Ajouter la classe de style
+                    openButton.setOnAction(event -> {
+                        // Chemin pour stocker temporairement le fichier
+                        Path path = Paths.get(System.getProperty("java.io.tmpdir"), dossier.getFichier());
+
+                        try {
+                            // Récupère le contenu du fichier (LONG BLOB) depuis la base de données
+                            byte[] fileContent = dossier.getContenue();
+
+                            // Écrit le contenu du fichier dans un fichier temporaire
+                            Files.write(path, fileContent);
+
+                            // Vérifie si le fichier a été correctement créé
+                            if (!Files.exists(path)) {
+                                showAlert(Alert.AlertType.ERROR, "Erreur", "Le fichier n'a pas pu être créé.");
+                                return;
+                            }
+
+                            // Ouvrir le fichier
+                            if (Desktop.isDesktopSupported()) {
+                                Desktop.getDesktop().open(path.toFile());
+                            } else {
+                                String os = System.getProperty("os.name").toLowerCase();
+                                if (os.contains("win")) {
+                                    Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", "start", "\"\"", "\"" + path.toFile().getAbsolutePath() + "\""});
+                                } else if (os.contains("mac")) {
+                                    Runtime.getRuntime().exec(new String[]{"open", path.toFile().getAbsolutePath()});
+                                } else if (os.contains("nix") || os.contains("nux")) {
+                                    Runtime.getRuntime().exec(new String[]{"xdg-open", path.toFile().getAbsolutePath()});
+                                } else {
+                                    showAlert(Alert.AlertType.ERROR, "Erreur", "L'ouverture de fichier n'est pas supportée sur cette plateforme.");
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur s'est produite lors de l'ouverture du fichier : " + e.getMessage());
+                        }
+                    });
+                    fileHBox.getChildren().add(openButton);
+                    fileListContainer.getChildren().add(fileHBox);
+
+
+                }
+            }
+        }
+    }
+    private void save() {
+        saveButton.setOnAction(event -> {
+            try {
+                handleSave();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private void annuler() {
+        annulerButton.setOnAction(event -> {
+            try {
+                stage.close();
+                changeFenetre("patient",email,role,medecin,secretaire,idM);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private void changeMedicament() {
+
+        if(patientResDTO==null){
+            chargerMedicamentsButton.setVisible(false);
+            labelMedicament.setVisible(false);
+        }
+        chargerMedicamentsButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    changeFenetre("medicament",patientResDTO.getIdPatient());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
 
     @FXML
     private void handleChargerFichier() {
@@ -415,9 +410,6 @@ public class AddPatientController {
             fileListContainer.getChildren().add(fileHBox);
         }
     }
-
-
-
     private void handleSave() throws Exception {
         String nom = nomField.getText().trim().trim();
         if (!nom.isEmpty()) {

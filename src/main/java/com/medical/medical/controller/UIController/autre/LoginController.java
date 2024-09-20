@@ -27,6 +27,8 @@ public class LoginController {
     private static String savedPassword;
     @Getter
     private static String savedEmail;
+    @Getter
+    private static String savedRole;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -70,6 +72,7 @@ public class LoginController {
                             if (secretaireResDTO.get().getStatut()) {
                                 savedPassword = password;
                                 savedEmail = email;
+                                savedRole ="secretaire";
                                 changeFenetre(email, "secretaire", null, secretaireResDTO.orElse(null));
                                 return;
                             } else {
@@ -92,6 +95,7 @@ public class LoginController {
                             if (medecinResDTO.get().getStatut()) {
                                 savedPassword = password;
                                 savedEmail = email;
+                                savedRole ="medecin";
                                 changeFenetre(email, "medecin", medecinResDTO.orElse(null), null);
                                 return;
                             } else {
@@ -114,6 +118,7 @@ public class LoginController {
                         if (passwordEncoder.matches(password, adminResDTO.get().getPassword())) {
                             savedPassword = password;
                             savedEmail = email;
+                            savedRole ="admin";
                             changeFenetre(email, "admin", adminResDTO.get());
                             return;
                         } else {

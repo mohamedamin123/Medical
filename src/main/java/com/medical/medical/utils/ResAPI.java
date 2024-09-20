@@ -1,8 +1,11 @@
 package com.medical.medical.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.medical.medical.controller.UIController.autre.LoginController;
+import com.medical.medical.models.dto.res.DrugResDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -89,6 +92,22 @@ public class ResAPI {
 
     public static  <T> List<T> findAllByIdPatient(String role, Class<T> clazz,int id) throws Exception {
         String endpoint = role.toLowerCase() + "s/" + role.toLowerCase() + "/find-by-id-pation-after-delete/"+id;
+        try {
+            String jsonResponse = sendRequest(endpoint, "GET", null);
+            return objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+        } catch (Exception e) {
+            if (e.getMessage().contains("HTTP error code : 404")) {
+                // Handle the 404 error specifically
+                System.out.println(endpoint);
+                return null; // or handle as needed
+            }
+            throw e; // rethrow other exceptions
+        }
+    }
+
+
+    public static  <T> List<T> getDrugData(String role, Class<T> clazz,int id) throws Exception {
+        String endpoint = role.toLowerCase() + "s/" + role.toLowerCase() + "/"+id;
         try {
             String jsonResponse = sendRequest(endpoint, "GET", null);
             return objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
@@ -258,5 +277,21 @@ public class ResAPI {
         return sendRequest(endpoint, "DELETE", data);
     }
 
+
+    public static List<DrugResDTO> findAllJson(String drug, Class<DrugResDTO> drugResDTOClass) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String endpoint = drug.toLowerCase() + "s/find-all"; // Adjusted endpoint
+
+        try {
+            String jsonResponse = sendRequest(endpoint, "GET", null);
+            return objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, drugResDTOClass));
+        } catch (JsonMappingException e) {
+            throw new RuntimeException("Error mapping JSON to DrugResDTO", e);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error processing JSON", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected error occurred", e);
+        }
+    }
 
 }

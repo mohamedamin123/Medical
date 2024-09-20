@@ -11,15 +11,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/drugq/drug")
+@RequestMapping("/drugs")
 @RequiredArgsConstructor
 @Slf4j
 public class DrugController {
 
     private final DrugServiceImpl medicamentService;
 
-    @GetMapping("/{activeIngredient}")
+    // Get drug information by active ingredient
+    @GetMapping("/drug/{activeIngredient}")
     public ResponseEntity<DrugResDTO> getDrugData(@PathVariable String activeIngredient) {
         DrugResDTO drugInfo = medicamentService.getDrugInfo(activeIngredient);
         if ("Aucune information disponible pour cet ingrédient.".equals(drugInfo.getAvertissements())) {
@@ -27,4 +30,15 @@ public class DrugController {
         }
         return new ResponseEntity<>(drugInfo, HttpStatus.OK);
     }
+
+    // New method: Get all drugs
+    @GetMapping("/find-all")
+    public ResponseEntity<List<DrugResDTO>> getAllDrugs() {
+        List<DrugResDTO> drugsList = medicamentService.findAllDrugs();
+        if (drugsList.isEmpty() || "Erreur".equals(drugsList.get(0).getAvertissements())) {
+            return new ResponseEntity<>(drugsList, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(drugsList, HttpStatus.OK);
+    }
+
 }

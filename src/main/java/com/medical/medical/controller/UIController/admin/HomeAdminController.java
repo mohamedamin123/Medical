@@ -28,13 +28,7 @@ import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 @Component
 public class HomeAdminController {
     @FXML
-    private ImageView profile;
-    @FXML
-    private ImageView secretaireI;
-    @FXML
-    private ImageView deconnecter;
-    @FXML
-    private ImageView medecin;
+    private ImageView supprimer,medecin,profile,secretaireI,deconnecter;
     @FXML
     private Label name;
 
@@ -45,8 +39,6 @@ public class HomeAdminController {
     @Setter
     @Getter
     private String role;
-
-
     private Stage stage;
     private AdminResDTO adminResDTO;
 
@@ -105,6 +97,12 @@ public class HomeAdminController {
                                     } catch (IOException e) {
                                         log.error("Error changing window", e);
                                     }
+                                }
+                            });
+                            supprimer.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    System.out.println("supprimer");
                                 }
                             });
                         }
