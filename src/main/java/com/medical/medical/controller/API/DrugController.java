@@ -32,13 +32,6 @@ public class DrugController {
     }
 
     // New method: Get all drugs
-    @GetMapping("/find-all")
-    public ResponseEntity<List<DrugResDTO>> getAllDrugs() {
-        List<DrugResDTO> drugsList = medicamentService.findAllDrugs();
-        if (drugsList.isEmpty() || "Erreur".equals(drugsList.get(0).getAvertissements())) {
-            return new ResponseEntity<>(drugsList, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(drugsList, HttpStatus.OK);
-    }
+
 
 }

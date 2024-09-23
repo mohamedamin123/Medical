@@ -9,5 +9,5 @@ import java.util.List;
 public interface DrugService {
      DrugResDTO getDrugInfo(String activeIngredient);
 
-     List<DrugResDTO> findAllDrugs();
+//     List<DrugResDTO> findAllDrugs();
 }
