@@ -2,8 +2,6 @@ package com.medical.medical.services.impl;
 
 import com.medical.medical.models.dto.req.SecretaireReqDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
-import com.medical.medical.models.dto.res.SecretaireResDTO;
-import com.medical.medical.models.entity.*;
 import com.medical.medical.models.entity.Secretaire;
 import com.medical.medical.models.mapper.SecretaireMapper;
 import com.medical.medical.repository.SecretaireRepo;
@@ -166,10 +164,10 @@ public class SecretaireServiceImpl implements SecretaireService
     @Override
     public List<SecretaireResDTO> findSecretairesByIdMedecin(Integer id) {
         List<Secretaire> users = this.repository.findSecretairesByIdMedecin(id);
-        List<Secretaire> filteredRendezVousList = users.stream()
-                .filter(rendezVous -> rendezVous.getDeletedAt() == null)
+        List<Secretaire> filteredSecretairesList = users.stream()
+                .filter(secretaire -> secretaire.getDeletedAt() == null)
                 .collect(Collectors.toList());
-        return mapper.toAllRespDTO(filteredRendezVousList);
+        return mapper.toAllRespDTO(filteredSecretairesList);
     }
 
     @Override
@@ -182,6 +180,7 @@ public class SecretaireServiceImpl implements SecretaireService
             return Optional.empty();
         }
     }
+
 
     @Override
     public List<SecretaireResDTO> findSecretairesByDateDeNaissanceAfterDelete(LocalDate dateDeNaissance) {
@@ -217,6 +216,7 @@ public class SecretaireServiceImpl implements SecretaireService
         emp.setDeletedAt(LocalDateTime.now());
         emp.setStatut(false);
         repository.save(emp);
+       // repository.deleteById(id);
     }
 
 

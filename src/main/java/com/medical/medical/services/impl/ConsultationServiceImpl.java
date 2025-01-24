@@ -71,7 +71,17 @@ public class ConsultationServiceImpl implements ConsultationService {
         List<Consultation> filteredConsultations = consultations.stream()
                 .filter(consultation -> consultation.getDeletedAt() == null)
                 .collect(Collectors.toList());
-        return mapper.toAllRespDTO(filteredConsultations);    }
+        return mapper.toAllRespDTO(filteredConsultations);
+    }
+
+    @Override
+    public List<ConsultationResDTO> findConsultationsByIdMedecinOrderByJourDesc(Integer id) {
+        List<Consultation> consultations = this.repository.findConsultationsByIdMedecinOrderByJourDesc(id);
+        List<Consultation> filteredConsultations = consultations.stream()
+                .filter(consultation -> consultation.getDeletedAt() == null)
+                .collect(Collectors.toList());
+        return mapper.toAllRespDTO(filteredConsultations);
+    }
 
     @Override
     public Optional<ConsultationResDTO> findConsultationById(int id) {
@@ -130,5 +140,6 @@ public class ConsultationServiceImpl implements ConsultationService {
         Consultation emp=this.repository.findById(id).get();
         emp.setDeletedAt(LocalDateTime.now());
         repository.save(emp);
+    //    repository.deleteById(id);
     }
 }

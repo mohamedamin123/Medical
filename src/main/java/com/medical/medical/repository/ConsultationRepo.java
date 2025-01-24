@@ -15,5 +15,8 @@ public interface ConsultationRepo extends JpaRepository<Consultation,Integer> {
 
     List<Consultation> findConsultationsByIdMedecin(Integer id);
 
+    List<Consultation> findConsultationsByIdMedecinOrderByJourDesc(Integer id);
+
+
 
 }

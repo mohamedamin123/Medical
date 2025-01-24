@@ -1,5 +1,5 @@
 /* Style pour les boutons */
-.connect-button, .anuler-button, .delete-button {
+.connect-button, .anuler-button, .delete-button,.edit-button {
     -fx-background-color: #007bff;
     -fx-text-fill: white;
     -fx-font-size: 14px;
@@ -17,6 +17,11 @@
 .delete-button {
     -fx-background-color: #dc3545; /* Rouge similaire à Bootstrap pour le bouton de suppression */
 }
+
+.edit-button {
+    -fx-background-color: #f39c12; /* Rouge similaire à Bootstrap pour le bouton de suppression */
+}
+
 
 /* Style pour la barre de recherche */
 .text-field {

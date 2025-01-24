@@ -96,5 +96,6 @@ public class NotificationServiceImpl implements NotificationService {
         Notification emp=this.repository.findById(id).get();
         emp.setDeletedAt(LocalDateTime.now());
         repository.save(emp);
+    //    repository.deleteById(id);
     }
 }

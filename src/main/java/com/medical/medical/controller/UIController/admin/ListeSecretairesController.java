@@ -213,6 +213,16 @@ public class ListeSecretairesController {
     }
 
 
+
+
+
+
+
+    private void getData() {
+
+    }
+
+
     // Méthode pour voir les détails du secretaire
     private void handleShowDetails(SecretaireResDTO SecretaireResDTO) {
         try {

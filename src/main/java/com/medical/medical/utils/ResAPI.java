@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.medical.medical.controller.UIController.autre.LoginController;
 import com.medical.medical.models.dto.res.DrugResDTO;
+import com.medical.medical.models.dto.res.PatientResDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -90,6 +91,21 @@ public class ResAPI {
         }
     }
 
+    public static <T> List<T> findAllAfterDelete(String role, Class<T> clazz) throws Exception {
+        String endpoint = role.toLowerCase() + "s/" + role.toLowerCase() + "/find-all-after-delete";
+        try {
+            String jsonResponse = sendRequest(endpoint, "GET", null);
+            return objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("HTTP error code : 404")) {
+                // Handle the 404 error specifically
+                System.out.println("Resource not found for role: " + role);
+                return null; // or handle as needed
+            }
+            throw e; // rethrow other exceptions
+        }
+    }
+
     public static  <T> List<T> findAllByIdPatient(String role, Class<T> clazz,int id) throws Exception {
         String endpoint = role.toLowerCase() + "s/" + role.toLowerCase() + "/find-by-id-pation-after-delete/"+id;
         try {
@@ -130,6 +146,21 @@ public class ResAPI {
             if (e.getMessage().contains("HTTP error code : 404")) {
                 // Handle the 404 error specifically
                 System.out.println("Resource not found for role: " + role + " with ID: " + id);
+                return null; // or handle as needed
+            }
+            throw e; // rethrow other exceptions
+        }
+    }
+
+    public static <T> T findByEMail(String role, String email, Class<T> clazz) throws Exception {
+        String endpoint = role.toLowerCase() + "s/" + role.toLowerCase() + "/find-by-email/" + email;
+        try {
+            String jsonResponse = sendRequest(endpoint, "GET", null);
+            return objectMapper.readValue(jsonResponse, clazz);
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("HTTP error code : 404")) {
+                // Handle the 404 error specifically
+                System.out.println("Resource not found for role: " + role + " with ID: " + email);
                 return null; // or handle as needed
             }
             throw e; // rethrow other exceptions
@@ -239,6 +270,38 @@ public class ResAPI {
         }
     }
 
+    public static <T> List<T> findByIdMedecinDesc(String role, Integer id, Class<T> clazz) throws Exception {
+        String endpoint = role + "s/" + role + "/find-all-by-medecin-id-desc?id=" + id;
+        try {
+            String jsonResponse = sendRequest(endpoint, "GET", null);
+            return objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("HTTP error code : 404")) {
+                // Handle the 404 error specifically
+                System.out.println("Resource not found for role: " + role + " with ID: " + id);
+                return null; // or handle as needed
+            }
+            throw e; // rethrow other exceptions
+        }
+    }
+
+
+    public static <T> List<T> findByIdMedecinAfterDelete(String role, Integer id, Class<T> clazz) throws Exception {
+        String endpoint = role + "s/" + role + "/find-all-by-medecin-id-after-delete?id=" + id;
+        try {
+            String jsonResponse = sendRequest(endpoint, "GET", null);
+            return objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("HTTP error code : 404")) {
+                // Handle the 404 error specifically
+                System.out.println("Resource not found for role: " + role + " with ID: " + id);
+                return null; // or handle as needed
+            }
+            throw e; // rethrow other exceptions
+        }
+    }
+
+
     public static <T> List<T> findByIdMedecinAndJOur(String role, Integer id, LocalDate jour, Class<T> clazz) throws Exception {
         String endpoint = role + "s/" + role + "/find-all-by-medecin-id-and-date?id=" + id + "&jour=" + jour;
 
@@ -259,6 +322,17 @@ public class ResAPI {
     public static <T> String save(String role, T data) throws Exception {
         String endpoint = role.toLowerCase() + "s/" + role.toLowerCase() + "/save";
         return sendRequest(endpoint, "POST", data);
+    }
+
+    public static <T> PatientResDTO save2(String role, T data) throws Exception {
+        String endpoint = role.toLowerCase() + "s/" + role.toLowerCase() + "/save";
+        String jsonResponse = sendRequest(endpoint, "POST", data); // Renvoie une String (JSON)
+
+        // Convertir la réponse JSON en objet PatientResDTO
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule()); // Ajout du module pour gérer LocalDate
+
+        return objectMapper.readValue(jsonResponse, PatientResDTO.class);
     }
 
     public static <T> String update(String role, T data) throws Exception {

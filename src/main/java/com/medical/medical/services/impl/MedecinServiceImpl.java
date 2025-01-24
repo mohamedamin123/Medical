@@ -218,6 +218,7 @@ public class MedecinServiceImpl implements MedecinService , UserDetailsService {
         emp.setDeletedAt(LocalDateTime.now());
         emp.setStatut(false);
         repository.save(emp);
+    //    repository.deleteById(id);
     }
 
 //-----------------------------------------------------------------------------------------------------------------login

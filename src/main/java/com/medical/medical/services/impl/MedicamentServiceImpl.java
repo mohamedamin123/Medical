@@ -106,5 +106,6 @@ public class MedicamentServiceImpl implements MedicamentService {
         Medicament emp=this.repository.findById(id).get();
         emp.setDeletedAt(LocalDateTime.now());
         repository.save(emp);
+     //   repository.deleteById(id);
     }
 }

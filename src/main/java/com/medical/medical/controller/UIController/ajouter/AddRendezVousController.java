@@ -53,15 +53,6 @@ public class AddRendezVousController {
     @FXML
     private TextField motifTextField;
 
-//    @Autowired
-//    private RendezVousController rendezVousController;
-//
-//    @Autowired
-//    private PatientController patientController;
-//
-//    @Autowired
-//    private MedecinController medecinController;
-
     @Setter
     @Getter
     private String email;
@@ -120,30 +111,25 @@ public class AddRendezVousController {
             // Set the items of the ComboBox with PatientItem objects
             patientComboBox.setItems(FXCollections.observableArrayList(patientList));
 
-            // Customize how the items are displayed
+            // Personnalisation de l'affichage des éléments dans la liste déroulante
             patientComboBox.setCellFactory(cell -> new javafx.scene.control.ListCell<PatientItem>() {
                 @Override
                 protected void updateItem(PatientItem item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (item == null || empty) {
-                        setText(null);
-                    } else {
-                        setText(item.getName());
-                    }
+
+                    setText((item == null || empty) ? null : item.getName()); // Affiche uniquement le nom
                 }
             });
 
+// Personnalisation de l'affichage de l'élément sélectionné
             patientComboBox.setButtonCell(new javafx.scene.control.ListCell<PatientItem>() {
                 @Override
                 protected void updateItem(PatientItem item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (item == null || empty) {
-                        setText(null);
-                    } else {
-                        setText(item.getName());
-                    }
+                    setText((item == null || empty) ? null : item.getName()); // Affiche uniquement le nom
                 }
             });
+
             if (userData instanceof Object[] data) {
                 if (data.length > 5 ){
                     resDTO = (data[5] instanceof RendezVousResDTO) ? (RendezVousResDTO) data[5] : null;

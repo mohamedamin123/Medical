@@ -56,14 +56,19 @@
             <Region HBox.hgrow="ALWAYS" />
 
             <!-- Bouton Ajouter Patient -->
-            <Button fx:id="addPatientButton" alignment="CENTER_RIGHT" styleClass="connect-button" text="Ajouter Patient" />
+
 
             <!-- Bouton Supprimer -->
             <Button fx:id="deleteButton" alignment="CENTER_RIGHT" styleClass="delete-button" text="Supprimer" onAction="#handleDeletePatient">
-                <HBox.margin>
+
+            <HBox.margin>
                     <Insets bottom="20.0" right="20.0" />
                 </HBox.margin>
             </Button>
+            <Button fx:id="modfierButton" alignment="CENTER_RIGHT" styleClass="edit-button" text="Modifier" onAction="#handleModifierPatient"/>
+
+            <Button fx:id="addPatientButton" alignment="CENTER_RIGHT" styleClass="connect-button" text="Ajouter Patient" />
+
         </HBox>
     </VBox>
 </AnchorPane>

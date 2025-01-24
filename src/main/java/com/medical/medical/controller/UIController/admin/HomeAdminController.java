@@ -99,12 +99,12 @@ public class HomeAdminController {
                                     }
                                 }
                             });
-                            supprimer.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    System.out.println("supprimer");
-                                }
-                            });
+//                            supprimer.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//                                @Override
+//                                public void handle(MouseEvent mouseEvent) {
+//                                    System.out.println("supprimer");
+//                                }
+//                            });
                         }
                     }
                 }

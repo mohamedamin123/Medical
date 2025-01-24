@@ -40,6 +40,7 @@ public interface SecretaireService {
     Optional<SecretaireResDTO> findSecretaireByEmailAfterDelete(String email);
     Optional<SecretaireResDTO> findSecretaireByTelAfterDelete(String tel);
 
+
     List<SecretaireResDTO> findSecretairesByDateDeNaissanceAfterDelete(LocalDate dateDeNaissance);
 
     List<SecretaireResDTO> findSecretairesByPrenomOrNomAfterDelete(String prenom,String nom);

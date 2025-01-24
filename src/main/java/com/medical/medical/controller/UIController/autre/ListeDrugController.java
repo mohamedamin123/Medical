@@ -75,16 +75,24 @@ public class ListeDrugController {
     }
 
     // Helper method to create a Label with a Tooltip
+    // Helper method to create a Label with a Tooltip
     private Label createLabelWithTooltip(String displayText, String tooltipText) {
         Label label = new Label(displayText);
 
         // Créer un Tooltip avec le texte complet
-        Tooltip tooltip = new Tooltip(tooltipText);
+        Tooltip tooltip = new Tooltip(formatTooltipText(tooltipText)); // Formater le texte pour retour à la ligne
         tooltip.setShowDelay(Duration.millis(0)); // Pas de délai avant l'affichage
-        tooltip.setHideDelay(Duration.millis(50000)); // Délai avant la fermeture (500 ms par exemple)
-        label.setWrapText(true); // Permettre le retour à la ligne
+        tooltip.setMaxWidth(700); // Largeur maximale du Tooltip
+        tooltip.setWrapText(true); // Activer le retour à la ligne automatique
 
+        label.setWrapText(true); // Permettre le retour à la ligne dans le Label
         label.setTooltip(tooltip);
+
+
+
+        tooltip.setShowDelay(Duration.millis(0)); // No delay before showing
+        tooltip.setHideDelay(Duration.seconds(5)); // Optional: Hide after 5 seconds
+
 
         // Si le texte est trop long, tronquer et ajouter "..."
         if (displayText.length() > 150) { // Par exemple, 150 caractères
@@ -92,9 +100,29 @@ public class ListeDrugController {
             label.setText(truncatedText);
         }
 
-        label.setOnMouseExited(event -> tooltip.hide());
+        label.setOnMouseEntered(event -> {
+            Tooltip.install(label, tooltip); // Afficher le Tooltip lorsqu'on entre dans le Label
+        });
+
+        label.setOnMouseExited(event -> {
+            tooltip.hide(); // Cacher le Tooltip lorsque la souris quitte le Label
+        });
 
         return label;
+    }
+
+    // Méthode pour formater le texte avec des retours à la ligne
+    private String formatTooltipText(String text) {
+        // Ajouter un retour à la ligne tous les 80 caractères par exemple
+        StringBuilder formattedText = new StringBuilder();
+        int lineLength = 360; // Nombre de caractères avant un retour à la ligne
+
+        for (int i = 0; i < text.length(); i += lineLength) {
+            int end = Math.min(text.length(), i + lineLength);
+            formattedText.append(text, i, end).append("\n");
+        }
+
+        return formattedText.toString();
     }
 
 

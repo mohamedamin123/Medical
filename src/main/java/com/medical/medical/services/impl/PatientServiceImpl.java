@@ -214,5 +214,6 @@ public class PatientServiceImpl implements PatientService {
         emp.setDeletedAt(LocalDateTime.now());
         emp.setStatut(false);
         repository.save(emp);
+      //  repository.deleteById(id);
     }
 }

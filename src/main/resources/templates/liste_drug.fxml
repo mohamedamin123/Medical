@@ -8,11 +8,11 @@
 
 <VBox alignment="CENTER" minHeight="263.0" minWidth="395.0" spacing="10" stylesheets="@../static/style/drugSearch.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.medical.medical.controller.UIController.autre.ListeDrugController">
 
-    <Label styleClass="label" text="Drug Search" />
+    <Label styleClass="label" text="rechercher les Medicaments" />
 
-    <TextField fx:id="searchBar" promptText="Enter active ingredient..." styleClass="text-field" />
+    <TextField fx:id="searchBar" promptText="Ecrit icu ......" styleClass="text-field" />
 
-    <Button onAction="#onSearchClicked" styleClass="button" text="Search" />
+    <Button onAction="#onSearchClicked" styleClass="button" text="Rechercher" />
 
     <Label fx:id="resultLabel" text="Les résultats seront affichés ici" />
 

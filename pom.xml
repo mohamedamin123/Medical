@@ -84,6 +84,7 @@
 			<artifactId>javafx-fxml</artifactId>
 			<version>13-ea+14b</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -105,8 +106,6 @@
 			<artifactId>json</artifactId>
 			<version>20231013</version>
 		</dependency>
-
-
 
 	</dependencies>
 	<build>

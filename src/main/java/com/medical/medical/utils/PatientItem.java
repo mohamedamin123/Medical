@@ -30,4 +30,8 @@ public class PatientItem {
         this.arrivalTime="";
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

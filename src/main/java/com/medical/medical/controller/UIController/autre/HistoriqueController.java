@@ -1,6 +1,5 @@
 package com.medical.medical.controller.UIController.autre;
 
-import com.medical.medical.controller.API.ConsultationController;
 import com.medical.medical.models.dto.res.ConsultationResDTO;
 import com.medical.medical.models.dto.res.MedecinResDTO;
 import com.medical.medical.models.dto.res.SecretaireResDTO;
@@ -10,21 +9,19 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -32,94 +29,119 @@ public class HistoriqueController {
 
     @FXML
     private TableView<Historique> historyTable;
-
     @FXML
     private TableColumn<Historique, LocalDate> dateColumn;
-
     @FXML
     private TableColumn<Historique, Integer> patientCountColumn;
-
+    @FXML
+    private DatePicker searchField;
+    @FXML
+    private Label totalPatientsLabel;
     @FXML
     private Button closeButton;
 
+    private ObservableList<Historique> fullData = FXCollections.observableArrayList();
 
-
-    Stage stage;
     @Setter
     @Getter
     private String email;
-
     @Setter
     @Getter
     private String role;
 
     private MedecinResDTO medecin;
     private SecretaireResDTO secretaire;
-
     private Integer idM;
 
     @FXML
     private void initialize() {
         Platform.runLater(() -> {
-            stage = (Stage) closeButton.getScene().getWindow();
-            if (stage != null) {
-                Object userData = stage.getUserData();
-                if (userData instanceof Object[] data) {
-                    if (data.length >= 4) {
-                        email = (String) data[0];
-                        role = (String) data[1];
-                        medecin = (data[2] instanceof MedecinResDTO) ? (MedecinResDTO) data[2] : null;
-                        secretaire = (data[3] instanceof SecretaireResDTO) ? (SecretaireResDTO) data[3] : null;
-                        idM = (Integer) data[4];
-                    }
-                }
-            }
-
-            // Configure les colonnes du TableView
-            dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
-            patientCountColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-
-            // Remplir le TableView avec des données
+            setupStageData();
+            configureTableColumns();
             loadTableData();
-
-            // Gestion de l'événement pour le bouton "Fermer"
-            closeButton.setOnAction(event -> handleClose());
+            setupEventHandlers();
         });
     }
 
+    private void setupStageData() {
+        Stage stage = (Stage) closeButton.getScene().getWindow();
+        if (stage != null) {
+            Object userData = stage.getUserData();
+            if (userData instanceof Object[] data && data.length >= 4) {
+                email = (String) data[0];
+                role = (String) data[1];
+                medecin = (data[2] instanceof MedecinResDTO) ? (MedecinResDTO) data[2] : null;
+                secretaire = (data[3] instanceof SecretaireResDTO) ? (SecretaireResDTO) data[3] : null;
+                idM = (Integer) data[4];
+            }
+        }
+    }
+
+    private void configureTableColumns() {
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        patientCountColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+    }
+
+    private void setupEventHandlers() {
+        closeButton.setOnAction(event -> handleClose());
+
+        searchField.setOnAction(event -> {
+            LocalDate selectedDate = searchField.getValue();
+            if (selectedDate != null) {
+                filterByDate(selectedDate);
+            } else {
+                historyTable.setItems(fullData);
+            }
+        });
+    }
+
+
     private void loadTableData() {
-        List<ConsultationResDTO> consultations = null;
         try {
-            consultations = ResAPI.findByIdMedecin("consultation",idM,ConsultationResDTO.class);
+            List<ConsultationResDTO> consultations = ResAPI.findByIdMedecinDesc("consultation", idM, ConsultationResDTO.class);
+
+            // Organiser les consultations par date (trié par ordre décroissant)
+            Map<LocalDate, Integer> datePatientCountMap = new TreeMap<>((d1, d2) -> d2.compareTo(d1));
+            for (ConsultationResDTO consultation : consultations) {
+                LocalDate date = consultation.getJour();
+                datePatientCountMap.put(date, datePatientCountMap.getOrDefault(date, 0) + 1);
+            }
+
+            fullData.setAll(datePatientCountMap.entrySet().stream()
+                    .map(entry -> new Historique(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toList()));
+
+            historyTable.setItems(fullData);
+            updateTotalPatients();
         } catch (Exception e) {
+            log.error("Erreur lors du chargement des données", e);
             throw new RuntimeException(e);
         }
+    }
 
-
-        // Créer une Map pour compter les patients par date
-
-        Map<LocalDate, Integer> datePatientCountMap = new HashMap<>();
-        for (ConsultationResDTO consultation : consultations) {
-            LocalDate date = consultation.getJour(); // Assurez-vous que la méthode getDate() renvoie LocalDate
-            datePatientCountMap.put(date, datePatientCountMap.getOrDefault(date, 0) + 1);
+    private void filterByDate(LocalDate queryDate) {
+        if (queryDate == null) {
+            historyTable.setItems(fullData);
+        } else {
+            ObservableList<Historique> filteredData = FXCollections.observableArrayList(
+                    fullData.stream()
+                            .filter(historique -> historique.getDate().equals(queryDate))
+                            .collect(Collectors.toList())
+            );
+            historyTable.setItems(filteredData);
         }
+        updateTotalPatients();
+    }
 
-        // Convertir la Map en liste observable pour TableView
-        ObservableList<Historique> data = FXCollections.observableArrayList();
-        for (Map.Entry<LocalDate, Integer> entry : datePatientCountMap.entrySet()) {
-            LocalDate date = entry.getKey();
-            int patientCount = entry.getValue();
-            data.add(new Historique(date, patientCount));
-        }
-
-
-        // Remplir le TableView avec les données
-        historyTable.setItems(data);
+    private void updateTotalPatients() {
+        int total = historyTable.getItems().stream().mapToInt(Historique::getNombre).sum();
+        totalPatientsLabel.setText(String.valueOf(total));
     }
 
     private void handleClose() {
-        if (historyTable.getScene() != null) {
-            historyTable.getScene().getWindow().hide();
+        Stage stage = (Stage) closeButton.getScene().getWindow();
+        if (stage != null) {
+            stage.close();
         }
     }
 }

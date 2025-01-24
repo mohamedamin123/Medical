@@ -114,5 +114,6 @@ public class RendezVousServiceImpl implements RendezVousService {
         RendezVous emp=this.repository.findById(id).get();
         emp.setDeletedAt(LocalDateTime.now());
         repository.save(emp);
+       // repository.deleteById(id);
     }
 }

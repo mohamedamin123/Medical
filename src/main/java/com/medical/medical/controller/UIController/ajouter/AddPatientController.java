@@ -1,5 +1,6 @@
 package com.medical.medical.controller.UIController.ajouter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medical.medical.controller.API.DossierMedicalController;
 import com.medical.medical.controller.API.PatientController;
 import com.medical.medical.ennum.Sexe;
@@ -477,10 +478,9 @@ public class AddPatientController {
             patientReqDTO=new PatientReqDTO(nom,prenom,telephone,email2,dateNaissance,notes,batiment,code,cin,ville,sexee,idM);
             patientReqDTO.setMaladie(maladie.equals("oui"));
            // patientResDTO=patientController.savePatient(patientReqDTO);
-            ResAPI.save("patient",patientReqDTO);
+          patientResDTO= ResAPI.save2("patient",patientReqDTO);
 
         }
-
         saveFichier();
         stage.close();
         try {

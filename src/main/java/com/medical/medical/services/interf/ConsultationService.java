@@ -25,6 +25,9 @@ public interface ConsultationService {
      List<ConsultationResDTO> findAllConsultationAfterDelete();
     List<ConsultationResDTO> findConsultationsByIdMedecin(Integer id);
 
+    List<ConsultationResDTO> findConsultationsByIdMedecinOrderByJourDesc(Integer id);
+
+
 
     Optional<ConsultationResDTO> findConsultationByIdAfterDelete(int id);
 

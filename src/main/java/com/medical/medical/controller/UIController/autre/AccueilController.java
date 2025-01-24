@@ -28,33 +28,14 @@ import static com.medical.medical.utils.javaFxAPI.changeFenetre;
 @Slf4j
 public class AccueilController {
     @FXML
-    private ImageView medicament;
-    @FXML
-    private ImageView attente;
-    @FXML
-    private ImageView deconnecter;
-    @FXML
-    private ImageView profile;
-
-    @FXML
-    private ImageView secretaireI;
-
-    @FXML
-    private ImageView rendezVous;
-
-    @FXML
-    private ImageView patient;
+    private ImageView medicament,attente,deconnecter,profile,secretaireI,rendezVous,patient;
 
     @FXML
     private Label name;
 
     @Setter
     @Getter
-    private String email;
-
-    @Setter
-    @Getter
-    private String role;
+    private String email,role;
 
     private MedecinResDTO medecin;
     private SecretaireResDTO secretaire;

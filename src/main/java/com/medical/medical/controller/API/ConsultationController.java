@@ -35,6 +35,11 @@ public class ConsultationController {
         return this.service.findConsultationsByIdMedecin(id);
     }
 
+    @GetMapping(path = "/find-all-by-medecin-id-desc")
+    public List<ConsultationResDTO> findConsultationsByIdMedecinOrderByJourDesc( @RequestParam Integer id) {
+        return this.service.findConsultationsByIdMedecinOrderByJourDesc(id);
+    }
+
 
         @GetMapping(path = "/find-by-id/{id}")
     public Optional<ConsultationResDTO> findConsultationById(@PathVariable(name = "id")  Integer id)

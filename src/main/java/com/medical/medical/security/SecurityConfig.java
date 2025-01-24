@@ -44,8 +44,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/login").permitAll() // Allow login requests
                         .requestMatchers("/admins/admin/**").hasRole("ADMIN") // Role ADMIN for /admin/** endpoints
-                        .requestMatchers("/medecins/medecin/**").hasAnyRole("MEDECIN","ADMIN") // Role MEDECIN for /medecins/medecin/** endpoints
+                        .requestMatchers("/medecins/medecin/**").hasAnyRole("MEDECIN","ADMIN","SECRETAIRE") // Role MEDECIN for /medecins/medecin/** endpoints
                         .requestMatchers("/secretaires/secretaire/**").hasAnyRole("SECRETAIRE","MEDECIN","ADMIN") // Role SECRETAIRE for /secretaires/secretaire/** endpoints
+                        .requestMatchers("/rendezvouss/rendezvous/**").hasAnyRole("SECRETAIRE","MEDECIN","ADMIN") // Role SECRETAIRE for /secretaires/secretaire/** endpoints
                         .anyRequest().authenticated() // Require authentication for all o
                 )
                 .httpBasic(withDefaults()) // Use HTTP Basic Authentication
@@ -72,6 +73,7 @@ public class SecurityConfig {
                     return user;
                 }
             } catch (Exception e) {
+                System.out.println("cette user ne pas admin");
 
             }
 
@@ -81,6 +83,7 @@ public class SecurityConfig {
                     return user;
                 }
             } catch (Exception e) {
+                System.out.println("cette user ne pas secretaire");
             }
 
             try {
@@ -90,11 +93,11 @@ public class SecurityConfig {
                     return user;
                 }
             } catch (Exception e) {
-                System.out.println("Error in MedecinService: " + e.getMessage());
+                System.out.println("cette user ne pas medecin");
             }
 
             System.out.println("User not found");
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("User ne trouve pas : " + username);
         };
     }
 
